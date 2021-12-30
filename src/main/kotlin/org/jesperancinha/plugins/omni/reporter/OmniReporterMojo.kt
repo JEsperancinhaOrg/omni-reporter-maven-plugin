@@ -12,7 +12,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-@Mojo(name = "omniReporter", threadSafe = false, aggregator = true)
+@Mojo(name = "report", threadSafe = false, aggregator = true)
 open class OmniReporterMojo(
     @Parameter(property = "jacocoReports")
     protected var jacocoReports: MutableList<File> = mutableListOf(),
