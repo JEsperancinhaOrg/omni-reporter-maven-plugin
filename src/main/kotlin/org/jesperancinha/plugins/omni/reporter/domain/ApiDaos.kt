@@ -8,3 +8,5 @@ class JsonMappingConfiguration {
         val objectMapper = jacksonObjectMapper().apply { propertyNamingStrategy = SnakeCaseStrategy() }
     }
 }
+
+class PipelineConfigurationException : RuntimeException()
