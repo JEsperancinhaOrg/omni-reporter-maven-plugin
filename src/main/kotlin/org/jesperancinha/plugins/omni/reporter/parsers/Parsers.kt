@@ -1,5 +1,6 @@
 package org.jesperancinha.plugins.omni.reporter.parsers
 
+import org.jesperancinha.plugins.omni.reporter.domain.SourceFile
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -9,6 +10,8 @@ import javax.xml.stream.XMLInputFactory
 
 interface OmniReportParser<T> {
     fun parseInputStream(): T
+
+    fun parseSourceFile(source: T): SourceFile
 }
 
 class JacocoParser(val inputStream: InputStream) : OmniReportParser<Report> {
@@ -19,5 +22,9 @@ class JacocoParser(val inputStream: InputStream) : OmniReportParser<Report> {
         val xmlStreamReader = xmlInputFactory.createXMLStreamReader(InputStreamReader(inputStream))
         val unmarshaller = jaxbContext.createUnmarshaller()
         return unmarshaller.unmarshal(xmlStreamReader) as Report
+    }
+
+    override fun parseSourceFile(source: Report): SourceFile {
+        TODO("Not yet implemented")
     }
 }

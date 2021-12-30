@@ -10,17 +10,40 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 1. Reporting file supported
 
-| Type      | Status | Notes                                                                                                                                                                                                                                           | Available from Release |
-|-----------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
-| Jacoco    | 🚧     | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  |
+| Type       | Status | Notes                                                                                                                                                                                                                                           | Available from Release |
+|------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| Jacoco XML | 🚧     | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  |
 
 #### 2. Online API's supported
 
-| Type      | Status |Notes| Available from Release |
-|-----------|--------|---|------------------------|
-| Coveralls | 🚧     | | 0.0.0                  |
-| Codacy    | 🚧     | | ?                      |
-| CodeCov   | 🚧     | | ?                      |
+| Type      | Status |Notes| Available from Release | Environment Variables |
+|-----------|--------|---|------------------------|---|
+| Coveralls | 🚧     | | 0.0.0                  |COVERALLS_REPO_TOKEN or COVERALLS_TOKEN|
+| Codacy    | 🚧     | | ?                      |CODACY_PROJECT_TOKEN|
+| CodeCov   | 🚧     | | ?                      |CODECOV_TOKEN|
+
+#### 3. Pipelines Supported
+
+
+| Type     | Status |Notes| Available from Release |
+|----------|--------|---|------------------------|
+| Git Hub  | 🚧     | | 0.0.0                  |
+| Git Lab  | 🚧     | | 0.0.0                  |
+| CircleCI | 🚧     | | ?                      |
+
+#### 4. Configuration options
+
+```shell
+mvn clean install omni:report
+```
+
+| Property         | Function                                                                                                                                                                                                                                                                                                                                        |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| failOnUnknown    | If an unknown file is found, it will ignore current file and proceed with reporting the rest. It is `false` by default                                                                                                                                                                                                                          |
+| failOnNoEncoding | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                           |
+| coverallsToken   | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead |
+| codecovToken     | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     |
+| codacyToken      | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead|
 
 ## Release notes - Upcoming version 0.0.0
 
@@ -33,6 +56,9 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 ## References
 
+- [Coveralls API reference](https://docs.coveralls.io/api-reference)
+- [Git Hub Environment Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
+- [Git Lab Environment Variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
 - [Check Run Reporter](https://github.com/marketplace/check-run-reporter)
 - [Codacy Maven Plugin](https://github.com/halkeye/codacy-maven-plugin)
 - [Coveralls Maven Plugin](https://github.com/trautonen/coveralls-maven-plugin)

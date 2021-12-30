@@ -8,6 +8,7 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
+import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -52,10 +53,24 @@ open class OmniReporterMojo(
     var basedir: File? = null,
     @Parameter(defaultValue = "\${settings}", readonly = true, required = true)
     var settings: Settings? = null,
+    @Parameter(property = "coverallsToken")
+    var coverallsToken: String? = null,
+    @Parameter(property = "codecovToken")
+    var codecovToken: String? = null,
+    @Parameter(property = "codacyToken")
+    var codacyToken: String? = null,
     @Component
     var project: MavenProject? = null,
 ) : AbstractMojo() {
 
     override fun execute() {
+
+        val environment = System.getenv()
+        coverallsToken =  coverallsToken ?: environment["COVERALLS_REPO_TOKEN"] ?: environment["COVERALLS_TOKEN"]
+        codecovToken = codecovToken?: environment["CODECOV_TOKEN"]
+        codacyToken = codecovToken?: environment["CODACY_PROJECT_TOKEN"]
+
+        val currentPipeline = Pipeline.currentPipeline
+
     }
 }
