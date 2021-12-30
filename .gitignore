@@ -30,3 +30,6 @@ ${project.build.directory}
 # OS
 .DS_Store
 target
+
+# Test files
+coveralls.json
