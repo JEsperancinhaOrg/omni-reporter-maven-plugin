@@ -63,6 +63,7 @@ mvn clean install omni:report
 4. Plugin will search for all jacoco.xml files located in the build directory.
 5. If there are two reports with the same file reported, the result will be an average.
 6. Coveralls support
+7. DOM processing instead of SAX. Using an event parser for XML can be quite sumbersome and if the XML document isn't correctly validated, we run the risk of having misleading or false results. In any case, when making a code report, we usually don't need to worry about performance and if we do, it is probably a sign that the codebase is too big and that our code is becoming a monolith.
 
 ## References
 
