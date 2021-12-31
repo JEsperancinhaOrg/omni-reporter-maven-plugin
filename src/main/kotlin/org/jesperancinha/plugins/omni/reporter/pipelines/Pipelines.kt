@@ -18,7 +18,6 @@ interface Pipeline {
     companion object {
         private val environment: MutableMap<String, String> = System.getenv()
 
-        @JvmStatic
         val currentPipeline: Pipeline = when {
             environment[GITHUB_JOB] != null -> GitHubPipeline(environment)
             environment[CI_JOB_ID] != null -> GitLabPipeline(environment)
@@ -76,13 +75,10 @@ class LocalPipeline(
         const val CI_BRANCH = "CI_BRANCH"
         const val CI_PULL_REQUEST = "CI_PULL_REQUEST"
 
-        @JvmStatic
         fun findServiceName(failName: String) = System.getenv()[CI_NAME] ?: failName
 
-        @JvmStatic
         fun findServiceNumber(fallback: () -> String) = System.getenv()[CI_BUILD_NUMBER] ?: fallback()
 
-        @JvmStatic
         fun findServiceJobId(fallback: () -> String) = System.getenv()[JOB_NUM] ?: fallback()
     }
 

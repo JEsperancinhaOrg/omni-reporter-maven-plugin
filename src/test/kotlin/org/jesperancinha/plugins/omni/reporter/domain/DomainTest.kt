@@ -6,18 +6,16 @@ import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.C
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.io.FileNotFoundException
 
 internal class DomainTest {
     @Test
     fun `should parse basic JacocoReport`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
-        val readValue = JacocoParser(inputStream, root).parseInputStream()
+        val readValue = JacocoParser(inputStream, root, root).parseInputStream()
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Reactive MVC"
-        readValue.packages .forEach {
+        readValue.packages.forEach {
             it.name.shouldNotBeNull()
             it.sourcefile.name.shouldNotBeNull()
         }

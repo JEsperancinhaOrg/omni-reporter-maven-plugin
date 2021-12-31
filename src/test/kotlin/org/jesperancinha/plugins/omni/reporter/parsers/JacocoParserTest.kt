@@ -14,6 +14,7 @@ import java.io.File
 internal class JacocoParserTest {
     private val jacocoParser = JacocoParser(
         "test".byteInputStream(),
+        root,
         root
     )
 

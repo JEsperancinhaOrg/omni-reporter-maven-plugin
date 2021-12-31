@@ -1,5 +1,7 @@
 package org.jesperancinha.plugins.omni.reporter.parsers
 
+import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
+import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
 import org.jesperancinha.plugins.omni.reporter.domain.SourceFile
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
@@ -49,19 +51,24 @@ interface OmniReportParser<T> {
     fun parseSourceFile(source: T): List<SourceFile>
 
     companion object {
-        @JvmStatic
         val messageDigester: MessageDigest = MessageDigest.getInstance("MD5")
     }
 
     fun parseSourceFile(): List<SourceFile>
 }
 
-abstract class OmniReporterParserImpl<T>(internal val inputStream: InputStream, internal val projectBaseDir: File) :
+abstract class OmniReporterParserImpl<T>(
+    internal val inputStream: InputStream,
+    internal val projectBaseDir: File,
+    internal val root: File?
+) :
     OmniReportParser<T> {
 }
 
-class JacocoParser(inputStream: InputStream, projectBaseDir: File) :
-    OmniReporterParserImpl<Report>(inputStream, projectBaseDir) {
+class JacocoParser(inputStream: InputStream, projectBaseDir: File, root: File?) :
+    OmniReporterParserImpl<Report>(inputStream, projectBaseDir, root) {
+
+    private lateinit var coverallsReport: CoverallsReport
 
     internal fun parseInputStream(): Report {
         val jaxbContext = JAXBContext.newInstance(Report::class.java)
@@ -80,7 +87,9 @@ class JacocoParser(inputStream: InputStream, projectBaseDir: File) :
             val sourceCodeFile = SourceCodeFile(projectBaseDir, packageName, sourceFile)
             val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
             SourceFile(
-                name = sourceFile.name,
+                name = sourceCodeFile.absolutePath.replace(
+                    root?.absolutePath ?: throw ProjectDirectoryNotFoundException(), ""
+                ),
                 coverage = sourceFile.lines.toCoverageArray,
                 sourceDigest = sourceCodeText.toFileDigest,
                 branches = sourceFile.lines.toBranchCoverageArray,
