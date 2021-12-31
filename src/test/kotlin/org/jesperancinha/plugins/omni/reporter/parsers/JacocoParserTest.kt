@@ -7,14 +7,16 @@ import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Package
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
+import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline
 import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
 import org.junit.jupiter.api.Test
 import java.io.File
 
 internal class JacocoParserTest {
     private val jacocoParser = JacocoParser(
-        "test".byteInputStream(),
-        root,
+        "token",
+        LocalPipeline(System.getenv()),
         root
     )
 
@@ -38,7 +40,7 @@ internal class JacocoParserTest {
         pack.sourcefile = sourcefile
 
         report.packages.add(pack)
-        val sourceFiles = jacocoParser.parseSourceFile(report)
+        val sourceFiles = jacocoParser.parseSourceFile(report, root).sourceFiles
 
         sourceFiles.shouldNotBeNull()
         sourceFiles.shouldHaveSize(1)

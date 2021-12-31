@@ -4,6 +4,8 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
+import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline
 import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
 import org.junit.jupiter.api.Test
 
@@ -12,7 +14,7 @@ internal class DomainTest {
     fun `should parse basic JacocoReport`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
-        val readValue = JacocoParser(inputStream, root, root).parseInputStream()
+        val readValue = JacocoParser("token", LocalPipeline(System.getenv()), root).parseInputStream(inputStream)
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Reactive MVC"
         readValue.packages.forEach {
@@ -32,7 +34,7 @@ internal class DomainTest {
     fun `should generate snake case coveralls object`() {
         val sourceFile = CoverallsReport(
             "repoToken", "serviceName",
-            listOf(SourceFile("name", "sourceDigest")),
+            mutableListOf(SourceFile("name", "sourceDigest")),
             Git(
                 Head("id", "authorName", "authorEmail", "committerName", "committerEmail"),
                 "banch", listOf(Remote("remote", "url"))

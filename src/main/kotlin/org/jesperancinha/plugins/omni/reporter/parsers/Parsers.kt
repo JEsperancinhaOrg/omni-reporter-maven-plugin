@@ -7,6 +7,7 @@ import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.parsers.OmniReportParser.Companion.messageDigester
+import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -48,29 +49,29 @@ class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sou
     File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
 
 interface OmniReportParser<T> {
-    fun parseSourceFile(source: T): List<SourceFile>
+    fun parseSourceFile(inputStream: InputStream, projectBaseDir: File): CoverallsReport
+
+    fun parseSourceFile(source: T, projectBaseDir: File): CoverallsReport
 
     companion object {
         val messageDigester: MessageDigest = MessageDigest.getInstance("MD5")
     }
-
-    fun parseSourceFile(): List<SourceFile>
 }
 
 abstract class OmniReporterParserImpl<T>(
-    internal val inputStream: InputStream,
-    internal val projectBaseDir: File,
-    internal val root: File?
+    internal val token: String,
+    internal val pipeline: Pipeline,
+    internal val root: File?,
 ) :
     OmniReportParser<T> {
 }
 
-class JacocoParser(inputStream: InputStream, projectBaseDir: File, root: File?) :
-    OmniReporterParserImpl<Report>(inputStream, projectBaseDir, root) {
+class JacocoParser(token: String, pipeline: Pipeline, root: File) :
+    OmniReporterParserImpl<Report>(token, pipeline, root) {
 
-    private lateinit var coverallsReport: CoverallsReport
+    private var coverallsReport: CoverallsReport? = null
 
-    internal fun parseInputStream(): Report {
+    internal fun parseInputStream(inputStream: InputStream): Report {
         val jaxbContext = JAXBContext.newInstance(Report::class.java)
         val xmlInputFactory = XMLInputFactory.newFactory()
         xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false)
@@ -79,9 +80,11 @@ class JacocoParser(inputStream: InputStream, projectBaseDir: File, root: File?) 
         return unmarshaller.unmarshal(xmlStreamReader) as Report
     }
 
-    override fun parseSourceFile(): List<SourceFile> = parseSourceFile(parseInputStream())
+    override fun parseSourceFile(inputStream: InputStream, projectBaseDir: File): CoverallsReport = parseSourceFile(
+        parseInputStream(inputStream), projectBaseDir
+    )
 
-    override fun parseSourceFile(source: Report): List<SourceFile> = source.packages
+    override fun parseSourceFile(source: Report, projectBaseDir: File): CoverallsReport = source.packages
         .map { it.name to it.sourcefile }
         .map { (packageName, sourceFile) ->
             val sourceCodeFile = SourceCodeFile(projectBaseDir, packageName, sourceFile)
@@ -96,5 +99,19 @@ class JacocoParser(inputStream: InputStream, projectBaseDir: File, root: File?) 
                 source = sourceCodeText
             )
 
+        }.let {
+            if (coverallsReport == null) {
+                coverallsReport = CoverallsReport(
+                    repoToken = token,
+                    serviceName = pipeline.serviceName,
+                    sourceFiles = it.toMutableList(),
+                    serviceJobId = pipeline.serviceJobId
+                )
+            } else {
+
+                coverallsReport?.sourceFiles?.addAll(it)
+            }
+
+            coverallsReport ?: throw ProjectDirectoryNotFoundException()
         }
 }

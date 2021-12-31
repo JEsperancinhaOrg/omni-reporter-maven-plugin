@@ -60,7 +60,7 @@ data class Remote(
 data class CoverallsReport (
     val repoToken: String,
     val serviceName: String,
-    val sourceFiles: List<SourceFile> = mutableListOf(),
+    val sourceFiles: MutableList<SourceFile> = mutableListOf(),
     val git: Git? = null,
     val serviceNumber: String? = null,
     val serviceJobId: String? = null,

@@ -6,7 +6,6 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
-import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
 import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
@@ -70,26 +69,25 @@ open class OmniReporterMojo(
 
         val currentPipeline = Pipeline.currentPipeline
 
+
         coverallsToken?.let { token ->
+            val jacocoParser =
+                JacocoParser(
+                    token,
+                    currentPipeline,
+                    projectBaseDir ?: throw ProjectDirectoryNotFoundException()
+                )
+
             allProjects.map { project ->
-                File(project?.build?.directory?: throw ProjectDirectoryNotFoundException()).walkTopDown()
+                File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
                     .forEach { report ->
-                        println(report)
                         if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported) {
-                            val jacocoParser =
-                                JacocoParser(
-                                    report.inputStream(),
-                                    File(project.build?.sourceDirectory?: throw ProjectDirectoryNotFoundException()),
-                                    projectBaseDir
-                                )
-                            val coverallsReport = CoverallsReport(
-                                repoToken = token,
-                                serviceName = currentPipeline.serviceName,
-                                sourceFiles = jacocoParser.parseSourceFile(),
-                                serviceJobId = currentPipeline.serviceJobId
+                            println(report)
+                            val parseSourceFile = jacocoParser.parseSourceFile(
+                                report.inputStream(),
+                                File(project.build?.sourceDirectory ?: throw ProjectDirectoryNotFoundException()),
                             )
-                            logger.info(objectMapper.writeValueAsString(coverallsReport))
-                            return
+                            logger.info(objectMapper.writeValueAsString(parseSourceFile))
                         }
                     }
 
