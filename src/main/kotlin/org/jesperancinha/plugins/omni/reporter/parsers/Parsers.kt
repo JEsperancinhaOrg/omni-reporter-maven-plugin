@@ -36,12 +36,12 @@ class JacocoParser(private val inputStream: InputStream) : OmniReportParser<Repo
 
     override fun parseSourceFile(source: Report): List<SourceFile> {
         val sourceFile = source.packages
-            .map { it.sourcefile }
-            .map { sourceFile ->
+            .map { it.name to it.sourcefile }
+            .map { (packageName, sourceFile) ->
                 SourceFile(
                     name = sourceFile.name,
                     coverage = sourceFile.lines.toCoverageArray,
-                    sourceDigest = "",
+                    sourceDigest = "$packageName/${sourceFile.name}",
                 )
             }
 
