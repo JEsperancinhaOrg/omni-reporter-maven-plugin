@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test
 
 internal class DomainTest {
     @Test
-    fun `should parse JacocoReport`() {
+    fun `should parse basic JacocoReport`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
         val readValue = JacocoParser(inputStream).parseInputStream()
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Reactive MVC"
-        readValue.packages.forEach {
+        readValue.packages .forEach {
             it.name.shouldNotBeNull()
             it.sourcefile.name.shouldNotBeNull()
         }
@@ -24,7 +24,7 @@ internal class DomainTest {
     fun `should generate snake case source object`() {
         val sourceFile = SourceFile("name", "sourceDigest")
         val writeValueAsString = objectMapper.writeValueAsString(sourceFile)
-        writeValueAsString.shouldBe("{\"name\":\"name\",\"source_digest\":\"sourceDigest\",\"coverage\":[]}")
+        writeValueAsString.shouldBe("{\"name\":\"name\",\"source_digest\":\"sourceDigest\",\"coverage\":[],\"branches\":null,\"source\":null}")
     }
 
     @Test

@@ -9,7 +9,7 @@ data class CoverallsResponse(
 data class SourceFile(
     val name: String,
     val sourceDigest: String,
-    val coverage: Array<Int> = arrayOf(),
+    val coverage: Array<Int?> = arrayOf(),
     val branches: Array<String>? = null,
     val source: String? = null
 ) {

@@ -27,6 +27,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 | Type     | Status |Notes| Available from Release |
 |----------|--------|---|------------------------|
+| Local    | 🚧     | | 0.0.0                  |
 | Git Hub  | 🚧     | | 0.0.0                  |
 | Git Lab  | 🚧     | | 0.0.0                  |
 | CircleCI | 🚧     | | ?                      |
@@ -44,6 +45,15 @@ mvn clean install omni:report
 | coverallsToken   | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead |
 | codecovToken     | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     |
 | codacyToken      | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead|
+
+## Reading and interpreting report files
+
+#### Jacoco Reports
+
+- `mi` = missed instructions
+- `ci` = covered instructions
+- `mb` = missed branches
+- `cb` = covered branches
 
 ## Release notes - Upcoming version 0.0.0
 
