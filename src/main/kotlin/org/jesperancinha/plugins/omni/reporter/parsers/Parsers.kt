@@ -8,6 +8,7 @@ import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.parsers.OmniReportParser.Companion.messageDigester
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -36,13 +37,17 @@ private val String.toFileDigest: String
     get() = messageDigester.digest(toByteArray()).joinToString(separator = "") { byte -> "%02x".format(byte) }
 
 
-private val List<Line>.toCoverageArray: Array<Int?>
+private val List<Line?>.toCoverageArray: Array<Int?>
     get() = let {
-        val coverageArray = Array<Int?>(map { it.nr ?: 0 }.maxOf { it }) { null }
-        forEach { line ->
-            coverageArray[line.nr - 1] = line.ci
+        if (isNotEmpty()) {
+            val coverageArray = Array<Int?>(map { it?.nr ?: 0 }.maxOf { it }) { null }
+            forEach { line ->
+                line?.let { coverageArray[line.nr - 1] = line.ci }
+            }
+            coverageArray
+        } else {
+            emptyArray()
         }
-        coverageArray
     }
 
 class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sourcefile) :
@@ -80,9 +85,10 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
         return unmarshaller.unmarshal(xmlStreamReader) as Report
     }
 
-    override fun parseSourceFile(inputStream: InputStream, projectBaseDir: File): CoverallsReport = parseSourceFile(
-        parseInputStream(inputStream), projectBaseDir
-    )
+    override fun parseSourceFile(inputStream: InputStream, projectBaseDir: File): CoverallsReport =
+        parseSourceFile(
+            parseInputStream(inputStream), projectBaseDir
+        )
 
     override fun parseSourceFile(source: Report, projectBaseDir: File): CoverallsReport = source.packages
         .map { it.name to it.sourcefile }
@@ -114,4 +120,8 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
 
             coverallsReport ?: throw ProjectDirectoryNotFoundException()
         }
+
+    companion object {
+        val logger = LoggerFactory.getLogger(JacocoParser::class.java)
+    }
 }

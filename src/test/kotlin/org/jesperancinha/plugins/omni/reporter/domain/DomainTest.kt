@@ -24,6 +24,19 @@ internal class DomainTest {
     }
 
     @Test
+    fun `should parse basic JacocoReport 1`() {
+        val inputStream = javaClass.getResourceAsStream("/jacoco1.xml")
+        inputStream.shouldNotBeNull()
+        val readValue = JacocoParser("token", LocalPipeline(System.getenv()), root).parseInputStream(inputStream)
+        readValue.shouldNotBeNull()
+        readValue.name shouldBe "Advanced Library Management Reactive MVC"
+        readValue.packages.forEach {
+            it.name.shouldNotBeNull()
+            it.sourcefile.name.shouldNotBeNull()
+        }
+    }
+
+    @Test
     fun `should generate snake case source object`() {
         val sourceFile = SourceFile("name", "sourceDigest")
         val writeValueAsString = objectMapper.writeValueAsString(sourceFile)
