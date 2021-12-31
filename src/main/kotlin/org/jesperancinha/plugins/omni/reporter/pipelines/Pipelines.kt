@@ -4,12 +4,9 @@ import org.jesperancinha.plugins.omni.reporter.domain.PipelineConfigurationExcep
 import org.jesperancinha.plugins.omni.reporter.domain.PipelineConfigurationException.Companion.createParamFailException
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_JOB
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_JOB_ID
-import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.CI_BUILD_NUMBER
-import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.CI_NAME
-import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.JOB_NUM
-import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline.Companion.findServiceJobId
-import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline.Companion.findServiceName
-import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline.Companion.findServiceNumber
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.findServiceJobId
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.findServiceName
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.findServiceNumber
 import java.util.*
 
 interface Pipeline {
@@ -20,14 +17,13 @@ interface Pipeline {
 
     companion object {
         private val environment: MutableMap<String, String> = System.getenv()
+
+        @JvmStatic
         val currentPipeline: Pipeline = when {
             environment[GITHUB_JOB] != null -> GitHubPipeline(environment)
             environment[CI_JOB_ID] != null -> GitLabPipeline(environment)
             else -> LocalPipeline(environment)
         }
-        fun findServiceName(failName: String) = System.getenv()[CI_NAME] ?: failName
-        fun findServiceNumber(fallback: () -> String) = System.getenv()[CI_BUILD_NUMBER] ?: fallback()
-        fun findServiceJobId(fallback: () -> String) = System.getenv()[JOB_NUM] ?: fallback()
     }
 }
 
@@ -79,6 +75,15 @@ class LocalPipeline(
         const val CI_BUILD_URL = "CI_BUILD_URL"
         const val CI_BRANCH = "CI_BRANCH"
         const val CI_PULL_REQUEST = "CI_PULL_REQUEST"
+
+        @JvmStatic
+        fun findServiceName(failName: String) = System.getenv()[CI_NAME] ?: failName
+
+        @JvmStatic
+        fun findServiceNumber(fallback: () -> String) = System.getenv()[CI_BUILD_NUMBER] ?: fallback()
+
+        @JvmStatic
+        fun findServiceJobId(fallback: () -> String) = System.getenv()[JOB_NUM] ?: fallback()
     }
 
 }

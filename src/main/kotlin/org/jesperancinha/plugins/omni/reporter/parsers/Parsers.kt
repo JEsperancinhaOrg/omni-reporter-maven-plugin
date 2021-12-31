@@ -49,6 +49,7 @@ interface OmniReportParser<T> {
     fun parseSourceFile(source: T): List<SourceFile>
 
     companion object {
+        @JvmStatic
         val messageDigester: MessageDigest = MessageDigest.getInstance("MD5")
     }
 

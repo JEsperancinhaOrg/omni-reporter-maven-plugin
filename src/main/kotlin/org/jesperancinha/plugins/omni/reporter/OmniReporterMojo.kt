@@ -73,6 +73,7 @@ open class OmniReporterMojo(
     }
 
     companion object {
+        @JvmStatic
         private val  logger = LoggerFactory.getLogger(OmniReporterMojo::class.java)
     }
 }
