@@ -14,20 +14,17 @@ import java.util.*
 
 interface Pipeline {
 
-    val seviceName: String
+    val serviceName: String
     val serviceNumber: String
     val serviceJobId: String
 
     companion object {
-        val currentPipeline = {
-            val environment = System.getenv()
-            when {
-                environment[GITHUB_JOB] != null -> GitHubPipeline(environment)
-                environment[CI_JOB_ID] != null -> GitLabPipeline(environment)
-                else -> LocalPipeline(environment)
-            }
+        private val environment: MutableMap<String, String> = System.getenv()
+        val currentPipeline: Pipeline = when {
+            environment[GITHUB_JOB] != null -> GitHubPipeline(environment)
+            environment[CI_JOB_ID] != null -> GitLabPipeline(environment)
+            else -> LocalPipeline(environment)
         }
-
         fun findServiceName(failName: String) = System.getenv()[CI_NAME] ?: failName
         fun findServiceNumber(fallback: () -> String) = System.getenv()[CI_BUILD_NUMBER] ?: fallback()
         fun findServiceJobId(fallback: () -> String) = System.getenv()[JOB_NUM] ?: fallback()
@@ -36,7 +33,7 @@ interface Pipeline {
 
 class GitHubPipeline(
     environment: MutableMap<String, String>,
-    override val seviceName: String = findServiceName("github-ci"),
+    override val serviceName: String = findServiceName("github-ci"),
     override val serviceNumber: String = findServiceNumber {
         environment[GITHUB_RUN_NUMBER] ?: throw PipelineConfigurationException(GITHUB_RUN_NUMBER)
     },
@@ -52,10 +49,11 @@ class GitHubPipeline(
 
 class GitLabPipeline(
     environment: MutableMap<String, String>,
-    override val seviceName: String = findServiceName("gitlab-ci"),
+    override val serviceName: String = findServiceName("gitlab-ci"),
     override val serviceNumber: String = findServiceNumber {
         environment[CI_CONCURRENT_ID] ?: throw PipelineConfigurationException(
-            CI_CONCURRENT_ID)
+            CI_CONCURRENT_ID
+        )
     },
     override val serviceJobId: String = findServiceJobId {
         environment[CI_JOB_ID] ?: throw createParamFailException(CI_JOB_ID)
@@ -69,7 +67,7 @@ class GitLabPipeline(
 
 class LocalPipeline(
     environment: MutableMap<String, String>,
-    override val seviceName: String = findServiceName("local-ci"),
+    override val serviceName: String = findServiceName("local-ci"),
     override val serviceNumber: String = environment[CI_BUILD_NUMBER] ?: UUID.randomUUID().toString(),
     override val serviceJobId: String = UUID.randomUUID().toString(),
 ) : Pipeline {

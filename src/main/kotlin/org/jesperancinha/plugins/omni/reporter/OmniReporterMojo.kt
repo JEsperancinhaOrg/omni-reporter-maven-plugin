@@ -6,38 +6,19 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
+import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
+import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
+import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
+import org.slf4j.LoggerFactory
 import java.io.File
-import java.util.*
 
 @Mojo(name = "report", threadSafe = false, aggregator = true)
 open class OmniReporterMojo(
-    @Parameter(property = "jacocoReports")
-    protected var jacocoReports: MutableList<File> = mutableListOf(),
-    @Parameter(property = "relativeReportDirs")
-    protected var relativeReportDirs: List<String> = mutableListOf(),
-    @Parameter(property = "coverallsFile", defaultValue = "\${project.build.directory}/coveralls.json")
-    var coverallsFile: File? = null,
     @Parameter(property = "coverallsUrl", defaultValue = "https://coveralls.io/api/v1/jobs")
     protected var coverallsUrl: String? = null,
-    @Parameter(property = "sourceDirectories")
-    var sourceDirectories: List<File>? = null,
     @Parameter(property = "sourceEncoding", defaultValue = "\${project.build.sourceEncoding}")
     var sourceEncoding: String? = null,
-    @Parameter(property = "serviceName")
-    var serviceName: String? = null,
-    @Parameter(property = "serviceJobId")
-    var serviceJobId: String? = null,
-    @Parameter(property = "serviceBuildNumber")
-    var serviceBuildNumber: String? = null,
-    @Parameter(property = "serviceBuildUrl")
-    var serviceBuildUrl: String? = null,
-    @Parameter(property = "serviceEnvironment")
-    var serviceEnvironment: Properties? = null,
-    @Parameter(property = "branch")
-    var branch: String? = null,
-    @Parameter(property = "pullRequest")
-    var pullRequest: String? = null,
     @Parameter(property = "timestampFormat", defaultValue = "\${maven.build.timestamp.format}")
     protected var timestampFormat: String? = null,
     @Parameter(property = "timestamp", defaultValue = "\${maven.build.timestamp}")
@@ -61,13 +42,39 @@ open class OmniReporterMojo(
 ) : AbstractMojo() {
 
     override fun execute() {
-
         val environment = System.getenv()
-        coverallsToken =  coverallsToken ?: environment["COVERALLS_REPO_TOKEN"] ?: environment["COVERALLS_TOKEN"]
-        codecovToken = codecovToken?: environment["CODECOV_TOKEN"]
-        codacyToken = codecovToken?: environment["CODACY_PROJECT_TOKEN"]
+        coverallsToken = coverallsToken ?: environment["COVERALLS_REPO_TOKEN"] ?: environment["COVERALLS_TOKEN"]
+        codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
+        codacyToken = codecovToken ?: environment["CODACY_PROJECT_TOKEN"]
+
+        val searchDirectories = project?.let { p ->
+            val reportingDirectory = File(p.model.reporting.outputDirectory)
+            val buildDirectory = File(p.build.directory)
+            listOf(reportingDirectory, buildDirectory)
+        } ?: listOf()
 
         val currentPipeline = Pipeline.currentPipeline
 
+        coverallsToken?.let { token ->
+            searchDirectories.map { directory ->
+                val report = File(directory, "jacoco.xml")
+                val jacocoParser =
+                    JacocoParser(report.inputStream(), projectBaseDir ?: throw ProjectDirectoryNotFoundException())
+                val coverallsReport = CoverallsReport(
+                    repoToken = token,
+                    serviceName = currentPipeline.serviceName,
+                    sourceFiles = jacocoParser.parseSourceFile(),
+                    serviceJobId = currentPipeline.serviceJobId
+                )
+                logger.info(objectMapper.writeValueAsString(coverallsReport))
+                return
+            }
+        }
+    }
+
+    companion object {
+        private val  logger = LoggerFactory.getLogger(OmniReporterMojo::class.java)
     }
 }
+
+class ProjectDirectoryNotFoundException : RuntimeException()

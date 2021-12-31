@@ -46,13 +46,13 @@ class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sou
     File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
 
 interface OmniReportParser<T> {
-    fun parseInputStream(): T
-
     fun parseSourceFile(source: T): List<SourceFile>
 
     companion object {
         val messageDigester: MessageDigest = MessageDigest.getInstance("MD5")
     }
+
+    fun parseSourceFile(): List<SourceFile>
 }
 
 abstract class OmniReporterParserImpl<T>(internal val inputStream: InputStream, internal val projectBaseDir: File) :
@@ -61,7 +61,8 @@ abstract class OmniReporterParserImpl<T>(internal val inputStream: InputStream, 
 
 class JacocoParser(inputStream: InputStream, projectBaseDir: File) :
     OmniReporterParserImpl<Report>(inputStream, projectBaseDir) {
-    override fun parseInputStream(): Report {
+
+    internal fun parseInputStream(): Report {
         val jaxbContext = JAXBContext.newInstance(Report::class.java)
         val xmlInputFactory = XMLInputFactory.newFactory()
         xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false)
@@ -69,6 +70,8 @@ class JacocoParser(inputStream: InputStream, projectBaseDir: File) :
         val unmarshaller = jaxbContext.createUnmarshaller()
         return unmarshaller.unmarshal(xmlStreamReader) as Report
     }
+
+    override fun parseSourceFile(): List<SourceFile> = parseSourceFile(parseInputStream())
 
     override fun parseSourceFile(source: Report): List<SourceFile> = source.packages
         .map { it.name to it.sourcefile }

@@ -20,10 +20,7 @@ data class SourceFile(
         if (name != other.name) return false
         if (sourceDigest != other.sourceDigest) return false
         if (!coverage.contentEquals(other.coverage)) return false
-        if (branches != null) {
-            if (other.branches == null) return false
-            if (!branches.contentEquals(other.branches)) return false
-        } else if (other.branches != null) return false
+        if (!branches.contentEquals(other.branches)) return false
         if (source != other.source) return false
 
         return true
@@ -33,7 +30,7 @@ data class SourceFile(
         var result = name.hashCode()
         result = 31 * result + sourceDigest.hashCode()
         result = 31 * result + coverage.contentHashCode()
-        result = 31 * result + (branches?.contentHashCode() ?: 0)
+        result = 31 * result + (branches.contentHashCode() ?: 0)
         result = 31 * result + (source?.hashCode() ?: 0)
         return result
     }
@@ -60,7 +57,7 @@ data class Remote(
     val url: String,
 )
 
-data class CoverallsReport(
+data class CoverallsReport (
     val repoToken: String,
     val serviceName: String,
     val sourceFiles: List<SourceFile> = mutableListOf(),
