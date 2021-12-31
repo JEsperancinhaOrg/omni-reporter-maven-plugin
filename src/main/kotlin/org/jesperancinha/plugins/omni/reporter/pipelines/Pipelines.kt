@@ -4,6 +4,12 @@ import org.jesperancinha.plugins.omni.reporter.domain.PipelineConfigurationExcep
 import org.jesperancinha.plugins.omni.reporter.domain.PipelineConfigurationException.Companion.createParamFailException
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_JOB
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_JOB_ID
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.CI_BUILD_NUMBER
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.CI_NAME
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.JOB_NUM
+import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline.Companion.findServiceJobId
+import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline.Companion.findServiceName
+import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline.Companion.findServiceNumber
 import java.util.*
 
 interface Pipeline {
@@ -21,42 +27,60 @@ interface Pipeline {
                 else -> LocalPipeline(environment)
             }
         }
+
+        fun findServiceName(failName: String) = System.getenv()[CI_NAME] ?: failName
+        fun findServiceNumber(fallback: () -> String) = System.getenv()[CI_BUILD_NUMBER] ?: fallback()
+        fun findServiceJobId(fallback: () -> String) = System.getenv()[JOB_NUM] ?: fallback()
     }
 }
 
 class GitHubPipeline(
     environment: MutableMap<String, String>,
-    override val seviceName: String = "github-ci",
-    override val serviceNumber: String = environment[GITHUB_RUN_NUMBER] ?: throw PipelineConfigurationException(
-        GITHUB_RUN_NUMBER
-    ),
-    override val serviceJobId: String = environment[GITHUB_JOB] ?: throw createParamFailException(GITHUB_JOB)
+    override val seviceName: String = findServiceName("github-ci"),
+    override val serviceNumber: String = findServiceNumber {
+        environment[GITHUB_RUN_NUMBER] ?: throw PipelineConfigurationException(GITHUB_RUN_NUMBER)
+    },
+    override val serviceJobId: String = findServiceJobId {
+        environment[GITHUB_JOB] ?: throw createParamFailException(GITHUB_JOB)
+    }
 ) : Pipeline {
     companion object {
-        val GITHUB_JOB = "GITHUB_JOB"
-        val GITHUB_RUN_NUMBER = "GITHUB_RUN_NUMBER"
+        const val GITHUB_JOB = "GITHUB_JOB"
+        const val GITHUB_RUN_NUMBER = "GITHUB_RUN_NUMBER"
     }
 }
 
 class GitLabPipeline(
     environment: MutableMap<String, String>,
-    override val seviceName: String = "gitlab-ci",
-    override val serviceNumber: String = environment[CI_CONCURRENT_ID] ?: throw PipelineConfigurationException(
-        CI_CONCURRENT_ID
-    ),
-    override val serviceJobId: String = environment[GITHUB_JOB] ?: throw createParamFailException(GITHUB_JOB)
+    override val seviceName: String = findServiceName("gitlab-ci"),
+    override val serviceNumber: String = findServiceNumber {
+        environment[CI_CONCURRENT_ID] ?: throw PipelineConfigurationException(
+            CI_CONCURRENT_ID)
+    },
+    override val serviceJobId: String = findServiceJobId {
+        environment[CI_JOB_ID] ?: throw createParamFailException(CI_JOB_ID)
+    }
 ) : Pipeline {
     companion object {
-        val CI_JOB_ID = "CI_JOB_ID"
-        val CI_CONCURRENT_ID = "CI_CONCURRENT_ID"
+        const val CI_JOB_ID = "CI_JOB_ID"
+        const val CI_CONCURRENT_ID = "CI_CONCURRENT_ID"
     }
 }
 
 class LocalPipeline(
     environment: MutableMap<String, String>,
-    override val seviceName: String = "local-ci",
-    override val serviceNumber: String = UUID.randomUUID().toString(),
+    override val seviceName: String = findServiceName("local-ci"),
+    override val serviceNumber: String = environment[CI_BUILD_NUMBER] ?: UUID.randomUUID().toString(),
     override val serviceJobId: String = UUID.randomUUID().toString(),
 ) : Pipeline {
+
+    companion object {
+        const val CI_NAME = "CI_NAME"
+        const val CI_BUILD_NUMBER = "CI_BUILD_NUMBER"
+        const val JOB_NUM = "JOB_NUM"
+        const val CI_BUILD_URL = "CI_BUILD_URL"
+        const val CI_BRANCH = "CI_BRANCH"
+        const val CI_PULL_REQUEST = "CI_PULL_REQUEST"
+    }
 
 }

@@ -67,6 +67,8 @@ mvn clean install omni:report
 
 ## References
 
+- [XCode Environment Variable Reference](https://developer.apple.com/documentation/xcode/environment-variable-reference)
+- [Cross-CI reference](https://github.com/streamich/cross-ci)
 - [Coveralls API reference](https://docs.coveralls.io/api-reference)
 - [Git Hub Environment Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
 - [Git Lab Environment Variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)

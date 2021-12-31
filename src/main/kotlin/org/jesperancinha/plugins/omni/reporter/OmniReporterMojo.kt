@@ -1,8 +1,6 @@
 package org.jesperancinha.plugins.omni.reporter
 
 import org.apache.maven.plugin.AbstractMojo
-import org.apache.maven.plugin.MojoExecutionException
-import org.apache.maven.plugin.MojoFailureException
 import org.apache.maven.plugins.annotations.Component
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
@@ -10,7 +8,6 @@ import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import java.io.File
-import java.io.IOException
 import java.util.*
 
 @Mojo(name = "report", threadSafe = false, aggregator = true)
@@ -50,7 +47,7 @@ open class OmniReporterMojo(
     @Parameter(property = "failOnUnknown", defaultValue = "false")
     var failOnUnknown: Boolean = false,
     @Parameter(property = "basedir", defaultValue = "\${project.basedir}")
-    var basedir: File? = null,
+    var projectBaseDir: File? = null,
     @Parameter(defaultValue = "\${settings}", readonly = true, required = true)
     var settings: Settings? = null,
     @Parameter(property = "coverallsToken")
