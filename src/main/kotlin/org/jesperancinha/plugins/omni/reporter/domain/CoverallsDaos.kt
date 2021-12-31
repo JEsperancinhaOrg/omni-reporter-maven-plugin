@@ -10,7 +10,7 @@ data class SourceFile(
     val name: String,
     val sourceDigest: String,
     val coverage: Array<Int?> = arrayOf(),
-    val branches: Array<String>? = null,
+    val branches: Array<Int?> = arrayOf(),
     val source: String? = null
 ) {
     override fun equals(other: Any?): Boolean {

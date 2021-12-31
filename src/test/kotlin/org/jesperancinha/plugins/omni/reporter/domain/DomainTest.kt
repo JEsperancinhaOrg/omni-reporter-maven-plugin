@@ -27,7 +27,7 @@ internal class DomainTest {
     fun `should generate snake case source object`() {
         val sourceFile = SourceFile("name", "sourceDigest")
         val writeValueAsString = objectMapper.writeValueAsString(sourceFile)
-        writeValueAsString.shouldBe("{\"name\":\"name\",\"source_digest\":\"sourceDigest\",\"coverage\":[],\"branches\":null,\"source\":null}")
+        writeValueAsString.shouldBe("{\"name\":\"name\",\"source_digest\":\"sourceDigest\",\"coverage\":[],\"branches\":[],\"source\":null}")
     }
 
     @Test
@@ -41,6 +41,6 @@ internal class DomainTest {
             )
         )
         val writeValueAsString = objectMapper.writeValueAsString(sourceFile)
-        writeValueAsString.shouldBe("{\"repo_token\":\"repoToken\",\"service_name\":\"serviceName\",\"source_files\":[{\"name\":\"name\",\"source_digest\":\"sourceDigest\",\"coverage\":[],\"branches\":null,\"source\":null}],\"git\":{\"head\":{\"id\":\"id\",\"author_name\":\"authorName\",\"author_email\":\"authorEmail\",\"committer_name\":\"committerName\",\"committer_email\":\"committerEmail\",\"message\":null},\"branch\":\"banch\",\"remotes\":[{\"name\":\"remote\",\"url\":\"url\"}]},\"service_number\":null,\"service_job_id\":null,\"service_pull_request\":null,\"parallel\":null,\"flag_name\":null,\"commit_sha\":null,\"run_at\":null}")
+        writeValueAsString.shouldBe("{\"repo_token\":\"repoToken\",\"service_name\":\"serviceName\",\"source_files\":[{\"name\":\"name\",\"source_digest\":\"sourceDigest\",\"coverage\":[],\"branches\":[],\"source\":null}],\"git\":{\"head\":{\"id\":\"id\",\"author_name\":\"authorName\",\"author_email\":\"authorEmail\",\"committer_name\":\"committerName\",\"committer_email\":\"committerEmail\",\"message\":null},\"branch\":\"banch\",\"remotes\":[{\"name\":\"remote\",\"url\":\"url\"}]},\"service_number\":null,\"service_job_id\":null,\"service_pull_request\":null,\"parallel\":null,\"flag_name\":null,\"commit_sha\":null,\"run_at\":null}")
     }
 }

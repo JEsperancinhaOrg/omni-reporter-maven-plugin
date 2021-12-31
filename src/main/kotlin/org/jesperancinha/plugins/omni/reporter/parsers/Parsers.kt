@@ -13,13 +13,27 @@ import javax.xml.bind.JAXBContext
 import javax.xml.stream.XMLInputFactory
 
 
-private val File.toFileDigest: String
-    get() = bufferedReader().use { it.readText() }.let { text ->
-        messageDigester.digest(text.toByteArray()).joinToString(separator = "") { byte -> "%02x".format(byte) }
+private val List<Line>.toBranchCoverageArray: Array<Int?>
+    get() = let {
+        val branchesArray = filter { isBranch(it) }
+        val coverageArray = Array<Int?>(branchesArray.size * 4) { null }
+        branchesArray.forEachIndexed { lineNumber, line ->
+            coverageArray[lineNumber] = line.nr
+            coverageArray[lineNumber + 1] = line.mb + line.cb
+            coverageArray[lineNumber + 2] = line.cb
+            coverageArray[lineNumber + 3] = line.ci
+        }
+        coverageArray
     }
 
+private fun isBranch(it: Line) =
+    it.mb != null && it.mb > 0 || it.cb != null && it.cb > 0
 
-private val MutableList<Line>.toCoverageArray: Array<Int?>
+private val String.toFileDigest: String
+    get() = messageDigester.digest(toByteArray()).joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+
+private val List<Line>.toCoverageArray: Array<Int?>
     get() = let {
         val coverageArray = Array<Int?>(map { it.nr ?: 0 }.maxOf { it }) { null }
         forEach { line ->
@@ -27,6 +41,9 @@ private val MutableList<Line>.toCoverageArray: Array<Int?>
         }
         coverageArray
     }
+
+class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sourcefile) :
+    File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
 
 interface OmniReportParser<T> {
     fun parseInputStream(): T
@@ -40,9 +57,6 @@ interface OmniReportParser<T> {
 
 abstract class OmniReporterParserImpl<T>(internal val inputStream: InputStream, internal val projectBaseDir: File) :
     OmniReportParser<T> {
-    fun digestFile(packageName: String?, sourceFile: Sourcefile): String =
-        File(projectBaseDir, "${(packageName ?: "").replace("//","/")}/${sourceFile.name}").toFileDigest
-
 }
 
 class JacocoParser(inputStream: InputStream, projectBaseDir: File) :
@@ -59,10 +73,15 @@ class JacocoParser(inputStream: InputStream, projectBaseDir: File) :
     override fun parseSourceFile(source: Report): List<SourceFile> = source.packages
         .map { it.name to it.sourcefile }
         .map { (packageName, sourceFile) ->
+            val sourceCodeFile = SourceCodeFile(projectBaseDir, packageName, sourceFile)
+            val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
             SourceFile(
                 name = sourceFile.name,
                 coverage = sourceFile.lines.toCoverageArray,
-                sourceDigest = digestFile(packageName, sourceFile)
+                sourceDigest = sourceCodeText.toFileDigest,
+                branches = sourceFile.lines.toBranchCoverageArray,
+                source = sourceCodeText
             )
+
         }
 }
