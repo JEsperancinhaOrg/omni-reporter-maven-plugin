@@ -48,6 +48,10 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 mvn clean install omni-coveragereporter:report
 ```
 
+#### 6.  Requirements
+
+Java 11 and above only
+
 ## Reading and interpreting report files
 
 #### Jacoco Reports
