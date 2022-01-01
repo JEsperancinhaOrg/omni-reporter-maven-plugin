@@ -34,6 +34,7 @@
         <connection>scm:git:git://github.com/JEsperancinhaOrg.git</connection>
         <developerConnection>scm:git:git://github.com/JEsperancinhaOrg.git</developerConnection>
         <url>https://github.com/JEsperancinhaOrg/omni-coveragereporter-maven-plugin</url>
+        <tag>0.0.0</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
