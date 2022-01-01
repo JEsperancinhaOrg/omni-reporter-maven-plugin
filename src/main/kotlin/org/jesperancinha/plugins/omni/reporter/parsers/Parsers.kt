@@ -8,6 +8,7 @@ import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.parsers.OmniReportParser.Companion.messageDigester
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
+import org.jesperancinha.plugins.omni.reporter.repository.GitRepository
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileNotFoundException
@@ -36,7 +37,8 @@ private fun isBranch(it: Line) =
     it.mb != null && it.mb > 0 || it.cb != null && it.cb > 0
 
 private val String.toFileDigest: String
-    get() = messageDigester.digest(toByteArray()).joinToString(separator = "") { byte -> "%02x".format(byte) }
+    get() = messageDigester.digest(toByteArray())
+        .joinToString(separator = "") { byte -> "%02x".format(byte) }
         .uppercase()
 
 
@@ -72,10 +74,13 @@ abstract class OmniReporterParserImpl<T>(
     internal val root: File,
     failOnUnknown: Boolean,
 ) : OmniReportParser<T> {
+
+    val gitRepository = GitRepository(root)
+
     val failOnUnknownPredicate =
         if (failOnUnknown) { file: File -> if (!file.exists()) throw FileNotFoundException() else true }
         else { file: File ->
-            if(!file.exists()) {
+            if (!file.exists()) {
                 logger.warn("File ${file.absolutePath} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
                 logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
             }
@@ -83,7 +88,7 @@ abstract class OmniReporterParserImpl<T>(
         }
 
     companion object {
-       private val logger = LoggerFactory.getLogger(OmniReportParser::class.java)
+        private val logger = LoggerFactory.getLogger(OmniReportParser::class.java)
     }
 }
 
@@ -92,7 +97,7 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown:
 
     internal var coverallsReport: CoverallsReport? = null
 
-    internal var coverallsSources = mutableMapOf<String, SourceFile>()
+    private var coverallsSources = mutableMapOf<String, SourceFile>()
 
     internal fun parseInputStream(inputStream: InputStream): Report {
         val jaxbContext = JAXBContext.newInstance(Report::class.java)
@@ -126,8 +131,6 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown:
                     name = sourceCodeFile.toRelativeString(root),
                     coverage = coverage,
                     sourceDigest = sourceCodeText.toFileDigest,
-//                    branches = sourceFile.lines.toBranchCoverageArray,
-//                source = sourceCodeText
                 )
             }
         }
@@ -147,7 +150,8 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown:
                     repoToken = token,
                     serviceName = pipeline.serviceName,
                     sourceFiles = sourceFiles.toMutableList(),
-                    serviceJobId = pipeline.serviceJobId
+                    serviceJobId = pipeline.serviceJobId,
+                    git = gitRepository.git
                 )
             } else {
                 coverallsReport?.sourceFiles?.clear()
@@ -156,10 +160,6 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown:
 
             coverallsReport ?: throw ProjectDirectoryNotFoundException()
         }
-
-    companion object {
-        val logger = LoggerFactory.getLogger(JacocoParser::class.java)
-    }
 }
 
 private infix fun SourceFile?.mergeTo(source: SourceFile): SourceFile {

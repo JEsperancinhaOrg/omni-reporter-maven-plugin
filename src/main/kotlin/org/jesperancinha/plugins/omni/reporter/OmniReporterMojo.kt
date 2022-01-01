@@ -69,35 +69,39 @@ open class OmniReporterMojo(
 
         val currentPipeline = Pipeline.currentPipeline
 
+        coverallsToken?.let { token -> processAndSubmitCoverallsReports(token, currentPipeline, allProjects) }
+    }
 
-        coverallsToken?.let { token ->
-            val jacocoParser =
-                JacocoParser(
-                    token,
-                    currentPipeline,
-                    projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
-                    failOnUnknown
-                )
-            allProjects.map { project ->
-                File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
-                    .forEach { report ->
-                        if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported) {
-                            logger.info("Parsing file: $report")
-                            jacocoParser.parseSourceFile(
-                                report.inputStream(),
-                                File(project.build?.sourceDirectory ?: throw ProjectDirectoryNotFoundException()),
-                            )
-                        }
+    private fun processAndSubmitCoverallsReports(
+        token: String,
+        currentPipeline: Pipeline,
+        allProjects: List<MavenProject?>
+    ) {
+        val jacocoParser =
+            JacocoParser(
+                token,
+                currentPipeline,
+                projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
+                failOnUnknown
+            )
+        allProjects.map { project ->
+            File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
+                .forEach { report ->
+                    if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported) {
+                        logger.info("Parsing file: $report")
+                        jacocoParser.parseSourceFile(
+                            report.inputStream(),
+                            File(project.build?.sourceDirectory ?: throw ProjectDirectoryNotFoundException()),
+                        )
                     }
-
-            }
-            val coverallsClient = CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException())
-            val response =
-                coverallsClient.submit(jacocoParser.coverallsReport ?: throw CoverallsReportNotGeneratedException())
-            logger.info("* Omni Reporting to Coveralls response:")
-            logger.info(response?.url)
-            logger.info(response?.message)
+                }
         }
+        val coverallsClient = CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException())
+        val response =
+            coverallsClient.submit(jacocoParser.coverallsReport ?: throw CoverallsReportNotGeneratedException())
+        logger.info("* Omni Reporting to Coveralls response:")
+        logger.info(response?.url)
+        logger.info(response?.message)
     }
 
     companion object {
