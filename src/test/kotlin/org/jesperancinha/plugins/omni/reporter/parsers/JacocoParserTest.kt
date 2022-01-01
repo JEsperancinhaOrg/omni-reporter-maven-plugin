@@ -15,7 +15,8 @@ internal class JacocoParserTest {
     private val jacocoParser = JacocoParser(
         "token",
         LocalPipeline(System.getenv()),
-        root
+        root,
+        false
     )
 
     @Test

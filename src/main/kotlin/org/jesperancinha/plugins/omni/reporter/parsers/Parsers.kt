@@ -10,6 +10,7 @@ import org.jesperancinha.plugins.omni.reporter.parsers.OmniReportParser.Companio
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.security.MessageDigest
@@ -39,18 +40,18 @@ private val String.toFileDigest: String
         .uppercase()
 
 
-private fun List<Line?>.toCoverageArray(lines:Int): Array<Int?> = let {
-        if (isNotEmpty()) {
-            val calculatedLength = map { it?.nr ?: 0 }.maxOf { it }
-            val coverageArray = Array<Int?>(max(lines, calculatedLength)) { null }
-            forEach { line ->
-                line?.let { coverageArray[line.nr - 1] = line.ci }
-            }
-            coverageArray
-        } else {
-            emptyArray()
+private fun List<Line?>.toCoverageArray(lines: Int): Array<Int?> = let {
+    if (isNotEmpty()) {
+        val calculatedLength = map { it?.nr ?: 0 }.maxOf { it }
+        val coverageArray = Array<Int?>(max(lines, calculatedLength)) { null }
+        forEach { line ->
+            line?.let { coverageArray[line.nr - 1] = line.ci }
         }
+        coverageArray
+    } else {
+        emptyArray()
     }
+}
 
 class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sourcefile) :
     File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
@@ -69,12 +70,25 @@ abstract class OmniReporterParserImpl<T>(
     internal val token: String,
     internal val pipeline: Pipeline,
     internal val root: File,
-) :
-    OmniReportParser<T> {
+    failOnUnknown: Boolean,
+) : OmniReportParser<T> {
+    val failOnUnknownPredicate =
+        if (failOnUnknown) { file: File -> if (!file.exists()) throw FileNotFoundException() else true }
+        else { file: File ->
+            if(!file.exists()) {
+                logger.warn("File ${file.absolutePath} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
+                logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
+            }
+            file.exists()
+        }
+
+    companion object {
+       private val logger = LoggerFactory.getLogger(OmniReportParser::class.java)
+    }
 }
 
-class JacocoParser(token: String, pipeline: Pipeline, root: File) :
-    OmniReporterParserImpl<Report>(token, pipeline, root) {
+class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown: Boolean) :
+    OmniReporterParserImpl<Report>(token, pipeline, root, failOnUnknown) {
 
     internal var coverallsReport: CoverallsReport? = null
 
@@ -100,7 +114,7 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
         .flatMap { (packageName, sourceFiles) ->
             sourceFiles.map { SourceCodeFile(projectBaseDir, packageName, it) to it }
         }
-        .filter { (sourceCodeFile, _) -> sourceCodeFile.exists() }
+        .filter { (sourceCodeFile, _) -> failOnUnknownPredicate(sourceCodeFile) }
         .map { (sourceCodeFile, sourceFile) ->
             val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
             val lines = sourceCodeText.split("\n").size

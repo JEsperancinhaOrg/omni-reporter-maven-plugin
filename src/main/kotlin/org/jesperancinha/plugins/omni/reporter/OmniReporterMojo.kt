@@ -75,9 +75,9 @@ open class OmniReporterMojo(
                 JacocoParser(
                     token,
                     currentPipeline,
-                    projectBaseDir ?: throw ProjectDirectoryNotFoundException()
+                    projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
+                    failOnUnknown
                 )
-
             allProjects.map { project ->
                 File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
                     .forEach { report ->
