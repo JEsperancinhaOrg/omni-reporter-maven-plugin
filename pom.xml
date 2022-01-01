@@ -13,12 +13,6 @@
     <url>https://github.com/JEsperancinhaOrg/omni-coveragereporter-maven-plugin</url>
     <inceptionYear>2022</inceptionYear>
 
-    <developers>
-        <developer>
-            <name>João Esperancinha</name>
-        </developer>
-    </developers>
-
     <licenses>
         <license>
             <name>Apache 2.0</name>
@@ -27,12 +21,30 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>João Filipe Sabino Esperancinha</name>
+            <email>jofisaes@gmail.com</email>
+            <organization>jesperancinha.org</organization>
+            <organizationUrl>https://joaofilipesabinoesperancinha.nl/</organizationUrl>
+        </developer>
+    </developers>
+
     <scm>
         <connection>scm:git:git://github.com/JEsperancinhaOrg.git</connection>
         <developerConnection>scm:git:git://github.com/JEsperancinhaOrg.git</developerConnection>
         <url>https://github.com/JEsperancinhaOrg/omni-coveragereporter-maven-plugin</url>
     </scm>
-
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -64,6 +76,7 @@
         <google-http-client-jackson2.version>1.40.1</google-http-client-jackson2.version>
         <jaxb.version>3.0.1</jaxb.version>
         <jaxb2-maven-plugin.version>2.5.0</jaxb2-maven-plugin.version>
+        <jaxb-impl.version>2.3.1</jaxb-impl.version>
     </properties>
 
     <dependencies>
@@ -151,7 +164,7 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
+            <version>${jaxb-impl.version}</version>
         </dependency>
 
         <dependency>
