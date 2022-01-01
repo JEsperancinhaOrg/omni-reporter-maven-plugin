@@ -62,18 +62,14 @@
         <org.eclipse.jgit.version>6.0.0.202111291000-r</org.eclipse.jgit.version>
         <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
         <jakarta.activation-api.version>2.0.1</jakarta.activation-api.version>
+        <google-http-client-jackson2.version>1.40.1</google-http-client-jackson2.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>${httpclient.version}</version>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson2</artifactId>
+            <version>${google-http-client-jackson2.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

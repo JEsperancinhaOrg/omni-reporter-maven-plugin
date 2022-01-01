@@ -6,7 +6,6 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
-import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
@@ -83,11 +82,10 @@ open class OmniReporterMojo(
                     .forEach { report ->
                         if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported) {
                             println(report)
-                            val parseSourceFile = jacocoParser.parseSourceFile(
+                            jacocoParser.parseSourceFile(
                                 report.inputStream(),
                                 File(project.build?.sourceDirectory ?: throw ProjectDirectoryNotFoundException()),
                             )
-                            logger.info(objectMapper.writeValueAsString(parseSourceFile))
                         }
                     }
 

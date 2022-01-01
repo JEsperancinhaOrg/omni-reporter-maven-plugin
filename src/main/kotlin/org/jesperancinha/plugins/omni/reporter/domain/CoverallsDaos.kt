@@ -1,5 +1,11 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.google.api.client.http.*
+import com.google.api.client.http.javanet.NetHttpTransport
+import org.apache.http.entity.ContentType
+
+
 data class CoverallsResponse(
     val message: String,
     val error: Boolean,
@@ -57,7 +63,7 @@ data class Remote(
     val url: String,
 )
 
-data class CoverallsReport (
+data class CoverallsReport(
     val repoToken: String,
     val serviceName: String,
     val sourceFiles: MutableList<SourceFile> = mutableListOf(),
@@ -70,3 +76,37 @@ data class CoverallsReport (
     val commitSha: String? = null,
     val runAt: String? = null
 )
+
+open class CoverallsClient(
+    private val coverallsUrl: String,
+) {
+    fun submit(coverallsReport: CoverallsReport): CoverallsResponse? {
+        val url = GenericUrl(coverallsUrl)
+        val content: HttpContent = UrlEncodedContent(coverallsReport)
+        val buildPostRequest = reqFactory()?.buildPostRequest(url, content)
+        buildPostRequest?.headers?.contentType = ContentType.APPLICATION_OCTET_STREAM.toString()
+        val httpResponse = buildPostRequest?.execute()
+        val readAllBytes = httpResponse?.content?.readAllBytes()
+        return jacksonObjectMapper().readValue(readAllBytes, CoverallsResponse::class.java)
+    }
+
+    companion object {
+        private var REQ_FACTORY: HttpRequestFactory? = null
+
+        private fun reqFactory(): HttpRequestFactory? {
+            if (null == REQ_FACTORY) {
+                REQ_FACTORY = transport()?.createRequestFactory()
+            }
+            return REQ_FACTORY
+        }
+
+        private var TRANSPORT: HttpTransport? = null
+
+        private fun transport(): HttpTransport? {
+            if (null == TRANSPORT) {
+                TRANSPORT = NetHttpTransport()
+            }
+            return TRANSPORT
+        }
+    }
+}
