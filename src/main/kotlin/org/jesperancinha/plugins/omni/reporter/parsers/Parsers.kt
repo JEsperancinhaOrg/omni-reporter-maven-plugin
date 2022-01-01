@@ -15,6 +15,7 @@ import java.io.InputStreamReader
 import java.security.MessageDigest
 import javax.xml.bind.JAXBContext
 import javax.xml.stream.XMLInputFactory
+import kotlin.math.max
 
 
 private val List<Line>.toBranchCoverageArray: Array<Int?>
@@ -38,10 +39,10 @@ private val String.toFileDigest: String
         .uppercase()
 
 
-private val List<Line?>.toCoverageArray: Array<Int?>
-    get() = let {
+private fun List<Line?>.toCoverageArray(lines:Int): Array<Int?> = let {
         if (isNotEmpty()) {
-            val coverageArray = Array<Int?>(map { it?.nr ?: 0 }.maxOf { it }) { null }
+            val calculatedLength = map { it?.nr ?: 0 }.maxOf { it }
+            val coverageArray = Array<Int?>(max(lines, calculatedLength)) { null }
             forEach { line ->
                 line?.let { coverageArray[line.nr - 1] = line.ci }
             }
@@ -77,6 +78,8 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
 
     internal var coverallsReport: CoverallsReport? = null
 
+    internal var coverallsSources = mutableMapOf<String, SourceFile>()
+
     internal fun parseInputStream(inputStream: InputStream): Report {
         val jaxbContext = JAXBContext.newInstance(Report::class.java)
         val xmlInputFactory = XMLInputFactory.newFactory()
@@ -92,12 +95,16 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
         )
 
     override fun parseSourceFile(source: Report, projectBaseDir: File): CoverallsReport = source.packages
-        .map { it.name to it.sourcefile }
-        .map { (packageName, sourceFile) -> SourceCodeFile(projectBaseDir, packageName, sourceFile) to sourceFile }
+        .asSequence()
+        .map { it.name to it.sourcefiles }
+        .flatMap { (packageName, sourceFiles) ->
+            sourceFiles.map { SourceCodeFile(projectBaseDir, packageName, it) to it }
+        }
         .filter { (sourceCodeFile, _) -> sourceCodeFile.exists() }
         .map { (sourceCodeFile, sourceFile) ->
             val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
-            val coverage = sourceFile.lines.toCoverageArray
+            val lines = sourceCodeText.split("\n").size
+            val coverage = sourceFile.lines.toCoverageArray(lines)
             if (coverage.isEmpty()) {
                 null
             } else {
@@ -111,17 +118,26 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
             }
         }
         .filterNotNull()
-        .let {
+        .toList()
+        .let { sourceFiles ->
+            val keys = coverallsSources.keys
+            val (existing, nonExisting) = sourceFiles.partition { source -> keys.contains(source.name) }
+            existing.forEach { source ->
+                ((coverallsSources[source.name] mergeTo source).also {
+                    coverallsSources[source.name] = it
+                })
+            }
+            nonExisting.forEach { coverallsSources[it.name] = it }
             if (coverallsReport == null) {
                 coverallsReport = CoverallsReport(
                     repoToken = token,
                     serviceName = pipeline.serviceName,
-                    sourceFiles = it.toMutableList(),
+                    sourceFiles = sourceFiles.toMutableList(),
                     serviceJobId = pipeline.serviceJobId
                 )
             } else {
-
-                coverallsReport?.sourceFiles?.addAll(it)
+                coverallsReport?.sourceFiles?.clear()
+                coverallsReport?.sourceFiles?.addAll(coverallsSources.values)
             }
 
             coverallsReport ?: throw ProjectDirectoryNotFoundException()
@@ -131,3 +147,15 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
         val logger = LoggerFactory.getLogger(JacocoParser::class.java)
     }
 }
+
+private infix fun SourceFile?.mergeTo(source: SourceFile): SourceFile {
+    val nextSize = max(source.coverage.size, this?.coverage?.size ?: throw NullSourceFileException())
+    val newCoverage = arrayOfNulls<Int>(nextSize)
+    source.coverage.forEachIndexed { index, value -> newCoverage[index] = value }
+    this.coverage.forEachIndexed { index, value ->
+        newCoverage[index] = newCoverage[index]?.let { it + (value ?: 0) } ?: value
+    }
+    return source.copy(coverage = newCoverage)
+}
+
+class NullSourceFileException : RuntimeException()

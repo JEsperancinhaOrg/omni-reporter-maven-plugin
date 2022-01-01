@@ -9,7 +9,6 @@ import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline
 import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class JacocoParserTest {
@@ -20,10 +19,11 @@ internal class JacocoParserTest {
     )
 
     @Test
-    @Disabled
     fun parseSourceFile() {
         val report = Report()
         val pack = Package()
+        val pack2 = Package()
+
         val sourcefile = Sourcefile()
         val element = Line()
         element.nr = 1
@@ -36,10 +36,30 @@ internal class JacocoParserTest {
         sourcefile.name = "Racoons.kt"
         sourcefile.lines.add(element)
         sourcefile.lines.add(element2)
+
+        val sourcefile2 = Sourcefile()
+        val element21 = Line()
+        element21.nr = 1
+        element21.ci = 10
+        val element22 = Line()
+        element22.nr = 2
+        element22.ci = 11
+        element22.cb = 3
+        element22.mb = 2
+        sourcefile2.name = "Racoons.kt"
+        sourcefile2.lines.add(element21)
+        sourcefile2.lines.add(element22)
+
         pack.name = "/"
-        pack.sourcefile = sourcefile
+        pack.sourcefiles.add(sourcefile)
+
+        pack2.name = "/"
+        pack2.sourcefiles.add(sourcefile)
 
         report.packages.add(pack)
+        report.packages.add(pack2)
+        jacocoParser.parseSourceFile(report, root)
+        jacocoParser.parseSourceFile(report, root)
         val sourceFiles = jacocoParser.parseSourceFile(report, root).sourceFiles
 
         sourceFiles.shouldNotBeNull()
@@ -47,8 +67,8 @@ internal class JacocoParserTest {
         val sourceFile = sourceFiles[0]
         sourceFile.name.shouldNotBeNull()
         sourceFile.sourceDigest.shouldNotBeNull()
-        sourceFile.coverage shouldBe arrayOf(10, 11)
-        sourceFile.branches shouldBe arrayOf(2, 5, 3, 11)
+        sourceFile.coverage shouldBe arrayOf(50, 55, null, null, null)
+//        sourceFile.branches shouldBe arrayOf(2, 5, 3, 11)
 //        sourceFile.source shouldBe File(root, "Racoons.kt").bufferedReader().use { it.readText() }
     }
 }

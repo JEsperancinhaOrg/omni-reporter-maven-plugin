@@ -4,7 +4,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
-import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline
 import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline
 import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
 import org.junit.jupiter.api.Test
@@ -19,20 +18,20 @@ internal class DomainTest {
         readValue.name shouldBe "Advanced Library Management Reactive MVC"
         readValue.packages.forEach {
             it.name.shouldNotBeNull()
-            it.sourcefile.name.shouldNotBeNull()
+            it.sourcefiles.shouldNotBeNull()
         }
     }
 
     @Test
-    fun `should parse basic JacocoReport 1`() {
-        val inputStream = javaClass.getResourceAsStream("/jacoco1.xml")
+    fun `should parse basic JacocoReport 2`() {
+        val inputStream = javaClass.getResourceAsStream("/jacoco2.xml")
         inputStream.shouldNotBeNull()
         val readValue = JacocoParser("token", LocalPipeline(System.getenv()), root).parseInputStream(inputStream)
         readValue.shouldNotBeNull()
-        readValue.name shouldBe "Advanced Library Management Reactive MVC"
+        readValue.name shouldBe "Advanced Library Management Gate"
         readValue.packages.forEach {
             it.name.shouldNotBeNull()
-            it.sourcefile.name.shouldNotBeNull()
+            it.sourcefiles.shouldNotBeNull()
         }
     }
 
