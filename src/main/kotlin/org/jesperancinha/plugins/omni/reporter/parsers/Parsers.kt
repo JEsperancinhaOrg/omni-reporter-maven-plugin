@@ -74,7 +74,7 @@ abstract class OmniReporterParserImpl<T>(
 class JacocoParser(token: String, pipeline: Pipeline, root: File) :
     OmniReporterParserImpl<Report>(token, pipeline, root) {
 
-    private var coverallsReport: CoverallsReport? = null
+    internal var coverallsReport: CoverallsReport? = null
 
     internal fun parseInputStream(inputStream: InputStream): Report {
         val jaxbContext = JAXBContext.newInstance(Report::class.java)
@@ -92,8 +92,9 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
 
     override fun parseSourceFile(source: Report, projectBaseDir: File): CoverallsReport = source.packages
         .map { it.name to it.sourcefile }
-        .map { (packageName, sourceFile) ->
-            val sourceCodeFile = SourceCodeFile(projectBaseDir, packageName, sourceFile)
+        .map { (packageName, sourceFile) -> SourceCodeFile(projectBaseDir, packageName, sourceFile) to sourceFile }
+        .filter { (sourceCodeFile, _) -> sourceCodeFile.exists() }
+        .map { (sourceCodeFile, sourceFile) ->
             val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
             SourceFile(
                 name = sourceCodeFile.absolutePath.replace(

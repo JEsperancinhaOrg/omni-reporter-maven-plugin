@@ -6,6 +6,7 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.apache.maven.settings.Settings
+import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
@@ -90,6 +91,9 @@ open class OmniReporterMojo(
                     }
 
             }
+            val coverallsClient = CoverallsClient(coverallsUrl?:throw CoverallsUrlNotConfiguredException())
+            coverallsClient.submit(jacocoParser.coverallsReport?: throw CoverallsReportNotGeneratedException())
+
         }
     }
 
@@ -99,3 +103,7 @@ open class OmniReporterMojo(
 }
 
 class ProjectDirectoryNotFoundException : RuntimeException()
+
+class CoverallsUrlNotConfiguredException : RuntimeException()
+
+class CoverallsReportNotGeneratedException : RuntimeException()

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.api.client.http.*
 import com.google.api.client.http.javanet.NetHttpTransport
 import org.apache.http.entity.ContentType
+import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 
 
 data class CoverallsResponse(
@@ -82,9 +83,10 @@ open class CoverallsClient(
 ) {
     fun submit(coverallsReport: CoverallsReport): CoverallsResponse? {
         val url = GenericUrl(coverallsUrl)
-        val content: HttpContent = UrlEncodedContent(coverallsReport)
+        val writeValueAsString = objectMapper.writeValueAsString(coverallsReport)
+        val content: HttpContent = UrlEncodedContent(writeValueAsString)
         val buildPostRequest = reqFactory()?.buildPostRequest(url, content)
-        buildPostRequest?.headers?.contentType = ContentType.APPLICATION_OCTET_STREAM.toString()
+        buildPostRequest?.headers?.contentType = ContentType.APPLICATION_JSON.toString()
         val httpResponse = buildPostRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes()
         return jacksonObjectMapper().readValue(readAllBytes, CoverallsResponse::class.java)
