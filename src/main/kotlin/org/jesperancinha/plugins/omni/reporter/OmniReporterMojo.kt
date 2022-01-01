@@ -51,9 +51,9 @@ open class OmniReporterMojo(
 ) : AbstractMojo() {
 
     override fun execute() {
-        logger.info("*".repeat(150))
+        logger.info("*".repeat(OMNI_CHARACTER_LINE_NUMBER))
         logger.info(javaClass.getResourceAsStream("/banner.txt")?.bufferedReader().use { it?.readText() })
-        logger.info("*".repeat(150))
+        logger.info("*".repeat(OMNI_CHARACTER_LINE_NUMBER))
 
 
         val environment = System.getenv()
@@ -63,9 +63,9 @@ open class OmniReporterMojo(
 
         val allProjects = project.findAllSearchFolders
 
-        println(sourceEncoding)
-        println(coverallsToken)
-        println(projectBaseDir)
+        logger.info("Coveralls URL: $coverallsUrl")
+        logger.info("Source Encoding: $sourceEncoding")
+        logger.info("Parent Directory: $projectBaseDir")
 
         val currentPipeline = Pipeline.currentPipeline
 
@@ -82,7 +82,7 @@ open class OmniReporterMojo(
                 File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
                     .forEach { report ->
                         if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported) {
-                            println(report)
+                            logger.info("Parsing file: $report")
                             jacocoParser.parseSourceFile(
                                 report.inputStream(),
                                 File(project.build?.sourceDirectory ?: throw ProjectDirectoryNotFoundException()),
@@ -91,14 +91,19 @@ open class OmniReporterMojo(
                     }
 
             }
-            val coverallsClient = CoverallsClient(coverallsUrl?:throw CoverallsUrlNotConfiguredException())
-            coverallsClient.submit(jacocoParser.coverallsReport?: throw CoverallsReportNotGeneratedException())
-
+            val coverallsClient = CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException())
+            val response =
+                coverallsClient.submit(jacocoParser.coverallsReport ?: throw CoverallsReportNotGeneratedException())
+            logger.info("* Omni Reporting to Coveralls response:")
+            logger.info(response?.url)
+            logger.info(response?.message)
         }
     }
 
     companion object {
         private val logger = LoggerFactory.getLogger(OmniReporterMojo::class.java)
+
+        const val OMNI_CHARACTER_LINE_NUMBER = 150
     }
 }
 

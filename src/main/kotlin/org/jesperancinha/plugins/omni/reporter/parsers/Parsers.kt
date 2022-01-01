@@ -35,6 +35,7 @@ private fun isBranch(it: Line) =
 
 private val String.toFileDigest: String
     get() = messageDigester.digest(toByteArray()).joinToString(separator = "") { byte -> "%02x".format(byte) }
+        .uppercase()
 
 
 private val List<Line?>.toCoverageArray: Array<Int?>
@@ -66,7 +67,7 @@ interface OmniReportParser<T> {
 abstract class OmniReporterParserImpl<T>(
     internal val token: String,
     internal val pipeline: Pipeline,
-    internal val root: File?,
+    internal val root: File,
 ) :
     OmniReportParser<T> {
 }
@@ -96,17 +97,21 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File) :
         .filter { (sourceCodeFile, _) -> sourceCodeFile.exists() }
         .map { (sourceCodeFile, sourceFile) ->
             val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
-            SourceFile(
-                name = sourceCodeFile.absolutePath.replace(
-                    root?.absolutePath ?: throw ProjectDirectoryNotFoundException(), ""
-                ),
-                coverage = sourceFile.lines.toCoverageArray,
-                sourceDigest = sourceCodeText.toFileDigest,
-                branches = sourceFile.lines.toBranchCoverageArray,
-                source = sourceCodeText
-            )
-
-        }.let {
+            val coverage = sourceFile.lines.toCoverageArray
+            if (coverage.isEmpty()) {
+                null
+            } else {
+                SourceFile(
+                    name = sourceCodeFile.toRelativeString(root),
+                    coverage = coverage,
+                    sourceDigest = sourceCodeText.toFileDigest,
+//                    branches = sourceFile.lines.toBranchCoverageArray,
+//                source = sourceCodeText
+                )
+            }
+        }
+        .filterNotNull()
+        .let {
             if (coverallsReport == null) {
                 coverallsReport = CoverallsReport(
                     repoToken = token,

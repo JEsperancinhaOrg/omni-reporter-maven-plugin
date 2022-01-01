@@ -32,4 +32,4 @@ ${project.build.directory}
 target
 
 # Test files
-coveralls.json
+coveralls*.json
