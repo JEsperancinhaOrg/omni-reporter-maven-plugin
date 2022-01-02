@@ -58,11 +58,11 @@ open class OmniReporterMojo(
 
 
         val environment = System.getenv()
-        coverallsToken = coverallsToken ?: environment["COVERALLS_REPO_TOKEN"] ?: environment["COVERALLS_TOKEN"]
+        coverallsToken = (coverallsToken ?: environment["COVERALLS_REPO_TOKEN"]) ?: environment["COVERALLS_TOKEN"]
         codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
         codacyToken = codecovToken ?: environment["CODACY_PROJECT_TOKEN"]
 
-        val allProjects = project.findAllSearchFolders + project
+        val allProjects = project.findAllSearchFolders
 
         logger.info("Coveralls URL: $coverallsUrl")
         logger.info("Source Encoding: $sourceEncoding")

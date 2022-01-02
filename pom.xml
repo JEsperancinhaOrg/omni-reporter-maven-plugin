@@ -291,12 +291,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <environmentVariables>
-                        <MAVEN_OPTS>--illegal-access=permit</MAVEN_OPTS>
-                    </environmentVariables>
-                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED -Djavax.xml.accessExternalDTD=all</argLine>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
