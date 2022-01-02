@@ -14,14 +14,14 @@ private val logger: Logger = LoggerFactory.getLogger(Pipeline::class.java)
 private val environment: MutableMap<String, String> = System.getenv()
 private val allEnv = listOf(
     CI_NAME,
+    CI_CONCURRENT_ID,
+    GITHUB_RUN_NUMBER,
     CI_BUILD_NUMBER,
     JOB_NUM,
     CI_JOB_ID,
-    CI_CONCURRENT_ID,
     GITHUB_JOB,
-    GITHUB_JOB,
-    GITHUB_RUN_NUMBER
 )
+private val rejectWords = listOf("BUILD")
 
 interface Pipeline {
 
@@ -48,9 +48,7 @@ abstract class PipelineImpl : Pipeline {
             it.toString().lines().forEach { logLine -> logger.info(logLine) }
         }
 
-        private val rejectWords = listOf("BUILD")
-
-        internal fun findAllVariables() = allEnv.joinToString("\n") { "- $it = ${environment[it]?: "null"}" }
+        internal fun findAllVariables() = allEnv.joinToString("\n") { "- $it = ${environment[it] ?: "null"}" }
 
         internal fun findSystemVariableValue(name: String): String? =
             environment[name]?.let { if (rejectWords.contains(it)) null else it }
@@ -73,8 +71,8 @@ class GitHubPipeline(
     }
 ) : PipelineImpl() {
     companion object {
-        const val GITHUB_JOB = "GITHUB_JOB"
         const val GITHUB_RUN_NUMBER = "GITHUB_RUN_NUMBER"
+        const val GITHUB_JOB = "GITHUB_JOB"
     }
 }
 
@@ -88,8 +86,8 @@ class GitLabPipeline(
     }
 ) : PipelineImpl() {
     companion object {
-        const val CI_JOB_ID = "CI_JOB_ID"
         const val CI_CONCURRENT_ID = "CI_CONCURRENT_ID"
+        const val CI_JOB_ID = "CI_JOB_ID"
     }
 }
 

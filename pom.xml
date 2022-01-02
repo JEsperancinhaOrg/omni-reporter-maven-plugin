@@ -82,6 +82,7 @@
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <junit-pioneer.version>1.5.0</junit-pioneer.version>
     </properties>
 
     <dependencies>
@@ -233,6 +234,12 @@
             <version>${kotest.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit-pioneer</groupId>
+            <artifactId>junit-pioneer</artifactId>
+            <version>${junit-pioneer.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -284,7 +291,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <argLine>-Djavax.xml.accessExternalDTD=all</argLine>
+                    <environmentVariables>
+                        <MAVEN_OPTS>--illegal-access=permit</MAVEN_OPTS>
+                    </environmentVariables>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED -Djavax.xml.accessExternalDTD=all</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -302,7 +312,6 @@
                             <sourceDirs>
                                 <source>src/main/kotlin</source>
                                 <source>target/generated-sources/plugin</source>
-                                <source>target/generated/src/main/java</source>
                             </sourceDirs>
                         </configuration>
                     </execution>
