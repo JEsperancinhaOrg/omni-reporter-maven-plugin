@@ -27,7 +27,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 | Type      | Status |Notes| Available from Release | Environment Variables |
 |-----------|--------|---|------------------------|---|
-| Coveralls | 🚧     | | 0.0.1                  |COVERALLS_REPO_TOKEN or COVERALLS_TOKEN|
+| Coveralls | 🚧     | | 0.0.0                  |COVERALLS_REPO_TOKEN or COVERALLS_TOKEN|
 | Codacy    | 🚧     | | ?                      |CODACY_PROJECT_TOKEN|
 | CodeCov   | 🚧     | | ?                      |CODECOV_TOKEN|
 
