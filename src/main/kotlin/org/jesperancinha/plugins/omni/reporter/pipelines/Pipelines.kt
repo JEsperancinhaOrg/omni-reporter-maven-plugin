@@ -51,7 +51,7 @@ abstract class PipelineImpl : Pipeline {
         internal fun findAllVariables() = allEnv.joinToString("\n") { "- $it = ${environment[it] ?: "null"}" }
 
         internal fun findSystemVariableValue(name: String): String? =
-            environment[name]?.let { if (rejectWords.contains(it)) null else it }
+            environment[name]?.let { if (rejectWords.contains(it.uppercase())) null else it }
 
         internal fun findServiceName(fallback: () -> String) = findSystemVariableValue(CI_NAME) ?: fallback()
 
