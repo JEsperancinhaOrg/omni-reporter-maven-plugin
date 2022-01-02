@@ -1,38 +1,77 @@
 package org.jesperancinha.plugins.omni.reporter.pipelines
 
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_JOB
+import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_RUN_NUMBER
+import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_CONCURRENT_ID
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_JOB_ID
-import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.findServiceJobId
-import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.findServiceName
-import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.findServiceNumber
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.CI_BUILD_NUMBER
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.CI_NAME
+import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.JOB_NUM
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+private val logger: Logger = LoggerFactory.getLogger(Pipeline::class.java)
+private val environment: MutableMap<String, String> = System.getenv()
+private val allEnv = listOf(
+    CI_NAME,
+    CI_BUILD_NUMBER,
+    JOB_NUM,
+    CI_JOB_ID,
+    CI_CONCURRENT_ID,
+    GITHUB_JOB,
+    GITHUB_JOB,
+    GITHUB_RUN_NUMBER
+)
 
 interface Pipeline {
 
     val serviceName: String
     val serviceNumber: String?
     val serviceJobId: String?
+}
+
+abstract class PipelineImpl : Pipeline {
+
+    override fun toString() = "* System Variables\n" +
+            "${findAllVariables()}\n" +
+            "* Service Found\n" +
+            "- Service Name = $serviceName\n" +
+            "- Service Number (Build) = $serviceNumber\n" +
+            "- Service Job Id = $serviceJobId"
 
     companion object {
-        private val environment: MutableMap<String, String> = System.getenv()
-
         val currentPipeline: Pipeline = when {
-            environment[GITHUB_JOB] != null -> GitHubPipeline(environment)
-            environment[CI_JOB_ID] != null -> GitLabPipeline(environment)
-            else -> LocalPipeline(environment)
+            environment[GITHUB_JOB] != null -> GitHubPipeline()
+            environment[CI_JOB_ID] != null -> GitLabPipeline()
+            else -> LocalPipeline()
+        }.also {
+            it.toString().lines().forEach { logLine -> logger.info(logLine) }
         }
+
+        private val rejectWords = listOf("BUILD")
+
+        internal fun findAllVariables() = allEnv.joinToString("\n") { "- $it = ${environment[it]?: "null"}" }
+
+        internal fun findSystemVariableValue(name: String): String? =
+            environment[name]?.let { if (rejectWords.contains(it)) null else it }
+
+        internal fun findServiceName(fallback: () -> String) = findSystemVariableValue(CI_NAME) ?: fallback()
+
+        internal fun findServiceNumber(fallback: () -> String?) = findSystemVariableValue(CI_BUILD_NUMBER) ?: fallback()
+
+        internal fun findServiceJobId(fallback: () -> String?) = findSystemVariableValue(JOB_NUM) ?: fallback()
     }
 }
 
 class GitHubPipeline(
-    environment: MutableMap<String, String>,
-    override val serviceName: String = findServiceName("github-ci"),
+    override val serviceName: String = findServiceName { "github-ci" },
     override val serviceNumber: String? = findServiceNumber {
-        environment[GITHUB_RUN_NUMBER]
+        findSystemVariableValue(GITHUB_RUN_NUMBER)
     },
     override val serviceJobId: String? = findServiceJobId {
-        environment[GITHUB_JOB]
+        findSystemVariableValue(GITHUB_JOB)
     }
-) : Pipeline {
+) : PipelineImpl() {
     companion object {
         const val GITHUB_JOB = "GITHUB_JOB"
         const val GITHUB_RUN_NUMBER = "GITHUB_RUN_NUMBER"
@@ -40,15 +79,14 @@ class GitHubPipeline(
 }
 
 class GitLabPipeline(
-    environment: MutableMap<String, String>,
-    override val serviceName: String = findServiceName("gitlab-ci"),
+    override val serviceName: String = findServiceName { "gitlab-ci" },
     override val serviceNumber: String? = findServiceNumber {
-        environment[CI_CONCURRENT_ID]
+        findSystemVariableValue(CI_CONCURRENT_ID)
     },
     override val serviceJobId: String? = findServiceJobId {
-        environment[CI_JOB_ID]
+        findSystemVariableValue(CI_JOB_ID)
     }
-) : Pipeline {
+) : PipelineImpl() {
     companion object {
         const val CI_JOB_ID = "CI_JOB_ID"
         const val CI_CONCURRENT_ID = "CI_CONCURRENT_ID"
@@ -56,22 +94,15 @@ class GitLabPipeline(
 }
 
 class LocalPipeline(
-    environment: MutableMap<String, String>,
-    override val serviceName: String = findServiceName("local-ci"),
+    override val serviceName: String = findServiceName { "local-ci" },
     override val serviceNumber: String? = environment[CI_BUILD_NUMBER],
     override val serviceJobId: String? = findServiceJobId { null }
-) : Pipeline {
+) : PipelineImpl() {
 
     companion object {
         const val CI_NAME = "CI_NAME"
         const val CI_BUILD_NUMBER = "CI_BUILD_NUMBER"
         const val JOB_NUM = "JOB_NUM"
-
-        fun findServiceName(failName: String) = System.getenv()[CI_NAME] ?: failName
-
-        fun findServiceNumber(fallback: () -> String?) = System.getenv()[CI_BUILD_NUMBER] ?: fallback()
-
-        fun findServiceJobId(fallback: () -> String?) = System.getenv()[JOB_NUM] ?: fallback()
     }
 
 }

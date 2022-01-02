@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 internal class JacocoParserTest {
     private val jacocoParser = JacocoParser(
         "token",
-        LocalPipeline(System.getenv()),
+        LocalPipeline(),
         root,
         false
     )

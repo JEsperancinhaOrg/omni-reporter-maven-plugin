@@ -5,7 +5,7 @@
 
     <groupId>org.jesperancinha.plugins</groupId>
     <artifactId>omni-coveragereporter-maven-plugin</artifactId>
-    <version>0.0.0</version>
+    <version>0.0.1</version>
     <packaging>maven-plugin</packaging>
 
     <name>Omni Coverage Reporter Maven Plugin</name>
@@ -34,7 +34,7 @@
         <connection>scm:git:git://github.com/JEsperancinhaOrg.git</connection>
         <developerConnection>scm:git:git://github.com/JEsperancinhaOrg.git</developerConnection>
         <url>https://github.com/JEsperancinhaOrg/omni-coveragereporter-maven-plugin</url>
-        <tag>0.0.0</tag>
+        <tag>0.0.1</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>

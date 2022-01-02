@@ -92,6 +92,7 @@ data class CoverallsReport(
 
 open class CoverallsClient(
     private val coverallsUrl: String,
+    private val token: String,
 ) {
     fun submit(coverallsReport: CoverallsReport): CoverallsResponse? {
         val url = GenericUrl(coverallsUrl)
@@ -106,7 +107,7 @@ open class CoverallsClient(
         file.bufferedWriter().use {
             it.write(objectMapper.writeValueAsString(coverallsReport))
         }
-        logger.debug(writeValueAsString)
+        logger.debug(writeValueAsString.replace(token, "<PROTECTED>"))
         logger.debug(file.absolutePath)
         val content = MultipartContent()
         val part = MultipartContent.Part(FileContent(ContentType.APPLICATION_OCTET_STREAM.toString(), file))

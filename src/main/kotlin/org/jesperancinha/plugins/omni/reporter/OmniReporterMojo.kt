@@ -9,6 +9,7 @@ import org.apache.maven.settings.Settings
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
+import org.jesperancinha.plugins.omni.reporter.pipelines.PipelineImpl
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -67,7 +68,7 @@ open class OmniReporterMojo(
         logger.info("Source Encoding: $sourceEncoding")
         logger.info("Parent Directory: $projectBaseDir")
 
-        val currentPipeline = Pipeline.currentPipeline
+        val currentPipeline = PipelineImpl.currentPipeline
 
         coverallsToken?.let { token -> processAndSubmitCoverallsReports(token, currentPipeline, allProjects) }
     }
@@ -96,7 +97,7 @@ open class OmniReporterMojo(
                     }
                 }
         }
-        val coverallsClient = CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException())
+        val coverallsClient = CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException(), token)
         val response =
             coverallsClient.submit(jacocoParser.coverallsReport ?: throw CoverallsReportNotGeneratedException())
         logger.info("* Omni Reporting to Coveralls response:")

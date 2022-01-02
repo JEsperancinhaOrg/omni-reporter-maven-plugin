@@ -15,10 +15,10 @@ internal class CoverallsClientTest {
     @Test
     @Disabled
     fun `should submit test file to coveralls`() {
-        val coverallsClient = CoverallsClient("https://coveralls.io/api/v1/jobs")
+        val coverallsClient = CoverallsClient("https://coveralls.io/api/v1/jobs", "token")
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
-        val jacocoParser = JacocoParser("test", LocalPipeline(System.getenv()), Utils.root, false)
+        val jacocoParser = JacocoParser("token", LocalPipeline(), Utils.root, false)
         val readValue = jacocoParser.parseInputStream(inputStream)
 
         val report = jacocoParser.parseSourceFile(readValue, root)
