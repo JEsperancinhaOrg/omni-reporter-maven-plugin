@@ -84,6 +84,7 @@
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <junit-pioneer.version>1.5.0</junit-pioneer.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <omni-coveragereporter-maven-plugin.version>0.0.1</omni-coveragereporter-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -457,7 +458,7 @@
             <plugin>
                 <groupId>org.jesperancinha.plugins</groupId>
                 <artifactId>omni-coveragereporter-maven-plugin</artifactId>
-                <version>0.0.1</version>
+                <version>${omni-coveragereporter-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
