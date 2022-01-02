@@ -70,11 +70,15 @@ Java 11 and above only
 - `mb` = missed branches
 - `cb` = covered branches
 
-## Release notes - Upcoming version 0.0.1
+## Release notes - Upcoming version 0.0.2
 
 1. Branch Coverage
 2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
-3. Token log shadowing (even in debug)
+
+#### Release 0.0.1 - 2022/01/02
+
+1. Rejection words implemented. Fixes issue with GitHub pipelines build names for Coveralls Report
+2. Token log shadowing (even in debug) for Coveralls Report
  
 #### Release 0.0.0 - 2022/01/01
 
