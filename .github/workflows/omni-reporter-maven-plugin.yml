@@ -23,6 +23,6 @@ jobs:
         distribution: 'adopt'
         cache: maven
     - name: Build with Maven
-      run: mvn clean install
+      run: mvn clean jacoco:prepare-agent install package jacoco:report
     - name: Generate reports
       run: mvn omni-coveragereporter:report
