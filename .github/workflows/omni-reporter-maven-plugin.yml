@@ -26,4 +26,3 @@ jobs:
       run: mvn clean jacoco:prepare-agent install package jacoco:report
     - name: Generate reports
       run: mvn omni-coveragereporter:report
-x§
