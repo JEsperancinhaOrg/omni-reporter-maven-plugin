@@ -81,7 +81,7 @@
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <junit-pioneer.version>1.5.0</junit-pioneer.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <omni-coveragereporter-maven-plugin.version>0.0.2</omni-coveragereporter-maven-plugin.version>
