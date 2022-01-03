@@ -44,7 +44,7 @@ open class OmniReporterMojo(
     var codecovToken: String? = null,
     @Parameter(property = "codacyToken")
     var codacyToken: String? = null,
-    @Component
+    @Parameter( defaultValue = "\${project}", readonly = true )
     var project: MavenProject? = null,
 ) : AbstractMojo() {
 
