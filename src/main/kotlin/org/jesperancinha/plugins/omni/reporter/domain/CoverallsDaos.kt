@@ -42,7 +42,7 @@ data class SourceFile(
         var result = name.hashCode()
         result = 31 * result + sourceDigest.hashCode()
         result = 31 * result + coverage.contentHashCode()
-        result = 31 * result + (branches.contentHashCode() ?: 0)
+        result = 31 * result + branches.contentHashCode()
         result = 31 * result + (source?.hashCode() ?: 0)
         return result
     }
