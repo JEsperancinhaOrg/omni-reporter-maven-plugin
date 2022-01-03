@@ -21,7 +21,7 @@ private val allEnv = listOf(
     CI_JOB_ID,
     GITHUB_JOB,
 )
-private val rejectWords = listOf("BUILD","CHECK-BATS-VERSION")
+private val rejectWords = listOf("BUILD")
 
 interface Pipeline {
 
