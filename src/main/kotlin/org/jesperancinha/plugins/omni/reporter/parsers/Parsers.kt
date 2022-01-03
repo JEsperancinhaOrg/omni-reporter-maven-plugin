@@ -73,6 +73,7 @@ abstract class OmniReporterParserImpl<T>(
     internal val pipeline: Pipeline,
     internal val root: File,
     failOnUnknown: Boolean,
+    internal val includeBranchCoverage: Boolean,
 ) : OmniReportParser<T> {
 
     val gitRepository = GitRepository(root)
@@ -94,9 +95,9 @@ abstract class OmniReporterParserImpl<T>(
                     foundSource.name != sourcefile.name
                 }
             }.forEach { foundSource ->
-                    logger.warn("File ${foundSource.name} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
-                    logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
-                }
+                logger.warn("File ${foundSource.name} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
+                logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
+            }
             false
         } else { _, _ ->
             true
@@ -107,8 +108,14 @@ abstract class OmniReporterParserImpl<T>(
     }
 }
 
-class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown: Boolean) :
-    OmniReporterParserImpl<Report>(token, pipeline, root, failOnUnknown) {
+class JacocoParser(
+    token: String,
+    pipeline: Pipeline,
+    root: File,
+    failOnUnknown: Boolean,
+    includeBranchCoverage: Boolean
+) :
+    OmniReporterParserImpl<Report>(token, pipeline, root, failOnUnknown, includeBranchCoverage) {
 
     internal var coverallsReport: CoverallsReport? = null
 
@@ -147,12 +154,14 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown:
             val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
             val lines = sourceCodeText.split("\n").size
             val coverage = sourceFile.lines.toCoverageArray(lines)
+            val branchCoverage = sourceFile.lines.toBranchCoverageArray
             if (coverage.isEmpty()) {
                 null
             } else {
                 SourceFile(
                     name = sourceCodeFile.toRelativeString(root),
                     coverage = coverage,
+                    branches = if (includeBranchCoverage) branchCoverage else emptyArray(),
                     sourceDigest = sourceCodeText.toFileDigest,
                 )
             }

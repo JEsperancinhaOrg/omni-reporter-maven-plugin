@@ -36,6 +36,8 @@ open class OmniReporterMojo(
     var failOnUnknown: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
+    @Parameter(property = "branchCoverage")
+    var branchCoverage: Boolean = false,
     @Parameter(property = "coverallsToken")
     var coverallsToken: String? = null,
     @Parameter(property = "codecovToken")
@@ -69,6 +71,7 @@ open class OmniReporterMojo(
         logger.info("failOnNoEncoding: $failOnNoEncoding")
         logger.info("failOnUnknown: $failOnUnknown")
         logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
+        logger.info("branchCoverage: $branchCoverage")
         logLine()
 
         val currentPipeline = PipelineImpl.currentPipeline
@@ -92,7 +95,8 @@ open class OmniReporterMojo(
                 token,
                 currentPipeline,
                 projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
-                failOnUnknown
+                failOnUnknown,
+                branchCoverage
             )
         val supportedPredicate =
             if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->

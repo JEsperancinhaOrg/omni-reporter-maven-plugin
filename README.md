@@ -25,11 +25,11 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 2.  Online API's supported
 
-| Type      | Status |Notes| Available from Release | Environment Variables |
-|-----------|--------|---|------------------------|---|
-| Coveralls | 🚧     | | 0.0.0                  |COVERALLS_REPO_TOKEN or COVERALLS_TOKEN|
-| Codacy    | 🚧     | | ?                      |CODACY_PROJECT_TOKEN|
-| CodeCov   | 🚧     | | ?                      |CODECOV_TOKEN|
+| Type      | Status | Notes | Available from Release | Environment Variables                   |
+|-----------|--------|-------|------------------------|-----------------------------------------|
+| Coveralls | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN |
+| Codacy    | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    |
+| CodeCov   | 🚧     |       | ?                      | CODECOV_TOKEN                           |
 
 #### 3.  Pipelines Supported
 
@@ -43,14 +43,15 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 4.  Configuration options
 
-| Property                 | Function                                                                                                                                                                                                                                                                                                                                        |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| failOnUnknown            | If an unknown file is found, it will ignore current file and proceed with reporting the rest. It is `false` by default                                                                                                                                                                                                                          |
-| failOnNoEncoding         | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                           |
-| ignoreTestBuildDirectory | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                                  |
-| coverallsToken           | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead |
-| codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     |
-| codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                             |
+| Property                 | Function                                                                                                                                                                                                                                                                                                                                        | Available from Release |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| failOnUnknown            | If an unknown file is found, it will ignore current file and proceed with reporting the rest. It is `false` by default                                                                                                                                                                                                                          | 0.0.0                  |
+| failOnNoEncoding         | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                           | ?                      |
+| ignoreTestBuildDirectory | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                              | 0.0.2                  |
+| branchCoverage           | By default it is set to `false`. If you want include branch coverage in your reporting please activate this flag.                                                                                                                                                                                                                               | ?                      |
+| coverallsToken           | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead | 0.0.0                  |
+| codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     | 0.0.0                  |
+| codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                             | 0.0.0                  |
 
 #### 5.  How to run
 
@@ -71,9 +72,12 @@ Java 11 and above only
 - `mb` = missed branches
 - `cb` = covered branches
 
-## Release notes - Upcoming version 0.0.2
+## Release notes - Upcoming version 0.0.3
 
 1. Branch Coverage
+
+#### Release 0.0.2 - 2022/01/03
+
 2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
 3. Ignore test build directory by default. Make `ignoreTestBuildDirectory`, `true` by default.
 4. Find files in all sources directories including generated sources

@@ -18,7 +18,7 @@ internal class CoverallsClientTest {
         val coverallsClient = CoverallsClient("https://coveralls.io/api/v1/jobs", "token")
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
-        val jacocoParser = JacocoParser("token", LocalPipeline(), Utils.root, false)
+        val jacocoParser = JacocoParser("token", LocalPipeline(), Utils.root, false, false)
         val readValue = jacocoParser.parseInputStream(inputStream)
 
         val report = jacocoParser.parseSourceFile(readValue, listOf(root))

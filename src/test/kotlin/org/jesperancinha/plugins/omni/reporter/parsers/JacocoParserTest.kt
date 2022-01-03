@@ -16,7 +16,8 @@ internal class JacocoParserTest {
         "token",
         LocalPipeline(),
         root,
-        false
+        failOnUnknown = false,
+        includeBranchCoverage = false
     )
 
     @Test
