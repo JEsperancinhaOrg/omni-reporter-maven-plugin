@@ -65,7 +65,7 @@
         <kotlin.version>1.6.10-RC</kotlin.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <kotest.version>5.0.3</kotest.version>
-        <mockk.version>1.12.1</mockk.version>
+        <mockk.version>1.12.2</mockk.version>
         <jackson.version>2.13.1</jackson.version>
         <wiremock.version>2.27.2</wiremock.version>
         <commons-codec.version>1.15</commons-codec.version>
@@ -77,7 +77,7 @@
         <google-http-client-jackson2.version>1.40.1</google-http-client-jackson2.version>
         <jaxb.version>3.0.1</jaxb.version>
         <jaxb2-maven-plugin.version>2.5.0</jaxb2-maven-plugin.version>
-        <jaxb-impl.version>2.3.1</jaxb-impl.version>
+        <jaxb-impl.version>3.0.2</jaxb-impl.version>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
