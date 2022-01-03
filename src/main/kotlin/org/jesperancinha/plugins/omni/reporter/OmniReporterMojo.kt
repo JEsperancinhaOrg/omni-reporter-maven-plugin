@@ -1,7 +1,6 @@
 package org.jesperancinha.plugins.omni.reporter
 
 import org.apache.maven.plugin.AbstractMojo
-import org.apache.maven.plugins.annotations.Component
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
@@ -36,6 +35,8 @@ open class OmniReporterMojo(
     var failOnUnknown: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
+    @Parameter(property = "useCoverallsCount", defaultValue = "true")
+    var useCoverallsCount: Boolean = true,
     @Parameter(property = "branchCoverage")
     var branchCoverage: Boolean = false,
     @Parameter(property = "coverallsToken")
@@ -44,7 +45,7 @@ open class OmniReporterMojo(
     var codecovToken: String? = null,
     @Parameter(property = "codacyToken")
     var codacyToken: String? = null,
-    @Parameter( defaultValue = "\${project}", readonly = true )
+    @Parameter(defaultValue = "\${project}", readonly = true)
     var project: MavenProject? = null,
 ) : AbstractMojo() {
 
@@ -96,7 +97,8 @@ open class OmniReporterMojo(
                 currentPipeline,
                 projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
                 failOnUnknown,
-                branchCoverage
+                branchCoverage,
+                useCoverallsCount
             )
         val supportedPredicate =
             if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->

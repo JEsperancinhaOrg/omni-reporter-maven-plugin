@@ -15,7 +15,8 @@ internal class DomainTest {
         inputStream.shouldNotBeNull()
         val readValue = JacocoParser("token", LocalPipeline(), root,
             failOnUnknown = false,
-            includeBranchCoverage = false
+            includeBranchCoverage = false,
+            useCoverallsCount = false
         ).parseInputStream(inputStream)
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Reactive MVC"
@@ -29,7 +30,11 @@ internal class DomainTest {
     fun `should parse basic JacocoReport 2`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco2.xml")
         inputStream.shouldNotBeNull()
-        val readValue = JacocoParser("token", LocalPipeline(), root, false, false).parseInputStream(inputStream)
+        val readValue = JacocoParser("token", LocalPipeline(), root,
+            failOnUnknown = false,
+            includeBranchCoverage = false,
+            useCoverallsCount = false
+        ).parseInputStream(inputStream)
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Gate"
         readValue.packages.forEach {

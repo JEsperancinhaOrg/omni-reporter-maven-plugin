@@ -17,7 +17,8 @@ internal class JacocoParserTest {
         LocalPipeline(),
         root,
         failOnUnknown = false,
-        includeBranchCoverage = false
+        includeBranchCoverage = false,
+        useCoverallsCount = false
     )
 
     @Test
