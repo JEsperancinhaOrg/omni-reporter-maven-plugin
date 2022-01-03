@@ -9,4 +9,5 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-
+    ignore:
+      - dependency-name: "com.sun.xml.bind:jaxb-impl"
