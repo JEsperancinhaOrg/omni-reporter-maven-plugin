@@ -64,10 +64,10 @@ abstract class PipelineImpl : Pipeline {
 class GitHubPipeline(
     override val serviceName: String = findServiceName { "github-ci" },
     override val serviceNumber: String? = findServiceNumber {
-        findSystemVariableValue(GITHUB_RUN_NUMBER)
+        findSystemVariableValue(GITHUB_RUN_ID)
     },
     override val serviceJobId: String? = findServiceJobId {
-        findSystemVariableValue(GITHUB_RUN_ID)
+        findSystemVariableValue(GITHUB_RUN_NUMBER)
     }
 ) : PipelineImpl() {
     companion object {
