@@ -77,7 +77,7 @@ Java 11 and above only
 ## Release notes - Upcoming version 0.0.3
 
 1. Branch Coverage
-2. Correct JOB_ID and RUN_ID for GITHUN pipeline
+2. Correct JOB_ID and RUN_ID for GITRUN pipeline
 3. `useCoverallsCount` to let Coveralls decide Job and run numbers.
 
 #### Release 0.0.2 - 2022/01/03

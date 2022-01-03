@@ -20,9 +20,11 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: maven
-    - name: Build with Maven
-      run: mvn clean install
-    - name: Generate reports
-      run: mvn clean jacoco:prepare-agent install package jacoco:report omni-coveragereporter:report
-      env:
-         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+
+      - name: Build and Test
+        run:  mvn clean install jacoco:prepare-agent package jacoco:report
+
+      - name: Coverage with Coveralls
+        run: mvn omni-coveragereporter:report
+        env:
+           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
