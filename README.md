@@ -17,13 +17,13 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 ## Features
 
-#### 1. Reporting file supported
+#### 1.  Reporting file supported
 
 | Type       | Status | Notes                                                                                                                                                                                                                                           | Available from Release |
 |------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
 | Jacoco XML | 🚧     | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  |
 
-#### 2. Online API's supported
+#### 2.  Online API's supported
 
 | Type      | Status | Notes | Available from Release | Environment Variables                   |
 |-----------|--------|-------|------------------------|-----------------------------------------|
@@ -31,7 +31,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | Codacy    | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    |
 | CodeCov   | 🚧     |       | ?                      | CODECOV_TOKEN                           |
 
-#### 3. Pipelines Supported
+#### 3.  Pipelines Supported
 
 | Type     | Status |Notes| Available from Release |
 |----------|--------|---|------------------------|
@@ -40,7 +40,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | Git Lab  | 🚧     | | 0.0.1                  |
 | CircleCI | 🚧     | | ?                      |
 
-#### 4. Configuration options
+#### 4.  Configuration options
 
 | Property                 | Function                                                                                                                                                                                                                                                                                                                                        | Available from Release |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
@@ -52,13 +52,13 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     | 0.0.0                  |
 | codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                             | 0.0.0                  |
 
-#### 5. How to run
+#### 5.  How to run
 
 ```shell
 mvn clean install omni-coveragereporter:report
 ```
 
-#### 6. Requirements
+#### 6.  Requirements
 
 Java 11 and above only
 
@@ -73,33 +73,33 @@ Java 11 and above only
 
 ## Release notes - Upcoming version 0.0.3
 
-1. Branch Coverage
+1.  Branch Coverage
 
 #### Release 0.0.2 - 2022/01/03
 
-1. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
-2. Ignore test build directory by default. Make `ignoreTestBuildDirectory`, `true` by default.
-3. Find files in all sources directories including generated sources
+1.  Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
+2.  Ignore test build directory by default. Make `ignoreTestBuildDirectory`, `true` by default.
+3.  Find files in all sources directories including generated sources
 
 #### Release 0.0.1 - 2022/01/02
 
-1. Rejection words implemented. Fixes issue with GitHub pipelines build names for Coveralls Report
-2. Token log shadowing (even in debug) for Coveralls Report
+1.  Rejection words implemented. Fixes issue with GitHub pipelines build names for Coveralls Report
+2.  Token log shadowing (even in debug) for Coveralls Report
 
 #### Release 0.0.0 - 2022/01/01
 
-1. We can ignore unknown class error generated by Jacoco. This happens with some Kotlin code. The option is `failOnUnknown`
-2. [Saga](https://timurstrekalov.github.io/saga/) and [Cobertura](https://www.mojohaus.org/cobertura-maven-plugin/) support is not given because of the lack of updates in these plugins for more than 5 years.
-3. Plugin will search for all jacoco.xml files located in the build directory.
-4. If there are two reports with the same file reported, the result will be a sum.
-5. Coveralls support
-6. DOM processing instead of SAX. Using an event parser for XML can be quite cumbersome and if the XML document isn't correctly validated, we run the risk of having misleading or false results. In any case, when making a code report, we usually don't need to worry about performance and if we do, it
+1.  We can ignore unknown class error generated by Jacoco. This happens with some Kotlin code. The option is `failOnUnknown`
+2.  [Saga](https://timurstrekalov.github.io/saga/) and [Cobertura](https://www.mojohaus.org/cobertura-maven-plugin/) support is not given because of the lack of updates in these plugins for more than 5 years.
+3.  Plugin will search for all jacoco.xml files located in the build directory.
+4.  If there are two reports with the same file reported, the result will be a sum.
+5.  Coveralls support
+6.  DOM processing instead of SAX. Using an event parser for XML can be quite cumbersome and if the XML document isn't correctly validated, we run the risk of having misleading or false results. In any case, when making a code report, we usually don't need to worry about performance and if we do, it
    is probably a sign that the codebase is too big and that our code is becoming a monolith.
-7. Line Coverage
+7.  Line Coverage
 
 ## How to use
 
-#### 1. Omni reporter
+#### 1.  Omni reporter
 
 Just add the following dependency to your project to get coverage sent to coveralls
 
@@ -114,7 +114,7 @@ Just add the following dependency to your project to get coverage sent to covera
 
 Don't forget to have the variables available in your environment for the API's you want to send your reports to.
 
-#### 2. Jacoco Reports
+#### 2.  Jacoco Reports
 
 You'll need Maven surefire plugin and the jacoco plugin. Here is an example:
 
@@ -156,16 +156,16 @@ I hope you enjoyed this repository. If you did, you can optionally please buy me
 
 ## References
 
-- [XCode Environment Variable Reference](https://developer.apple.com/documentation/xcode/environment-variable-reference)
-- [Cross-CI reference](https://github.com/streamich/cross-ci)
-- [Coveralls API reference](https://docs.coveralls.io/api-reference)
-- [Git Hub Environment Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
-- [Git Lab Environment Variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
-- [Check Run Reporter](https://github.com/marketplace/check-run-reporter)
-- [Codacy Maven Plugin](https://github.com/halkeye/codacy-maven-plugin)
-- [Coveralls Maven Plugin](https://github.com/trautonen/coveralls-maven-plugin)
-- [Example Java Maven for CodeCov](https://github.com/codecov/example-java-maven)
-- [CodeCov Maven Plugin](https://github.com/alexengrig/codecov-maven-plugin)
+-   [XCode Environment Variable Reference](https://developer.apple.com/documentation/xcode/environment-variable-reference)
+-   [Cross-CI reference](https://github.com/streamich/cross-ci)
+-   [Coveralls API reference](https://docs.coveralls.io/api-reference)
+-   [Git Hub Environment Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
+-   [Git Lab Environment Variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
+-   [Check Run Reporter](https://github.com/marketplace/check-run-reporter)
+-   [Codacy Maven Plugin](https://github.com/halkeye/codacy-maven-plugin)
+-   [Coveralls Maven Plugin](https://github.com/trautonen/coveralls-maven-plugin)
+-   [Example Java Maven for CodeCov](https://github.com/codecov/example-java-maven)
+-   [CodeCov Maven Plugin](https://github.com/alexengrig/codecov-maven-plugin)
 
 ## About me 👨🏽‍💻🚀🏳️‍🌈
 
