@@ -50,6 +50,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | failOnNoEncoding         | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                           | ?                      |
 | ignoreTestBuildDirectory | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                              | 0.0.2                  |
 | branchCoverage           | By default it is set to `false`. If you want include branch coverage in your reporting please activate this flag.                                                                                                                                                                                                                               | ?                      |
+| useCoverallsCount        | By default it is set to `true`. If you want to let the pipeline determine the numbering for your Job Id and run, then set this to `false`. It will then search those values via environment variables.                                                                                                                                          | 0.0.3                  |
 | coverallsToken           | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead | 0.0.0                  |
 | codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     | 0.0.0                  |
 | codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                             | 0.0.0                  |
@@ -75,7 +76,9 @@ Java 11 and above only
 
 ## Release notes - Upcoming version 0.0.3
 
-1.  Branch Coverage
+1. Branch Coverage
+2. Correct JOB_ID and RUN_ID for GIT_RUN pipeline
+3. `useCoverallsCount` to let Coveralls decide Job and run numbers.
 
 #### Release 0.0.2 - 2022/01/03
 

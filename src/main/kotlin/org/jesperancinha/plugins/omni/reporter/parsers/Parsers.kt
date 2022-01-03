@@ -113,7 +113,8 @@ class JacocoParser(
     pipeline: Pipeline,
     root: File,
     failOnUnknown: Boolean,
-    includeBranchCoverage: Boolean
+    includeBranchCoverage: Boolean,
+    val useCoverallsCount:Boolean
 ) :
     OmniReporterParserImpl<Report>(token, pipeline, root, failOnUnknown, includeBranchCoverage) {
 
@@ -181,8 +182,9 @@ class JacocoParser(
                 coverallsReport = CoverallsReport(
                     repoToken = token,
                     serviceName = pipeline.serviceName,
+                    serviceNumber= if(useCoverallsCount) null else pipeline.serviceNumber,
+                    serviceJobId =  if(useCoverallsCount) null else pipeline.serviceJobId,
                     sourceFiles = sourceFiles.toMutableList(),
-                    serviceJobId = pipeline.serviceJobId,
                     git = gitRepository.git
                 )
             } else {

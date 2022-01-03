@@ -1,6 +1,6 @@
 package org.jesperancinha.plugins.omni.reporter.pipelines
 
-import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_JOB
+import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_RUN_ID
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_RUN_NUMBER
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_CONCURRENT_ID
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_JOB_ID
@@ -19,7 +19,7 @@ private val allEnv = listOf(
     CI_BUILD_NUMBER,
     JOB_NUM,
     CI_JOB_ID,
-    GITHUB_JOB,
+    GITHUB_RUN_ID,
 )
 private val rejectWords = listOf("BUILD")
 
@@ -41,7 +41,7 @@ abstract class PipelineImpl : Pipeline {
 
     companion object {
         val currentPipeline: Pipeline = when {
-            environment[GITHUB_JOB] != null -> GitHubPipeline()
+            environment[GITHUB_RUN_ID] != null -> GitHubPipeline()
             environment[CI_JOB_ID] != null -> GitLabPipeline()
             else -> LocalPipeline()
         }.also {
@@ -67,12 +67,12 @@ class GitHubPipeline(
         findSystemVariableValue(GITHUB_RUN_NUMBER)
     },
     override val serviceJobId: String? = findServiceJobId {
-        findSystemVariableValue(GITHUB_JOB)
+        findSystemVariableValue(GITHUB_RUN_ID)
     }
 ) : PipelineImpl() {
     companion object {
         const val GITHUB_RUN_NUMBER = "GITHUB_RUN_NUMBER"
-        const val GITHUB_JOB = "GITHUB_JOB"
+        const val GITHUB_RUN_ID = "GITHUB_RUN_ID"
     }
 }
 
