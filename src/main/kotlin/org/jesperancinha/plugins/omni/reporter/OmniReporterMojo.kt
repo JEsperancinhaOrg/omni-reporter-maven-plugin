@@ -5,7 +5,6 @@ import org.apache.maven.plugins.annotations.Component
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
-import org.apache.maven.settings.Settings
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
 import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
@@ -31,16 +30,12 @@ open class OmniReporterMojo(
     var sourceEncoding: String? = null,
     @Parameter(property = "projectBaseDir", defaultValue = "\${project.basedir}")
     var projectBaseDir: File? = null,
-    @Parameter(property = "timestampFormat", defaultValue = "\${maven.build.timestamp.format}")
-    protected var timestampFormat: String? = null,
-    @Parameter(property = "timestamp", defaultValue = "\${maven.build.timestamp}")
-    protected var timestamp: String? = null,
     @Parameter(property = "failOnNoEncoding", defaultValue = "false")
     var failOnNoEncoding: Boolean = false,
     @Parameter(property = "failOnUnknown", defaultValue = "false")
     var failOnUnknown: Boolean = false,
-    @Parameter(defaultValue = "\${settings}", readonly = true, required = true)
-    var settings: Settings? = null,
+    @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
+    var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "coverallsToken")
     var coverallsToken: String? = null,
     @Parameter(property = "codecovToken")
@@ -52,9 +47,9 @@ open class OmniReporterMojo(
 ) : AbstractMojo() {
 
     override fun execute() {
-        logger.info("*".repeat(OMNI_CHARACTER_LINE_NUMBER))
+        logLine()
         logger.info(javaClass.getResourceAsStream("/banner.txt")?.bufferedReader().use { it?.readText() })
-        logger.info("*".repeat(OMNI_CHARACTER_LINE_NUMBER))
+        logLine()
 
 
         val environment = System.getenv()
@@ -64,14 +59,28 @@ open class OmniReporterMojo(
 
         val allProjects = project.findAllSearchFolders
 
+        logLine()
         logger.info("Coveralls URL: $coverallsUrl")
+        logger.info("Coveralls token: ${checkToken(coverallsToken)}")
+        logger.info("Codecov token: ${checkToken(codecovToken)}")
+        logger.info("Codacy token: ${checkToken(codacyToken)}")
         logger.info("Source Encoding: $sourceEncoding")
         logger.info("Parent Directory: $projectBaseDir")
+        logger.info("failOnNoEncoding: $failOnNoEncoding")
+        logger.info("failOnUnknown: $failOnUnknown")
+        logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
+        logLine()
 
         val currentPipeline = PipelineImpl.currentPipeline
 
         coverallsToken?.let { token -> processAndSubmitCoverallsReports(token, currentPipeline, allProjects) }
     }
+
+    private fun logLine() = let {
+        logger.info("*".repeat(OMNI_CHARACTER_LINE_NUMBER))
+    }
+
+    private fun checkToken(token: String?) = token?.let { "found" } ?: "not found"
 
     private fun processAndSubmitCoverallsReports(
         token: String,
@@ -85,10 +94,16 @@ open class OmniReporterMojo(
                 projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
                 failOnUnknown
             )
+        val supportedPredicate =
+            if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->
+                !report.absolutePath.contains(testDirectory)
+            } else { _, _ -> true }
         allProjects.map { project ->
             File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
                 .forEach { report ->
-                    if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported) {
+                    if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported
+                        && supportedPredicate(project.build.testOutputDirectory, report)
+                    ) {
                         logger.info("Parsing file: $report")
                         jacocoParser.parseSourceFile(
                             report.inputStream(),
