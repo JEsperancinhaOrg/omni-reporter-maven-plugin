@@ -7,6 +7,8 @@
 [![javadoc](https://javadoc.io/badge2/org.jesperancinha.plugins/omni-coveragereporter-maven-plugin/javadoc.svg)](https://javadoc.io/doc/org.jesperancinha.plugins/omni-coveragereporter-maven-plugin)
 [![GitHub License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
+[![omni-reporter-maven-plugin](https://github.com/JEsperancinhaOrg/omni-reporter-maven-plugin/actions/workflows/omni-reporter-maven-plugin.yml/badge.svg)](https://github.com/JEsperancinhaOrg/omni-reporter-maven-plugin/actions/workflows/omni-reporter-maven-plugin.yml)
+
 [![Coverage Status](https://coveralls.io/repos/github/JEsperancinhaOrg/omni-reporter-maven-plugin/badge.svg?branch=main)](https://coveralls.io/github/JEsperancinhaOrg/omni-reporter-maven-plugin?branch=main)
 
 [![GitHub language count](https://img.shields.io/github/languages/count/JEsperancinhaOrg/omni-reporter-maven-plugin.svg)](#)
