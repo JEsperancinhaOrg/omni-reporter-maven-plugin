@@ -74,9 +74,13 @@ Java 11 and above only
 - `mb` = missed branches
 - `cb` = covered branches
 
-## Release notes - Upcoming version 0.0.3
+## Release notes - Upcoming version 0.0.4
 
 1. Branch Coverage
+2. Fix JAXB upgrade -> Use [Jackson Module](/https://medium.com/@foxjstephen/how-to-actually-parse-xml-in-java-kotlin-221a9309e6e8) parser
+
+#### Release 0.0.3 - 2022/01/03
+
 2. Correct JOB_ID and RUN_ID for GIT_RUN pipeline
 3. `useCoverallsCount` to let Coveralls decide Job and run numbers.
 
