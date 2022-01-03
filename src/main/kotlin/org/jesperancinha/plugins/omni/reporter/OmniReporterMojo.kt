@@ -73,6 +73,7 @@ open class OmniReporterMojo(
         logger.info("failOnUnknown: $failOnUnknown")
         logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
         logger.info("branchCoverage: $branchCoverage")
+        logger.info("useCoverallsCount: $useCoverallsCount")
         logLine()
 
         val currentPipeline = PipelineImpl.currentPipeline
