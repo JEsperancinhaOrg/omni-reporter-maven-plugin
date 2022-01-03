@@ -182,7 +182,7 @@ class JacocoParser(
                 coverallsReport = CoverallsReport(
                     repoToken = token,
                     serviceName = pipeline.serviceName,
-                    serviceNumber= if(useCoverallsCount) null else "#${pipeline.serviceNumber}",
+                    serviceNumber= if(useCoverallsCount) null else pipeline.serviceNumber,
                     serviceJobId =  if(useCoverallsCount) null else pipeline.serviceJobId,
                     sourceFiles = sourceFiles.toMutableList(),
                     git = gitRepository.git
