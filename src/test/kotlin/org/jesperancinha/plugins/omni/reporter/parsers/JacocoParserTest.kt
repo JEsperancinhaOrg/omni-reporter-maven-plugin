@@ -59,9 +59,9 @@ internal class JacocoParserTest {
 
         report.packages.add(pack)
         report.packages.add(pack2)
-        jacocoParser.parseSourceFile(report, root)
-        jacocoParser.parseSourceFile(report, root)
-        val sourceFiles = jacocoParser.parseSourceFile(report, root).sourceFiles
+        jacocoParser.parseSourceFile(report, listOf(root))
+        jacocoParser.parseSourceFile(report, listOf(root))
+        val sourceFiles = jacocoParser.parseSourceFile(report, listOf(root)).sourceFiles
 
         sourceFiles.shouldNotBeNull()
         sourceFiles.shouldHaveSize(1)

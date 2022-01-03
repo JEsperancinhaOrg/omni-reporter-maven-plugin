@@ -59,9 +59,9 @@ class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sou
     File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
 
 interface OmniReportParser<T> {
-    fun parseSourceFile(inputStream: InputStream, projectBaseDir: File): CoverallsReport
+    fun parseSourceFile(inputStream: InputStream, compiledSourcesDirs: List<File>): CoverallsReport
 
-    fun parseSourceFile(source: T, projectBaseDir: File): CoverallsReport
+    fun parseSourceFile(source: T, compiledSourcesDirs: List<File>): CoverallsReport
 
     companion object {
         val messageDigester: MessageDigest = MessageDigest.getInstance("MD5")
@@ -78,13 +78,28 @@ abstract class OmniReporterParserImpl<T>(
     val gitRepository = GitRepository(root)
 
     val failOnUnknownPredicate =
-        if (failOnUnknown) { file: File -> if (!file.exists()) throw FileNotFoundException() else true }
+        if (failOnUnknown) { file: File -> if (!file.exists()) throw FileNotFoundException(file.absolutePath) else true }
         else { file: File ->
             if (!file.exists()) {
                 logger.warn("File ${file.absolutePath} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
                 logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
             }
             file.exists()
+        }
+
+    val failOnUnknownPredicateFilePack =
+        if (failOnUnknown) { foundSources: List<Pair<SourceCodeFile, Sourcefile>>, sourceFiles: List<Sourcefile> ->
+            sourceFiles.filter { sourcefile ->
+                foundSources.any { (foundSource, _) ->
+                    foundSource.name != sourcefile.name
+                }
+            }.forEach { foundSource ->
+                    logger.warn("File ${foundSource.name} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
+                    logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
+                }
+            false
+        } else { _, _ ->
+            true
         }
 
     companion object {
@@ -108,18 +123,26 @@ class JacocoParser(token: String, pipeline: Pipeline, root: File, failOnUnknown:
         return unmarshaller.unmarshal(xmlStreamReader) as Report
     }
 
-    override fun parseSourceFile(inputStream: InputStream, projectBaseDir: File): CoverallsReport =
+    override fun parseSourceFile(inputStream: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
         parseSourceFile(
-            parseInputStream(inputStream), projectBaseDir
+            parseInputStream(inputStream), compiledSourcesDirs
         )
 
-    override fun parseSourceFile(source: Report, projectBaseDir: File): CoverallsReport = source.packages
+    override fun parseSourceFile(source: Report, compiledSourcesDirs: List<File>): CoverallsReport = source.packages
         .asSequence()
         .map { it.name to it.sourcefiles }
         .flatMap { (packageName, sourceFiles) ->
-            sourceFiles.map { SourceCodeFile(projectBaseDir, packageName, it) to it }
+            val foundSources = sourceFiles.map {
+                compiledSourcesDirs.map { compiledSourcesDir ->
+                    SourceCodeFile(compiledSourcesDir, packageName, it)
+                }.filter { it.exists() }.map { sourceCodeFile -> sourceCodeFile to it }
+            }.flatten()
+            if (foundSources.size != sourceFiles.size) {
+                failOnUnknownPredicateFilePack(foundSources, sourceFiles)
+            }
+            foundSources
         }
-        .filter { (sourceCodeFile, _) -> failOnUnknownPredicate(sourceCodeFile) }
+        .filter { (sourceCodeFile) -> failOnUnknownPredicate(sourceCodeFile) }
         .map { (sourceCodeFile, sourceFile) ->
             val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
             val lines = sourceCodeText.split("\n").size

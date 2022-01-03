@@ -21,7 +21,7 @@ internal class CoverallsClientTest {
         val jacocoParser = JacocoParser("token", LocalPipeline(), Utils.root, false)
         val readValue = jacocoParser.parseInputStream(inputStream)
 
-        val report = jacocoParser.parseSourceFile(readValue, root)
+        val report = jacocoParser.parseSourceFile(readValue, listOf(root))
 
         logger.info(objectMapper.writeValueAsString(report))
 

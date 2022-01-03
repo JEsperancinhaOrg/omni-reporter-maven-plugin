@@ -107,8 +107,7 @@ open class OmniReporterMojo(
                         logger.info("Parsing file: $report")
                         jacocoParser.parseSourceFile(
                             report.inputStream(),
-                            File(project.build?.sourceDirectory ?: throw ProjectDirectoryNotFoundException()),
-                        )
+                            project.compileSourceRoots.map { File(it) })
                     }
                 }
         }

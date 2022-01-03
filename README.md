@@ -76,6 +76,7 @@ Java 11 and above only
 1. Branch Coverage
 2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
 3. Ignore test build directory by default. Make `ignoreTestBuildDirectory`, `true` by default.
+4. Find files in all sources directories including generated sources
 
 #### Release 0.0.1 - 2022/01/02
 
