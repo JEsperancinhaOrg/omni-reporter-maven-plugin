@@ -1,5 +1,7 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
@@ -13,7 +15,8 @@ internal class DomainTest {
     fun `should parse basic JacocoReport`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
-        val readValue = JacocoParser("token", LocalPipeline(), root,
+        val readValue = JacocoParser(
+            "token", LocalPipeline(), root,
             failOnUnknown = false,
             includeBranchCoverage = false,
             useCoverallsCount = false
@@ -30,17 +33,36 @@ internal class DomainTest {
     fun `should parse basic JacocoReport 2`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco2.xml")
         inputStream.shouldNotBeNull()
-        val readValue = JacocoParser("token", LocalPipeline(), root,
+        val readValue = JacocoParser(
+            "token", LocalPipeline(), root,
             failOnUnknown = false,
             includeBranchCoverage = false,
             useCoverallsCount = false
         ).parseInputStream(inputStream)
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Gate"
+        readValue.packages.shouldNotBeNull()
+        readValue.packages.shouldHaveSize(6)
         readValue.packages.forEach {
             it.name.shouldNotBeNull()
             it.sourcefiles.shouldNotBeNull()
         }
+        val value = readValue.packages[1]
+        value.shouldNotBeNull()
+        value.sourcefiles.shouldNotBeNull()
+        value.sourcefiles.shouldHaveSize(5)
+        val sourcefile = value.sourcefiles[0]
+        sourcefile.shouldNotBeNull()
+        sourcefile.lines.shouldNotBeNull()
+        sourcefile.lines.shouldHaveSize(5)
+        val line = sourcefile.lines[0]
+        line.shouldNotBeNull()
+        line.nr shouldBe 11
+        line.ci shouldBe 2
+        line.mi shouldBe 0
+        line.cb shouldBe 0
+        line.mb shouldBe 0
+        line.value.shouldBeNull()
     }
 
     @Test

@@ -23,46 +23,54 @@ internal class JacocoParserTest {
 
     @Test
     fun parseSourceFile() {
-        val report = Report()
-        val pack = Package()
-        val pack2 = Package()
 
-        val sourcefile = Sourcefile()
-        val element = Line()
-        element.nr = 1
-        element.ci = 10
-        val element2 = Line()
-        element2.nr = 2
-        element2.ci = 11
-        element2.cb = 3
-        element2.mb = 2
-        sourcefile.name = "Racoons.kt"
-        sourcefile.lines.add(element)
-        sourcefile.lines.add(element2)
 
-        val sourcefile2 = Sourcefile()
-        val element21 = Line()
-        element21.nr = 1
-        element21.ci = 10
-        val element22 = Line()
-        element22.nr = 2
-        element22.ci = 11
-        element22.cb = 3
-        element22.mb = 2
-        sourcefile2.name = "Racoons.kt"
-        sourcefile2.lines.add(element21)
-        sourcefile2.lines.add(element22)
+        val element = Line(
+            nr = 1,
+            ci = 10,
+        )
+        val element2 = Line(
+            nr = 2,
+            ci = 11,
+            cb = 3,
+            mb = 2
+        )
+        val sourcefile = Sourcefile(
+            name = "Racoons.kt",
+            lines = listOf(element, element2)
+        )
 
-        pack.name = "/"
-        pack.sourcefiles.add(sourcefile)
 
-        pack2.name = "/"
-        pack2.sourcefiles.add(sourcefile)
+        val element21 = Line(
+            nr = 1,
+            ci = 10
+        )
+        val element22 = Line(
+            nr = 2,
+            ci = 11,
+            cb = 3,
+            mb = 2
+        )
+        val sourcefile2 = Sourcefile(
+            name = "Racoons.kt",
+            lines = listOf(element21, element22)
+        )
 
-        report.packages.add(pack)
-        report.packages.add(pack2)
+        val pack = Package(
+            name = "/",
+            sourcefiles = listOf(sourcefile)
+        )
+
+        val pack2 = Package(
+            name = "/",
+            sourcefiles = listOf(sourcefile2)
+        )
+
+        val report = Report(packages = listOf(pack, pack2))
+
         jacocoParser.parseSourceFile(report, listOf(root))
         jacocoParser.parseSourceFile(report, listOf(root))
+
         val sourceFiles = jacocoParser.parseSourceFile(report, listOf(root)).sourceFiles
 
         sourceFiles.shouldNotBeNull()

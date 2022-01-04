@@ -1,5 +1,11 @@
 package org.jesperancinha.plugins.omni.reporter.parsers
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
 import org.jesperancinha.plugins.omni.reporter.domain.SourceFile
@@ -13,12 +19,19 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
-import java.io.InputStreamReader
 import java.security.MessageDigest
-import javax.xml.bind.JAXBContext
-import javax.xml.stream.XMLInputFactory
 import kotlin.math.max
 
+
+internal val jacksonXMLMapper = XmlMapper(JacksonXmlModule().apply {
+    setDefaultUseWrapper(false)
+}).registerKotlinModule()
+    .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+internal inline fun <reified T : Any> readValue(inputStream: InputStream): T {
+    return jacksonXMLMapper.readValue(inputStream)
+}
 
 private val List<Line>.toBranchCoverageArray: Array<Int?>
     get() = let {
@@ -114,7 +127,7 @@ class JacocoParser(
     root: File,
     failOnUnknown: Boolean,
     includeBranchCoverage: Boolean,
-    val useCoverallsCount:Boolean
+    val useCoverallsCount: Boolean
 ) :
     OmniReporterParserImpl<Report>(token, pipeline, root, failOnUnknown, includeBranchCoverage) {
 
@@ -122,14 +135,7 @@ class JacocoParser(
 
     private var coverallsSources = mutableMapOf<String, SourceFile>()
 
-    internal fun parseInputStream(inputStream: InputStream): Report {
-        val jaxbContext = JAXBContext.newInstance(Report::class.java)
-        val xmlInputFactory = XMLInputFactory.newFactory()
-        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false)
-        val xmlStreamReader = xmlInputFactory.createXMLStreamReader(InputStreamReader(inputStream))
-        val unmarshaller = jaxbContext.createUnmarshaller()
-        return unmarshaller.unmarshal(xmlStreamReader) as Report
-    }
+    internal fun parseInputStream(inputStream: InputStream): Report = readValue(inputStream)
 
     override fun parseSourceFile(inputStream: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
         parseSourceFile(
@@ -182,8 +188,8 @@ class JacocoParser(
                 coverallsReport = CoverallsReport(
                     repoToken = token,
                     serviceName = pipeline.serviceName,
-                    serviceNumber= if(useCoverallsCount) null else pipeline.serviceNumber,
-                    serviceJobId =  if(useCoverallsCount) null else pipeline.serviceJobId,
+                    serviceNumber = if (useCoverallsCount) null else pipeline.serviceNumber,
+                    serviceJobId = if (useCoverallsCount) null else pipeline.serviceJobId,
                     sourceFiles = sourceFiles.toMutableList(),
                     git = gitRepository.git
                 )

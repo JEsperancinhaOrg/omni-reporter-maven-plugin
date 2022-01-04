@@ -5,7 +5,7 @@
 
     <groupId>org.jesperancinha.plugins</groupId>
     <artifactId>omni-coveragereporter-maven-plugin</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <packaging>maven-plugin</packaging>
 
     <name>Omni Coverage Reporter Maven Plugin</name>
@@ -34,7 +34,7 @@
         <connection>scm:git:git://github.com/JEsperancinhaOrg.git</connection>
         <developerConnection>scm:git:git://github.com/JEsperancinhaOrg.git</developerConnection>
         <url>https://github.com/JEsperancinhaOrg/omni-coveragereporter-maven-plugin</url>
-        <tag>0.0.3</tag>
+        <tag>0.0.4</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
@@ -84,7 +84,7 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <junit-pioneer.version>1.5.0</junit-pioneer.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
-        <omni-coveragereporter-maven-plugin.version>0.0.3</omni-coveragereporter-maven-plugin.version>
+        <omni-coveragereporter-maven-plugin.version>0.0.4</omni-coveragereporter-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -150,30 +150,12 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb-api.version}</version>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-            <version>${jakarta.activation-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb-impl.version}</version>
-        </dependency>
+
+
 
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -378,29 +360,6 @@
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
                     <sourcepath>${project.basedir}/src/main/java</sourcepath>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>${jaxb2-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>xjc</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <packageName>org.jesperancinha.plugins.omni.reporter.domain.jacoco</packageName>
-                    <addGeneratedAnnotation>true</addGeneratedAnnotation>
-                    <sources>
-                        <source>${project.basedir}/src/main/resources/jaxb/jacoco.xsd</source>
-                    </sources>
-                    <xjbSources>
-                        <xjbSource>${project.basedir}/src/main/resources/jaxb/simple-binding.xjb</xjbSource>
-                    </xjbSources>
                 </configuration>
             </plugin>
             <plugin>
