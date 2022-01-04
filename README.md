@@ -74,10 +74,14 @@ Java 11 and above only
 - `mb` = missed branches
 - `cb` = covered branches
 
-## Release notes - Upcoming version 0.0.4
+
+## Release notes - Upcoming version 0.0.5
 
 1. Branch Coverage
-2. Fix JAXB upgrade -> Use [Jackson Module](https://medium.com/@foxjstephen/how-to-actually-parse-xml-in-java-kotlin-221a9309e6e8) parser
+
+#### Release 0.0.4 - 2022/01/03
+
+1. Fix JAXB upgrade -> Use [Jackson Module](https://medium.com/@foxjstephen/how-to-actually-parse-xml-in-java-kotlin-221a9309e6e8) parser
 
 #### Release 0.0.3 - 2022/01/03
 
