@@ -9,6 +9,6 @@ no-test:
 	mvn clean install -DskipTests
 release:
 	export GPG_TTY=$(tty)
-#	export MAVEN_OPTS=--illegal-access=permit
+	export MAVEN_OPTS=--illegal-access=permit
 	mvn clean deploy -Prelease
 	mvn nexus-staging:release -Prelease
