@@ -6,12 +6,13 @@ import org.eclipse.jgit.revwalk.RevWalk
 import org.jesperancinha.plugins.omni.reporter.domain.Git
 import org.jesperancinha.plugins.omni.reporter.domain.Head
 import org.jesperancinha.plugins.omni.reporter.domain.Remote
+import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import java.io.File
 
 /**
  * Created by jofisaes on 01/01/2022
  */
-class GitRepository(sourceDirectory: File) {
+class GitRepository(sourceDirectory: File, pipeline: Pipeline) {
 
     private val repo = RepositoryBuilder().findGitDir(sourceDirectory).build()
 
@@ -28,7 +29,7 @@ class GitRepository(sourceDirectory: File) {
         )
     }
 
-    private val branch = repo.branch
+    private val branch = pipeline.branchName ?: repo.branch
 
     private val remotes = repo.config.getSubsections("remote")
         .map { Remote(it, repo.config.getString("remote", it, "url")) }

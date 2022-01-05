@@ -89,7 +89,7 @@ abstract class OmniReporterParserImpl<T>(
     internal val includeBranchCoverage: Boolean,
 ) : OmniReportParser<T> {
 
-    val gitRepository = GitRepository(root)
+    val gitRepository = GitRepository(root, pipeline)
 
     val failOnUnknownPredicate =
         if (failOnUnknown) { file: File -> if (!file.exists()) throw FileNotFoundException(file.absolutePath) else true }

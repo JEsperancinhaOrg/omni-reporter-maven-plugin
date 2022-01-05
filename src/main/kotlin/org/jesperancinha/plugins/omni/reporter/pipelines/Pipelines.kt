@@ -25,6 +25,7 @@ private val rejectWords = listOf("BUILD")
 
 interface Pipeline {
 
+    val branchName: String?
     val serviceName: String
     val serviceNumber: String?
     val serviceJobId: String?
@@ -68,7 +69,8 @@ class GitHubPipeline(
     },
     override val serviceJobId: String? = findServiceJobId {
         findSystemVariableValue(GITHUB_RUN_ID)
-    }
+    },
+    override val branchName: String? = null
 ) : PipelineImpl() {
     companion object {
         const val GITHUB_RUN_NUMBER = "GITHUB_RUN_NUMBER"
@@ -83,18 +85,21 @@ class GitLabPipeline(
     },
     override val serviceJobId: String? = findServiceJobId {
         findSystemVariableValue(CI_JOB_ID)
-    }
+    },
+    override val branchName: String? = environment[CI_COMMIT_REF_NAME]
 ) : PipelineImpl() {
     companion object {
         const val CI_CONCURRENT_ID = "CI_CONCURRENT_ID"
         const val CI_JOB_ID = "CI_JOB_ID"
+        const val CI_COMMIT_REF_NAME = "CI_COMMIT_REF_NAME"
     }
 }
 
 class LocalPipeline(
     override val serviceName: String = findServiceName { "local-ci" },
     override val serviceNumber: String? = environment[CI_BUILD_NUMBER],
-    override val serviceJobId: String? = findServiceJobId { null }
+    override val serviceJobId: String? = findServiceJobId { null },
+    override val branchName: String? = null
 ) : PipelineImpl() {
 
     companion object {
