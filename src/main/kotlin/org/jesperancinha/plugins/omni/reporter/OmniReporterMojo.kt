@@ -97,9 +97,9 @@ open class OmniReporterMojo(
                 token,
                 currentPipeline,
                 projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
-                failOnUnknown,
-                branchCoverage,
-                useCoverallsCount
+                failOnUnknown = failOnUnknown,
+                includeBranchCoverage = branchCoverage,
+                useCoverallsCount = useCoverallsCount
             )
         val supportedPredicate =
             if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->
