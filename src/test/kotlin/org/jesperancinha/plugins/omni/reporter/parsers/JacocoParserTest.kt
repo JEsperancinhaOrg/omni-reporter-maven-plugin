@@ -3,11 +3,13 @@ package org.jesperancinha.plugins.omni.reporter.parsers
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import org.jesperancinha.plugins.omni.reporter.domain.jacksonXMLMapper
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Package
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline
+import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
 import org.junit.jupiter.api.Test
 
@@ -68,10 +70,10 @@ internal class JacocoParserTest {
 
         val report = Report(packages = listOf(pack, pack2))
 
-        jacocoParser.parseSourceFile(report, listOf(root))
-        jacocoParser.parseSourceFile(report, listOf(root))
+        jacocoParser.parseSourceFile(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root))
+        jacocoParser.parseSourceFile(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root))
 
-        val sourceFiles = jacocoParser.parseSourceFile(report, listOf(root)).sourceFiles
+        val sourceFiles = jacocoParser.parseSourceFile(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root)).sourceFiles
 
         sourceFiles.shouldNotBeNull()
         sourceFiles.shouldHaveSize(1)

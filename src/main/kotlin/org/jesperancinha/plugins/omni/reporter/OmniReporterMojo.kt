@@ -5,9 +5,9 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
-import org.jesperancinha.plugins.omni.reporter.parsers.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.jesperancinha.plugins.omni.reporter.pipelines.PipelineImpl
+import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParser
 import org.slf4j.LoggerFactory
 import java.io.File
 
