@@ -75,14 +75,17 @@ Java 11 and above only
 - `cb` = covered branches
 
 
-## Release notes - Upcoming version 0.0.5
+## Release notes - Upcoming version 0.0.6
 
 1. Branch Coverage
+
+#### Release 0.0.5 - 2022/01/05
+
+1. Fix branch naming of GitLab using `CI_COMMIT_REF_NAME`
 
 #### Release 0.0.4 - 2022/01/03
 
 1. Fix JAXB upgrade -> Use [Jackson Module](https://medium.com/@foxjstephen/how-to-actually-parse-xml-in-java-kotlin-221a9309e6e8) parser
-2. Fix branch naming of GitLab using `CI_COMMIT_REF_NAME`
 
 #### Release 0.0.3 - 2022/01/03
 
