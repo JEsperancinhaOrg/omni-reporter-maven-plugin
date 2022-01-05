@@ -7,6 +7,7 @@ import org.apache.maven.project.MavenProject
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.jesperancinha.plugins.omni.reporter.pipelines.PipelineImpl
+import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProcessor
 import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParser
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -17,7 +18,7 @@ private val MavenProject?.findAllSearchFolders: List<MavenProject?>
         it
     } ?: mutableListOf()) + this
 
-private val String.isSupported: Boolean
+internal val String.isSupported: Boolean
     get() = equals("xml")
 
 
@@ -81,7 +82,20 @@ open class OmniReporterMojo(
 
         val currentPipeline = PipelineImpl.currentPipeline
 
-        coverallsToken?.let { token -> processAndSubmitCoverallsReports(token, currentPipeline, allProjects) }
+        coverallsToken?.let { token ->
+            CoverallsReportsProcessor(
+                coverallsToken = token,
+                coverallsUrl = coverallsUrl,
+                currentPipeline= currentPipeline,
+                allProjects = allProjects,
+                projectBaseDir = projectBaseDir,
+                failOnUnknown = failOnUnknown,
+                failOnReportNotFound = failOnReportNotFound,
+                branchCoverage = branchCoverage,
+                ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+                useCoverallsCount = useCoverallsCount
+            ).processReports()
+        }
     }
 
     private fun logLine() = let {
@@ -89,50 +103,6 @@ open class OmniReporterMojo(
     }
 
     private fun checkToken(token: String?) = token?.let { "found" } ?: "not found"
-
-    private fun processAndSubmitCoverallsReports(
-        token: String,
-        currentPipeline: Pipeline,
-        allProjects: List<MavenProject?>
-    ) {
-        val jacocoParser =
-            JacocoParser(
-                token,
-                currentPipeline,
-                projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
-                failOnUnknown = failOnUnknown,
-                includeBranchCoverage = branchCoverage,
-                useCoverallsCount = useCoverallsCount
-            )
-        val supportedPredicate =
-            if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->
-                !report.absolutePath.contains(testDirectory)
-            } else { _, _ -> true }
-        allProjects.map { project ->
-            File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
-                .forEach { report ->
-                    if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported
-                        && supportedPredicate(project.build.testOutputDirectory, report)
-                    ) {
-                        logger.info("Parsing file: $report")
-                        jacocoParser.parseSourceFile(
-                            report.inputStream(),
-                            project.compileSourceRoots.map { File(it) })
-                    }
-                }
-        }
-        val coverallsClient = CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException(), token)
-        val response =
-            coverallsClient.submit(jacocoParser.coverallsReport ?: let {
-                if (failOnReportNotFound) throw CoverallsReportNotGeneratedException() else {
-                    logger.warn("Coveralls report was not generated! This usually means that no jacoco.xml reports have been generated.")
-                    return
-                }
-            })
-        logger.info("* Omni Reporting to Coveralls response:")
-        logger.info(response?.url)
-        logger.info(response?.message)
-    }
 
     companion object {
         private val logger = LoggerFactory.getLogger(OmniReporterMojo::class.java)
