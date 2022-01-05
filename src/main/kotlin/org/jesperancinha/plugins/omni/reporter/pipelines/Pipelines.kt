@@ -2,6 +2,7 @@ package org.jesperancinha.plugins.omni.reporter.pipelines
 
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_RUN_ID
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitHubPipeline.Companion.GITHUB_RUN_NUMBER
+import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_COMMIT_REF_NAME
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_CONCURRENT_ID
 import org.jesperancinha.plugins.omni.reporter.pipelines.GitLabPipeline.Companion.CI_JOB_ID
 import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline.Companion.CI_BUILD_NUMBER
@@ -13,12 +14,18 @@ import org.slf4j.LoggerFactory
 private val logger: Logger = LoggerFactory.getLogger(Pipeline::class.java)
 private val environment: MutableMap<String, String> = System.getenv()
 private val allEnv = listOf(
+    // General
     CI_NAME,
-    CI_CONCURRENT_ID,
-    GITHUB_RUN_NUMBER,
     CI_BUILD_NUMBER,
     JOB_NUM,
+
+    //GitLab
+    CI_CONCURRENT_ID,
     CI_JOB_ID,
+    CI_COMMIT_REF_NAME,
+
+    //GitHubs
+    GITHUB_RUN_NUMBER,
     GITHUB_RUN_ID,
 )
 private val rejectWords = listOf("BUILD")
@@ -86,7 +93,7 @@ class GitLabPipeline(
     override val serviceJobId: String? = findServiceJobId {
         findSystemVariableValue(CI_JOB_ID)
     },
-    override val branchName: String? = environment[CI_COMMIT_REF_NAME]
+    override val branchName: String? = null
 ) : PipelineImpl() {
     companion object {
         const val CI_CONCURRENT_ID = "CI_CONCURRENT_ID"
