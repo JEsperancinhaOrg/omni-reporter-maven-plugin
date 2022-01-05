@@ -83,6 +83,16 @@ Java 11 and above only
 
 1. Rollback `CI_COMMIT_REF_NAME`. Unfortunately this messes up the way the JOB ID is calculated.
 
+> It has been observerd that GitLab checks out the repo on the desired commit, but looses reference to the branch at this point. This means that the only reference to the commit is the hash. If we change the branch name, it will use the hashnumber regards of what we configure for the Job ID.
+> Example
+> 
+> Branch = main, Hash = AAAAAAAAAAAAA and service_number = null => JobId = #AAAAAAAAAAAAA, Branch Name = main
+> 
+> Branch = AAAAAAAAAAAAA, Hash AAAAAAAAAAAAA and service_number = null -> JobId = #99, Branch Name = AAAAAAAAAAAAA
+> 
+> Branch = AAAAAAAAAAAAA, Hash AAAAAAAAAAAAA and service_number = 99 -> JobId = 99, Branch Name = AAAAAAAAAAAAA
+
+
 #### Release 0.0.5 - 2022/01/05
 
 1. Fix branch naming of GitLab using `CI_COMMIT_REF_NAME`
