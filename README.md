@@ -75,10 +75,13 @@ Java 11 and above only
 - `cb` = covered branches
 
 
-## Release notes - Upcoming version 0.0.6
+## Release notes - Upcoming version 0.0.7
 
 1. Branch Coverage
-2. Rollback `CI_COMMIT_REF_NAME`. Unfortunately this messes up the way the JOB ID is calculated.
+
+#### Release 0.0.6 - 2022/01/05
+
+1. Rollback `CI_COMMIT_REF_NAME`. Unfortunately this messes up the way the JOB ID is calculated.
 
 #### Release 0.0.5 - 2022/01/05
 
