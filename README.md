@@ -81,6 +81,7 @@ Java 11 and above only
 1. Branch Coverage
 2. Codacy support
 3. `failOnReportNotFound`
+4. `failOnUnknown` Bug fix
 
 #### Release 0.0.6 - 2022/01/05
 

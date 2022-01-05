@@ -7,15 +7,22 @@ import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
 import org.jesperancinha.plugins.omni.reporter.isSupported
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
-import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParser
+import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParserToCoveralls
 import org.slf4j.LoggerFactory
 import java.io.File
 
 /**
  * Created by jofisaes on 05/01/2022
  */
-interface Processors {
-    fun processReports()
+abstract class Processor(
+    private val ignoreTestBuildDirectory: Boolean,
+) {
+    abstract fun processReports()
+
+    val supportedPredicate =
+        if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->
+            !report.absolutePath.contains(testDirectory)
+        } else { _, _ -> true }
 }
 
 class CoverallsReportsProcessor(
@@ -27,13 +34,13 @@ class CoverallsReportsProcessor(
     private val failOnUnknown: Boolean,
     private val failOnReportNotFound: Boolean,
     private val branchCoverage: Boolean,
-    private val ignoreTestBuildDirectory: Boolean,
-    private val useCoverallsCount: Boolean
-) : Processors {
+    private val useCoverallsCount: Boolean,
+    ignoreTestBuildDirectory: Boolean
+) : Processor(ignoreTestBuildDirectory) {
 
     override fun processReports() {
         val jacocoParser =
-            JacocoParser(
+            JacocoParserToCoveralls(
                 coverallsToken,
                 currentPipeline,
                 projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
@@ -41,23 +48,19 @@ class CoverallsReportsProcessor(
                 includeBranchCoverage = branchCoverage,
                 useCoverallsCount = useCoverallsCount
             )
-        val supportedPredicate =
-            if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->
-                !report.absolutePath.contains(testDirectory)
-            } else { _, _ -> true }
-        allProjects.map { project ->
-            File(project?.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
-                .forEach { report ->
-                    if (report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported
-                        && supportedPredicate(project.build.testOutputDirectory, report)
-                    ) {
-                        logger.info("Parsing file: $report")
-                        jacocoParser.parseSourceFile(
-                            report.inputStream(),
-                            project.compileSourceRoots.map { File(it) })
-                    }
+
+        allProjects.toReportFiles(supportedPredicate)
+            .filter { (project, _) -> project.compileSourceRoots != null }
+            .forEach { (project, reports) ->
+                reports.forEach { report ->
+                    logger.info("Parsing file: $report")
+                    jacocoParser.parseInputStream(
+                        report.inputStream(),
+                        project.compileSourceRoots.map { file -> File(file) })
                 }
-        }
+
+            }
+
         val coverallsClient =
             CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException(), coverallsToken)
         val response =
@@ -74,5 +77,28 @@ class CoverallsReportsProcessor(
 
     companion object {
         private val logger = LoggerFactory.getLogger(CoverallsReportsProcessor::class.java)
+    }
+}
+
+private fun List<MavenProject?>.toReportFiles(supportedPredicate: (String, File) -> Boolean): List<Pair<MavenProject, List<File>>> =
+    this.filterNotNull()
+        .map { project ->
+            project to File(project.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
+                .toList()
+                .filter { report ->
+                    report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported
+                            && supportedPredicate(project.build.testOutputDirectory, report)
+                }.distinct()
+        }.distinct()
+
+
+class CodacyProcessor(
+    private val token: String,
+    private val codacyUrl: String?,
+    private val currentPipeline: Pipeline,
+    ignoreTestBuildDirectory: Boolean
+) : Processor(ignoreTestBuildDirectory) {
+    override fun processReports() {
+
     }
 }

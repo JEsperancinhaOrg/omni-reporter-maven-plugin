@@ -47,7 +47,7 @@ class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sou
     File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
 
 
-class JacocoParser(
+class JacocoParserToCoveralls(
     token: String,
     pipeline: Pipeline,
     root: File,
@@ -55,15 +55,16 @@ class JacocoParser(
     includeBranchCoverage: Boolean,
     val useCoverallsCount: Boolean
 ) :
-    OmniReporterParserImpl<Report>(token, pipeline, root, includeBranchCoverage) {
+    OmniReporterParserImpl<InputStream, CoverallsReport>(token, pipeline, root, includeBranchCoverage) {
 
     internal var coverallsReport: CoverallsReport? = null
 
     private var coverallsSources = mutableMapOf<String, SourceFile>()
 
     val failOnUnknownPredicate =
-        if (failOnUnknown) { file: File -> if (!file.exists()) throw FileNotFoundException(file.absolutePath) else true }
-        else { file: File ->
+        if (failOnUnknown) { file: File ->
+            if (!file.exists()) throw FileNotFoundException(file.absolutePath) else true
+        } else { file: File ->
             if (!file.exists()) {
                 logger.warn("File ${file.absolutePath} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
                 logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
@@ -71,23 +72,27 @@ class JacocoParser(
             file.exists()
         }
 
-    val failOnUnknownPredicateFilePack =
-        if (failOnUnknown) { foundSources: List<Pair<SourceCodeFile, Sourcefile>>, sourceFiles: List<Sourcefile> ->
-            sourceFiles.filter { sourcefile ->
-                foundSources.any { (foundSource, _) ->
-                    foundSource.name != sourcefile.name
+    /**
+     * Comparison is based on the size. If there is a missmatch then the size is different.
+     */
+    val failOnUnknownPredicateFilePack = { foundSources: List<Pair<SourceCodeFile, Sourcefile>>, sourceFiles: List<Sourcefile> ->
+            val jacocoSourcesFound = foundSources.map { (_, foundJacocoFile) -> foundJacocoFile }
+            val sourceFilesNotFound = sourceFiles.filter { !jacocoSourcesFound.contains(it) }
+            sourceFilesNotFound
+                .forEach { foundSource ->
+                    logger.warn("File ${foundSource.name} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
+                    logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
                 }
-            }.forEach { foundSource ->
-                logger.warn("File ${foundSource.name} has not been found. Please activate flag `failOnUnknown` in your maven configuration if you want reporting to fail in these cases.")
-                logger.warn("Files not found are not included in the complete coverage report. They are sometimes included in the report due to bugs from reporting frameworks and in those cases it is safe to ignore them")
+            if (failOnUnknown) {
+                logger.error("Stopping build due to one or more files not being found")
+                throw FileNotFoundException()
             }
-            false
-        } else { _, _ ->
-            true
+            sourceFilesNotFound.isEmpty()
         }
 
-    override fun parseSourceFile(inputStream: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
-        readValue<Report>(inputStream).packages
+
+    override fun parseInputStream(input: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
+        readValue<Report>(input).packages
             .asSequence()
             .map { it.name to it.sourcefiles }
             .flatMap { (packageName, sourceFiles) ->
@@ -147,7 +152,7 @@ class JacocoParser(
             }
 
     companion object {
-        val logger = LoggerFactory.getLogger(JacocoParser::class.java)
+        private val logger = LoggerFactory.getLogger(JacocoParserToCoveralls::class.java)
     }
 }
 

@@ -4,11 +4,9 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
-import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
-import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.jesperancinha.plugins.omni.reporter.pipelines.PipelineImpl
+import org.jesperancinha.plugins.omni.reporter.processors.CodacyProcessor
 import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProcessor
-import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParser
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -26,6 +24,8 @@ internal val String.isSupported: Boolean
 open class OmniReporterMojo(
     @Parameter(property = "coverallsUrl", defaultValue = "https://coveralls.io/api/v1/jobs")
     protected var coverallsUrl: String? = null,
+    @Parameter(property = "codacyUrl", defaultValue = "https://api.codacy.com")
+    protected var codacyUrl: String? = null,
     @Parameter(property = "sourceEncoding", defaultValue = "\${project.build.sourceEncoding}")
     var sourceEncoding: String? = null,
     @Parameter(property = "projectBaseDir", defaultValue = "\${project.basedir}")
@@ -86,7 +86,7 @@ open class OmniReporterMojo(
             CoverallsReportsProcessor(
                 coverallsToken = token,
                 coverallsUrl = coverallsUrl,
-                currentPipeline= currentPipeline,
+                currentPipeline = currentPipeline,
                 allProjects = allProjects,
                 projectBaseDir = projectBaseDir,
                 failOnUnknown = failOnUnknown,
@@ -94,6 +94,15 @@ open class OmniReporterMojo(
                 branchCoverage = branchCoverage,
                 ignoreTestBuildDirectory = ignoreTestBuildDirectory,
                 useCoverallsCount = useCoverallsCount
+            ).processReports()
+        }
+
+        codacyToken?.let { token ->
+            CodacyProcessor(
+                token = token,
+                codacyUrl = codacyUrl,
+                currentPipeline = currentPipeline,
+                ignoreTestBuildDirectory = ignoreTestBuildDirectory
             ).processReports()
         }
     }

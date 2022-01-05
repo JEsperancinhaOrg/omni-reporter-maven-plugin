@@ -6,9 +6,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
-import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline
-import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParser
-import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
 import org.junit.jupiter.api.Test
 
 internal class DomainTest {
