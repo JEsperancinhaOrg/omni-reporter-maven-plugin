@@ -35,12 +35,12 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 3. Pipelines Supported
 
-| Type     | Status |Notes| Available from Release |
-|----------|--------|---|------------------------|
-| Local    | 🚧     | | 0.0.0                  |
-| Git Hub  | 🚧     | | 0.0.1                  |
-| Git Lab  | 🚧     | | 0.0.1                  |
-| CircleCI | 🚧     | | ?                      |
+| Type     | Status | Notes | Available from Release |
+|----------|--------|-------|------------------------|
+| Local    | 🚧     |       | 0.0.0                  |
+| Git Hub  | 🚧     |       | 0.0.1                  |
+| Git Lab  | 🚧     |       | 0.0.1                  |
+| CircleCI | 🚧     |       | ?                      |
 
 #### 4. Configuration options
 
@@ -48,6 +48,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
 | failOnUnknown            | If an unknown file is found, it will ignore current file and proceed with reporting the rest. It is `false` by default                                                                                                                                                                                                                          | 0.0.0                  |
 | failOnNoEncoding         | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                           | ?                      |
+| failOnReportNotFound     | If a particular report is not generated, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                     | ?                      |
 | ignoreTestBuildDirectory | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                              | 0.0.2                  |
 | branchCoverage           | By default it is set to `false`. If you want include branch coverage in your reporting please activate this flag.                                                                                                                                                                                                                               | ?                      |
 | useCoverallsCount        | By default it is set to `true`. If you want to let the pipeline determine the numbering for your Job Id and run, then set this to `false`. It will then search those values via environment variables.                                                                                                                                          | 0.0.3                  |
@@ -78,6 +79,8 @@ Java 11 and above only
 ## Release notes - Upcoming version 0.0.7
 
 1. Branch Coverage
+2. Codacy support
+3. `failOnReportNotFound`
 
 #### Release 0.0.6 - 2022/01/05
 

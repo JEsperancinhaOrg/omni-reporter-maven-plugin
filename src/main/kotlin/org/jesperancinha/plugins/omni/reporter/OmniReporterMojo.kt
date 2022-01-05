@@ -33,6 +33,8 @@ open class OmniReporterMojo(
     var failOnNoEncoding: Boolean = false,
     @Parameter(property = "failOnUnknown", defaultValue = "false")
     var failOnUnknown: Boolean = false,
+    @Parameter(property = "failOnReportNotFound", defaultValue = "false")
+    var failOnReportNotFound: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "useCoverallsCount", defaultValue = "true")
@@ -71,6 +73,7 @@ open class OmniReporterMojo(
         logger.info("Parent Directory: $projectBaseDir")
         logger.info("failOnNoEncoding: $failOnNoEncoding")
         logger.info("failOnUnknown: $failOnUnknown")
+        logger.info("failOnReportNotFound: $failOnReportNotFound")
         logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
         logger.info("branchCoverage: $branchCoverage")
         logger.info("useCoverallsCount: $useCoverallsCount")
@@ -120,7 +123,12 @@ open class OmniReporterMojo(
         }
         val coverallsClient = CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException(), token)
         val response =
-            coverallsClient.submit(jacocoParser.coverallsReport ?: throw CoverallsReportNotGeneratedException())
+            coverallsClient.submit(jacocoParser.coverallsReport ?: let {
+                if (failOnReportNotFound) throw CoverallsReportNotGeneratedException() else {
+                    logger.warn("Coveralls report was not generated! This usually means that no jacoco.xml reports have been generated.")
+                    return
+                }
+            })
         logger.info("* Omni Reporting to Coveralls response:")
         logger.info(response?.url)
         logger.info(response?.message)
