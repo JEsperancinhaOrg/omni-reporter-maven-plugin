@@ -82,6 +82,7 @@ Java 11 and above only
 2. Codacy support
 3. `failOnReportNotFound`
 4. `failOnUnknown` Bug fix
+5. Possibility to add external root sources - useful in cases where projects are using scala, java, kotlin and/or clojure at the same time. The plugin only recognizes one source directory.
 
 #### Release 0.0.6 - 2022/01/05
 

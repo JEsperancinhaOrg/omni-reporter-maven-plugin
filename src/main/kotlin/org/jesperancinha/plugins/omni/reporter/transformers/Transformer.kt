@@ -3,7 +3,6 @@ package org.jesperancinha.plugins.omni.reporter.transformers
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.jesperancinha.plugins.omni.reporter.repository.GitRepository
 import java.io.File
-import java.io.InputStream
 
 /**
  * Created by jofisaes on 05/01/2022
