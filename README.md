@@ -30,11 +30,11 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 2. Online API's supported
 
-| Type      | Status | Notes | Available from Release | Environment Variables                   |
-|-----------|--------|-------|------------------------|-----------------------------------------|
-| Coveralls | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN |
-| Codacy    | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    |
-| CodeCov   | 🚧     |       | ?                      | CODECOV_TOKEN                           |
+| Type      | Status | Notes | Available from Release | Environment Variables                   | Available from Release |
+|-----------|--------|-------|------------------------|-----------------------------------------|------------------------|
+| Coveralls | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
+| Codacy    | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
+| CodeCov   | 🚧     |       | ?                      | CODECOV_TOKEN                           | ?                      |
 
 #### 3. Pipelines Supported
 
@@ -83,14 +83,17 @@ Java 11 and above only
 - `cb` = covered branches
 
 
-## Release notes - Upcoming version 0.0.7
+## Release notes - Upcoming version 0.0.8
 
 1. Branch Coverage
-2. Codacy support
-3. `failOnReportNotFound`
-4. `failOnUnknown` Bug fix
-5. Possibility to add external root sources - useful in cases where projects are using scala, java, kotlin and/or clojure at the same time. The plugin only recognizes one source directory. Parameter name is `extraSourceFolders`
-6. `failOnReportSendingError`
+
+#### Release 0.0.7 - 2022/01/06
+
+1. Codacy support
+2. `failOnReportNotFound`
+3. `failOnUnknown` Bug fix
+4. Possibility to add external root sources - useful in cases where projects are using scala, java, kotlin and/or clojure at the same time. The plugin only recognizes one source directory. Parameter name is `extraSourceFolders`
+5. `failOnReportSendingError`
 
 #### Release 0.0.6 - 2022/01/05
 
