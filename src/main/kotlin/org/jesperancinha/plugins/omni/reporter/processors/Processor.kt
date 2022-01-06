@@ -44,6 +44,8 @@ class CoverallsReportsProcessor(
 ) : Processor(ignoreTestBuildDirectory) {
 
     override fun processReports() {
+        logger.info("* Omni Reporting to Coveralls started!")
+
         val jacocoParser =
             JacocoParserToCoveralls(
                 coverallsToken,
@@ -80,7 +82,7 @@ class CoverallsReportsProcessor(
             logger.info("- Response")
             logger.info(response?.url)
             logger.info(response?.message)
-        } catch (ex: RuntimeException) {
+        } catch (ex: Exception) {
             logger.error("Failed sending Coveralls report!", ex)
             if (failOnReportSending) {
                 throw ex
@@ -115,6 +117,8 @@ class CodacyProcessor(
     ignoreTestBuildDirectory: Boolean
 ) : Processor(ignoreTestBuildDirectory) {
     override fun processReports() {
+        logger.info("* Omni Reporting to Codacy started!")
+
         val codacyJacocoReports = allProjects.toReportFiles(supportedPredicate)
             .filter { (project, _) -> project.compileSourceRoots != null }
             .flatMap { (project, reports) ->
@@ -132,15 +136,16 @@ class CodacyProcessor(
 
         val repo = RepositoryBuilder().findGitDir(projectBaseDir).build()
 
-        val reportsPerLanguage = Language.values().map { currentLanguage ->
-            currentLanguage to codacyJacocoReports
+        val reportsPerLanguage = Language.values().associateWith { currentLanguage ->
+            codacyJacocoReports
                 .filter { (_, languages) -> languages.contains(currentLanguage) }
                 .map { (report, _) -> report }
-        }.toMap()
+        }
             .filter { (_, reports) -> reports.isNotEmpty() }
 
         try {
             reportsPerLanguage.entries.forEach { (language, reports) ->
+                logger.info("... sending reporting info for ${language.name.lowercase()} language reporting.")
                 CodacyClient(
                     token = token,
                     language = language,
@@ -149,7 +154,7 @@ class CodacyProcessor(
                 ).submit(reports)
             }
             logger.info("* Omni Reporting to Codacy complete!")
-        } catch (ex: RuntimeException) {
+        } catch (ex: Exception) {
             logger.error("Failed sending Codacy report!", ex)
             if (failOnReportSending) {
                 throw ex
