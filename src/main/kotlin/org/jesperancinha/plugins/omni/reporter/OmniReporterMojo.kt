@@ -19,18 +19,6 @@ private val MavenProject?.findAllSearchFolders: List<MavenProject>
 internal val String.isSupported: Boolean
     get() = equals("xml")
 
-
-class OmniReporterMavenProject(
-    compileSourceRoot: File,
-    testOutputDirectory: String,
-) : MavenProject() {
-    init {
-        compileSourceRoots = mutableListOf(compileSourceRoot.absolutePath)
-        build.testOutputDirectory = testOutputDirectory
-    }
-
-}
-
 @Mojo(name = "report", threadSafe = false, aggregator = true)
 open class OmniReporterMojo(
     @Parameter(property = "coverallsUrl", defaultValue = "https://coveralls.io/api/v1/jobs")
@@ -47,8 +35,8 @@ open class OmniReporterMojo(
     var failOnUnknown: Boolean = false,
     @Parameter(property = "failOnReportNotFound", defaultValue = "false")
     var failOnReportNotFound: Boolean = false,
-    @Parameter(property = "failOnReportSending", defaultValue = "false")
-    var failOnReportSending: Boolean = false,
+    @Parameter(property = "failOnReportSendingError", defaultValue = "false")
+    var failOnReportSendingError: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "useCoverallsCount", defaultValue = "true")
@@ -90,6 +78,7 @@ open class OmniReporterMojo(
         logger.info("failOnNoEncoding: $failOnNoEncoding")
         logger.info("failOnUnknown: $failOnUnknown")
         logger.info("failOnReportNotFound: $failOnReportNotFound")
+        logger.info("failOnReportSendingError: $failOnReportSendingError")
         logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
         logger.info("branchCoverage: $branchCoverage")
         logger.info("useCoverallsCount: $useCoverallsCount")
@@ -107,7 +96,7 @@ open class OmniReporterMojo(
                 projectBaseDir = projectBaseDir,
                 failOnUnknown = failOnUnknown,
                 failOnReportNotFound = failOnReportNotFound,
-                failOnReportSending = failOnReportSending,
+                failOnReportSending = failOnReportSendingError,
                 branchCoverage = branchCoverage,
                 ignoreTestBuildDirectory = ignoreTestBuildDirectory,
                 useCoverallsCount = useCoverallsCount
@@ -121,7 +110,7 @@ open class OmniReporterMojo(
                 currentPipeline = currentPipeline,
                 allProjects = allProjects,
                 projectBaseDir = projectBaseDir,
-                failOnReportSending = failOnReportSending,
+                failOnReportSending = failOnReportSendingError,
                 ignoreTestBuildDirectory = ignoreTestBuildDirectory
             ).processReports()
         }
