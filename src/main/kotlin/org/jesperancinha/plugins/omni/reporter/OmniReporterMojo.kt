@@ -10,15 +10,26 @@ import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProces
 import org.slf4j.LoggerFactory
 import java.io.File
 
-private val MavenProject?.findAllSearchFolders: List<MavenProject?>
-    get() = (this?.collectedProjects.let {
+private val MavenProject?.findAllSearchFolders: List<MavenProject>
+    get() = ((this?.collectedProjects.let {
         it?.addAll(it.flatMap { subProj -> subProj.findAllSearchFolders })
         it
-    } ?: mutableListOf()) + this
+    } ?: mutableListOf()) + this).filterNotNull()
 
 internal val String.isSupported: Boolean
     get() = equals("xml")
 
+
+class OmniReporterMavenProject(
+    compileSourceRoot: File,
+    testOutputDirectory: String,
+) : MavenProject() {
+    init {
+        compileSourceRoots = mutableListOf(compileSourceRoot.absolutePath)
+        build.testOutputDirectory = testOutputDirectory
+    }
+
+}
 
 @Mojo(name = "report", threadSafe = false, aggregator = true)
 open class OmniReporterMojo(
@@ -50,6 +61,8 @@ open class OmniReporterMojo(
     var codacyToken: String? = null,
     @Parameter(defaultValue = "\${project}", readonly = true)
     var project: MavenProject? = null,
+    @Parameter(property = "extraReportFolder")
+    val extraSourceFolders: List<File> = emptyList()
 ) : AbstractMojo() {
 
     override fun execute() {
@@ -63,7 +76,7 @@ open class OmniReporterMojo(
         codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
         codacyToken = codecovToken ?: environment["CODACY_PROJECT_TOKEN"]
 
-        val allProjects = project.findAllSearchFolders
+        val allProjects = project.findAllSearchFolders.injectExtraSourceFiles(extraSourceFolders)
 
         logLine()
         logger.info("Coveralls URL: $coverallsUrl")
@@ -78,6 +91,7 @@ open class OmniReporterMojo(
         logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
         logger.info("branchCoverage: $branchCoverage")
         logger.info("useCoverallsCount: $useCoverallsCount")
+        logger.info("extraSourceFolders: ${extraSourceFolders.joinToString(";")}")
         logLine()
 
         val currentPipeline = PipelineImpl.currentPipeline
@@ -119,6 +133,18 @@ open class OmniReporterMojo(
         const val OMNI_CHARACTER_LINE_NUMBER = 150
     }
 }
+
+private fun List<MavenProject>.injectExtraSourceFiles(extraSourceFolders: List<File>): List<MavenProject> =
+    this.map { project ->
+        val extraSourcesFoldersFound =
+            extraSourceFolders.filter { sourceFolder ->
+                !project.basedir.toPath().relativize(sourceFolder.toPath()).toString().contains("..")
+            }
+        project.compileSourceRoots.addAll(extraSourcesFoldersFound.map { foundSourceFolder -> foundSourceFolder.absolutePath }
+            .toMutableList())
+        project
+    }
+
 
 class ProjectDirectoryNotFoundException : RuntimeException()
 

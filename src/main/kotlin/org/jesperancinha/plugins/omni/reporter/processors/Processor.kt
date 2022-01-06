@@ -25,7 +25,7 @@ abstract class Processor(
         } else { _, _ -> true }
 }
 
-class CoverallsReportsProcessor(
+class CoverallsReportsProcessor (
     private val coverallsToken: String,
     private val coverallsUrl: String?,
     private val currentPipeline: Pipeline,

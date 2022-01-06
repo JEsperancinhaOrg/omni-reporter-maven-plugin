@@ -48,10 +48,13 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
 | failOnUnknown            | If an unknown file is found, it will ignore current file and proceed with reporting the rest. It is `false` by default                                                                                                                                                                                                                          | 0.0.0                  |
 | failOnNoEncoding         | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                           | ?                      |
-| failOnReportNotFound     | If a particular report is not generated, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                     | ?                      |
+| failOnReportNotFound     | If a particular report is not generated, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                     | 0.0.7                  |
 | ignoreTestBuildDirectory | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                              | 0.0.2                  |
 | branchCoverage           | By default it is set to `false`. If you want include branch coverage in your reporting please activate this flag.                                                                                                                                                                                                                               | ?                      |
 | useCoverallsCount        | By default it is set to `true`. If you want to let the pipeline determine the numbering for your Job Id and run, then set this to `false`. It will then search those values via environment variables.                                                                                                                                          | 0.0.3                  |
+| extraSourceFolders       | You may want to include extra `Source` folders for `Omni` to find. It is better to make sure that in your plugin, you can define and tell maven where are your extra source folders. This parameter is here available as a last resort , should you find a problem where the plugins just don't work the way you expect them to.                | 0.0.7                  |
+| coverallsUrl             | Should Coveralls ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                         | 0.0.0                  |
+| codacyUrl                | Should Codacy ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                            | 0.0.7                  |
 | coverallsToken           | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead | 0.0.0                  |
 | codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     | 0.0.0                  |
 | codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                             | 0.0.0                  |
@@ -82,7 +85,7 @@ Java 11 and above only
 2. Codacy support
 3. `failOnReportNotFound`
 4. `failOnUnknown` Bug fix
-5. Possibility to add external root sources - useful in cases where projects are using scala, java, kotlin and/or clojure at the same time. The plugin only recognizes one source directory.
+5. Possibility to add external root sources - useful in cases where projects are using scala, java, kotlin and/or clojure at the same time. The plugin only recognizes one source directory. Parameter name is `extraSourceFolders`
 
 #### Release 0.0.6 - 2022/01/05
 
@@ -149,6 +152,30 @@ Just add the following dependency to your project to get coverage sent to covera
 ```
 
 Don't forget to have the variables available in your environment for the API's you want to send your reports to.
+
+If you want to be more specific in your configuration and need an example here is one of a fully configured plugin:
+
+```xml
+<plugin>
+   <groupId>org.jesperancinha.plugins</groupId>
+   <artifactId>omni-coveragereporter-maven-plugin</artifactId>
+   <version>${omni-coveragereporter-maven-plugin.version}</version>
+   <configuration>
+      <failOnUnknown>false</failOnUnknown>
+      <failOnNoEncoding>false</failOnNoEncoding>
+      <failOnReportNotFound>false</failOnReportNotFound>
+      <ignoreTestBuildDirectory>true</ignoreTestBuildDirectory>
+      <branchCoverage>false</branchCoverage>
+      <useCoverallsCount>false</useCoverallsCount>
+      <extraSourceFolders>${project.build.directory}/generated-sources/plugin</extraSourceFolders>
+      <coverallsUrl>https://coveralls.io/api/v1/jobs</coverallsUrl>
+      <codacyUrl>https://api.codacy.com</codacyUrl>
+      <coverallsToken>AAAAAAAAAAAAAAAAAAA</coverallsToken>
+      <codacyToken>AAAAAAAAAAAAAAAAAAA</codacyToken>
+      <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>
+   </configuration>
+</plugin>
+```
 
 #### 2. Jacoco Reports
 
