@@ -116,6 +116,8 @@ open class OmniReporterMojo(
                 token = token,
                 codacyUrl = codacyUrl,
                 currentPipeline = currentPipeline,
+                allProjects = allProjects,
+                projectBaseDir = projectBaseDir,
                 ignoreTestBuildDirectory = ignoreTestBuildDirectory
             ).processReports()
         }

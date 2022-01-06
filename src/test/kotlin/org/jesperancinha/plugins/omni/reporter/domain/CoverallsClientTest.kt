@@ -23,7 +23,7 @@ internal class CoverallsClientTest {
             useCoverallsCount = false
         )
 
-        val report = jacocoParser.parseInputStream(inputStream, listOf(root))
+        val report = jacocoParser.parseInput(inputStream, listOf(root))
         logger.info(objectMapper.writeValueAsString(report))
 
         coverallsClient.submit(report)

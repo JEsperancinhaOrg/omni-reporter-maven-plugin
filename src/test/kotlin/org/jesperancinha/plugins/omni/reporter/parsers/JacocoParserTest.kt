@@ -70,10 +70,10 @@ internal class JacocoParserTest {
 
         val report = Report(packages = listOf(pack, pack2))
 
-        jacocoParser.parseInputStream(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root))
-        jacocoParser.parseInputStream(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root))
+        jacocoParser.parseInput(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root))
+        jacocoParser.parseInput(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root))
 
-        val sourceFiles = jacocoParser.parseInputStream(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root)).sourceFiles
+        val sourceFiles = jacocoParser.parseInput(jacksonXMLMapper.writeValueAsString(report).byteInputStream(), listOf(root)).sourceFiles
 
         sourceFiles.shouldNotBeNull()
         sourceFiles.shouldHaveSize(1)

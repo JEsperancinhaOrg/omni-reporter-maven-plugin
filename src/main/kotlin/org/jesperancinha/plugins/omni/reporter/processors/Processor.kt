@@ -7,6 +7,7 @@ import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsClient
 import org.jesperancinha.plugins.omni.reporter.isSupported
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
+import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParserToCodacy
 import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParserToCoveralls
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -25,7 +26,7 @@ abstract class Processor(
         } else { _, _ -> true }
 }
 
-class CoverallsReportsProcessor (
+class CoverallsReportsProcessor(
     private val coverallsToken: String,
     private val coverallsUrl: String?,
     private val currentPipeline: Pipeline,
@@ -54,7 +55,7 @@ class CoverallsReportsProcessor (
             .forEach { (project, reports) ->
                 reports.forEach { report ->
                     logger.info("Parsing file: $report")
-                    jacocoParser.parseInputStream(
+                    jacocoParser.parseInput(
                         report.inputStream(),
                         project.compileSourceRoots.map { file -> File(file) })
                 }
@@ -96,9 +97,24 @@ class CodacyProcessor(
     private val token: String,
     private val codacyUrl: String?,
     private val currentPipeline: Pipeline,
+    private val allProjects: List<MavenProject?>,
+    private val projectBaseDir: File?,
     ignoreTestBuildDirectory: Boolean
 ) : Processor(ignoreTestBuildDirectory) {
     override fun processReports() {
-
+        val codacyJacocoReports = allProjects.toReportFiles(supportedPredicate)
+            .filter { (project, _) -> project.compileSourceRoots != null }
+            .flatMap { (project, reports) ->
+                reports.map { report ->
+                    JacocoParserToCodacy(
+                        token = token,
+                        pipeline = currentPipeline,
+                        root = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
+                    ).parseInput(report, project.compileSourceRoots.map { file ->
+                        File(file)
+                    }
+                    )
+                }
+            }
     }
 }

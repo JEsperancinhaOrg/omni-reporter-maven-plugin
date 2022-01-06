@@ -91,7 +91,7 @@ class JacocoParserToCoveralls(
         }
 
 
-    override fun parseInputStream(input: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
+    override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
         readValue<Report>(input).packages
             .asSequence()
             .map { it.name to it.sourcefiles }

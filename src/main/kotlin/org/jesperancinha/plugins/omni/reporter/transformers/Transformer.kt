@@ -8,7 +8,7 @@ import java.io.File
  * Created by jofisaes on 05/01/2022
  */
 interface OmniReportParser<INPUT, OUTPUT> {
-    fun parseInputStream(input: INPUT, compiledSourcesDirs: List<File>): OUTPUT
+    fun parseInput(input: INPUT, compiledSourcesDirs: List<File>): OUTPUT
 }
 
 abstract class OmniReporterParserImpl<INPUT, OUTPUT>(

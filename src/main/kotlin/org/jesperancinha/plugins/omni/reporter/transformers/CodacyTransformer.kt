@@ -13,6 +13,6 @@ class JacocoParserToCodacy(
     pipeline: Pipeline,
     root: File
 ) : OmniReporterParserImpl<File, CoverageReport>(token, pipeline, root) {
-    override fun parseInputStream(input: File, compiledSourcesDirs: List<File>): CoverageReport =
+    override fun parseInput(input: File, compiledSourcesDirs: List<File>): CoverageReport =
         JacocoParser.parse(root, input).right().get()
 }
