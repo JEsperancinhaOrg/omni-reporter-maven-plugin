@@ -1,6 +1,6 @@
 package org.jesperancinha.plugins.omni.reporter.repository
 
-import org.eclipse.jgit.lib.Constants
+import org.eclipse.jgit.lib.Constants.HEAD
 import org.eclipse.jgit.lib.RepositoryBuilder
 import org.eclipse.jgit.revwalk.RevWalk
 import org.jesperancinha.plugins.omni.reporter.domain.Git
@@ -17,7 +17,7 @@ class GitRepository(sourceDirectory: File, pipeline: Pipeline) {
     private val repo = RepositoryBuilder().findGitDir(sourceDirectory).build()
 
     private val head = let {
-        val revision = repo.resolve(Constants.HEAD)
+        val revision = repo.resolve(HEAD)
         val commit = RevWalk(repo).parseCommit(revision)
         Head(
             revision.name,

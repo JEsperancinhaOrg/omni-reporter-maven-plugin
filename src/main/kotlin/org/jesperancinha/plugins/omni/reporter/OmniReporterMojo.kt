@@ -47,6 +47,8 @@ open class OmniReporterMojo(
     var failOnUnknown: Boolean = false,
     @Parameter(property = "failOnReportNotFound", defaultValue = "false")
     var failOnReportNotFound: Boolean = false,
+    @Parameter(property = "failOnReportSending", defaultValue = "false")
+    var failOnReportSending: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "useCoverallsCount", defaultValue = "true")
@@ -74,7 +76,7 @@ open class OmniReporterMojo(
         val environment = System.getenv()
         coverallsToken = (coverallsToken ?: environment["COVERALLS_REPO_TOKEN"]) ?: environment["COVERALLS_TOKEN"]
         codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
-        codacyToken = codecovToken ?: environment["CODACY_PROJECT_TOKEN"]
+        codacyToken = codacyToken ?: environment["CODACY_PROJECT_TOKEN"]
 
         val allProjects = project.findAllSearchFolders.injectExtraSourceFiles(extraSourceFolders)
 
@@ -105,6 +107,7 @@ open class OmniReporterMojo(
                 projectBaseDir = projectBaseDir,
                 failOnUnknown = failOnUnknown,
                 failOnReportNotFound = failOnReportNotFound,
+                failOnReportSending = failOnReportSending,
                 branchCoverage = branchCoverage,
                 ignoreTestBuildDirectory = ignoreTestBuildDirectory,
                 useCoverallsCount = useCoverallsCount
@@ -118,6 +121,7 @@ open class OmniReporterMojo(
                 currentPipeline = currentPipeline,
                 allProjects = allProjects,
                 projectBaseDir = projectBaseDir,
+                failOnReportSending = failOnReportSending,
                 ignoreTestBuildDirectory = ignoreTestBuildDirectory
             ).processReports()
         }

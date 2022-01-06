@@ -13,3 +13,6 @@ internal val String.toFileDigest: String
         .joinToString(separator = "") { byte -> "%02x".format(byte) }
         .uppercase()
 
+enum class Language {
+    JAVA, KOTLIN, SCALA
+}

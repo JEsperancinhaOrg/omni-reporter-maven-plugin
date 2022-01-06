@@ -25,3 +25,9 @@ class JsonMappingConfiguration {
         val objectMapper = jacksonObjectMapper().apply { propertyNamingStrategy = SnakeCaseStrategy() }
     }
 }
+
+internal interface ApiClient<REPORT, RESPONSE> {
+    val token: String
+    val url: String?
+    fun submit(report: REPORT): RESPONSE?
+}

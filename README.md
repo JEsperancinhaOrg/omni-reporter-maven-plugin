@@ -9,6 +9,9 @@
 
 [![omni-reporter-maven-plugin](https://github.com/JEsperancinhaOrg/omni-reporter-maven-plugin/actions/workflows/omni-reporter-maven-plugin.yml/badge.svg)](https://github.com/JEsperancinhaOrg/omni-reporter-maven-plugin/actions/workflows/omni-reporter-maven-plugin.yml)
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4a58bde61f274affb98761af7ed0d199)](https://www.codacy.com/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JEsperancinhaOrg/omni-reporter-maven-plugin&amp;utm_campaign=Badge_Grade)
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/4a58bde61f274affb98761af7ed0d199)](https://www.codacy.com/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/dashboard?utm_source=github.com&utm_medium=referral&utm_content=JEsperancinhaOrg/omni-reporter-maven-plugin&utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/JEsperancinhaOrg/omni-reporter-maven-plugin/badge.svg?branch=main)](https://coveralls.io/github/JEsperancinhaOrg/omni-reporter-maven-plugin?branch=main)
 
 [![GitHub language count](https://img.shields.io/github/languages/count/JEsperancinhaOrg/omni-reporter-maven-plugin.svg)](#)
@@ -169,7 +172,7 @@ If you want to be more specific in your configuration and need an example here i
       <useCoverallsCount>false</useCoverallsCount>
       <extraSourceFolders>${project.build.directory}/generated-sources/plugin</extraSourceFolders>
       <coverallsUrl>https://coveralls.io/api/v1/jobs</coverallsUrl>
-      <codacyUrl>https://api.codacy.com</codacyUrl>
+      <codacyUrl>https://api.codacy.com/api/v3</codacyUrl>
       <coverallsToken>AAAAAAAAAAAAAAAAAAA</coverallsToken>
       <codacyToken>AAAAAAAAAAAAAAAAAAA</codacyToken>
       <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>

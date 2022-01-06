@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.api.client.http.*
 import com.google.api.client.http.javanet.NetHttpTransport
 import org.apache.http.entity.ContentType
+import org.apache.http.entity.ContentType.APPLICATION_OCTET_STREAM
 import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -91,11 +92,11 @@ data class CoverallsReport(
 )
 
 open class CoverallsClient(
-    private val coverallsUrl: String,
-    private val token: String,
-) {
-    fun submit(coverallsReport: CoverallsReport): CoverallsResponse? {
-        val url = GenericUrl(coverallsUrl)
+    override val url: String,
+    override val token: String,
+) : ApiClient<CoverallsReport, CoverallsResponse?> {
+    override fun submit(coverallsReport: CoverallsReport): CoverallsResponse? {
+        val url = GenericUrl(url)
         val tmpdir = System.getProperty(TEMP_DIR_VARIABLE)
         val writeValueAsString = objectMapper.writeValueAsString(coverallsReport)
         val file = File(tmpdir, COVERALLS_FILE)
@@ -110,7 +111,7 @@ open class CoverallsClient(
         logger.debug(writeValueAsString.replace(token, "<PROTECTED>"))
         logger.debug(file.absolutePath)
         val content = MultipartContent()
-        val part = MultipartContent.Part(FileContent(ContentType.APPLICATION_OCTET_STREAM.toString(), file))
+        val part = MultipartContent.Part(FileContent(APPLICATION_OCTET_STREAM.toString(), file))
         part.headers =
             HttpHeaders().set("Content-Disposition", "form-data; name=\"json_file\"; filename=\"$COVERALLS_FILE\"")
         content.addPart(part)
