@@ -84,7 +84,7 @@ class JacocoParserToCodacy(
             .filter { (sourceCodeFile) -> failOnUnknownPredicate(sourceCodeFile) }
             .map { (sourceCodeFile, sourceFile) ->
                 val coverage = sourceFile.lines.toCodacyCoverage
-                if (coverage.isEmpty() && (sourceFile.name == null ||
+                if (coverage.isEmpty() || (sourceFile.name == null ||
                             !sourceFile.name.endsWith(language.ext))
                 ) {
                     null
