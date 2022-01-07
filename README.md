@@ -86,6 +86,11 @@ Java 11 and above only
 ## Release notes - Upcoming version 0.0.8
 
 1. Branch Coverage
+2. Disable flags for Coveralls and Codacy to force them out even when environment variables are available
+   1. `disableCoveralls`
+   2. `disableCodacy`
+3. Exception handling for Codacy formatting issue
+   1. `failOnXmlParseError`, false by default
 
 #### Release 0.0.7 - 2022/01/06
 
