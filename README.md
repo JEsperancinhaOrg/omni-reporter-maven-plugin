@@ -30,11 +30,11 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 2. Online API's supported
 
-| Type      | Status | Notes | Available from Release | Environment Variables                   | Available from Release |
-|-----------|--------|-------|------------------------|-----------------------------------------|------------------------|
-| Coveralls | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
-| Codacy    | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
-| CodeCov   | 🚧     |       | ?                      | CODECOV_TOKEN                           | ?                      |
+| Type                | Status | Notes | Available from Release | Environment Variables                   | Available from Release |
+|---------------------|--------|-------|------------------------|-----------------------------------------|------------------------|
+| Coveralls           | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
+| Codacy Java 11 only | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
+| CodeCov             | 🚧     |       | ?                      | CODECOV_TOKEN                           | ?                      |
 
 #### 3. Pipelines Supported
 
@@ -91,10 +91,11 @@ Java 11 and above only
    2. `disableCodacy`
 3. Exception handling for Codacy formatting issue
    1. `failOnXmlParseError`, false by default
+4. Codacy update so solve Xerces module error. Manual implementation required
 
 #### Release 0.0.7 - 2022/01/06
 
-1. Codacy support
+1. Codacy support - JAVA 11 Only
 2. `failOnReportNotFound`
 3. `failOnUnknown` Bug fix
 4. Possibility to add external root sources - useful in cases where projects are using scala, java, kotlin and/or clojure at the same time. The plugin only recognizes one source directory. Parameter name is `extraSourceFolders`
@@ -232,6 +233,7 @@ I hope you enjoyed this repository. If you did, you can optionally please buy me
 
 ## References
 
+- [Codacy Coverage Reporter](https://github.com/codacy/codacy-coverage-reporter)
 - [Jackson Module](https://medium.com/@foxjstephen/how-to-actually-parse-xml-in-java-kotlin-221a9309e6e8)
 - [XCode Environment Variable Reference](https://developer.apple.com/documentation/xcode/environment-variable-reference)
 - [Cross-CI reference](https://github.com/streamich/cross-ci)
