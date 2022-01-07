@@ -60,8 +60,8 @@ open class CodacyClient(
         logger.debug(jsonReport.replace(token, "<PROTECTED>"))
         val content: HttpContent = JsonHttpContent(JacksonFactory(), jsonReport)
         val httpRequest = REQ_FACTORY.buildPostRequest(GenericUrl(codacyReportUrl), content)
-        httpRequest.headers.contentType = ContentType.APPLICATION_JSON.toString()
-        httpRequest.headers["project_token"] = token
+        httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
+        httpRequest.headers["project-token"] = token
         val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes()
         return readAllBytes.contentToString()
