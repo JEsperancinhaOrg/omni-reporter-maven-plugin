@@ -54,7 +54,7 @@ open class CodacyClient(
     override fun submit(report: CodacyReport):String {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
-        val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.lang}?partial=0"
+        val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.lang}?partial=false"
         logger.info("Sending ${language.name.lowercase()} to codacy at $codacyReportUrl")
         val jsonReport = writeCamelCaseJsonValueAsString(report)
         logger.debug(jsonReport.replace(token, "<PROTECTED>"))
