@@ -1,6 +1,9 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
-import com.google.api.client.http.*
+import com.google.api.client.http.GenericUrl
+import com.google.api.client.http.HttpContent
+import com.google.api.client.http.HttpRequestFactory
+import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.http.json.JsonHttpContent
 import com.google.api.client.json.jackson2.JacksonFactory
@@ -9,10 +12,14 @@ import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevWalk
 import org.jesperancinha.plugins.omni.reporter.parsers.Language
+import org.jesperancinha.plugins.omni.reporter.parsers.readJsonValue
 import org.jesperancinha.plugins.omni.reporter.parsers.writeCamelCaseJsonValueAsString
 import org.slf4j.LoggerFactory
-import play.api.libs.json.*
 
+
+data class CodacyResponse(
+    val success: String
+)
 
 data class CodacyFileReport(
     val filename: String,
@@ -50,8 +57,8 @@ open class CodacyClient(
     override val url: String? = null,
     val language: Language,
     val repo: Repository
-) : ApiClient<CodacyReport, String> {
-    override fun submit(report: CodacyReport):String {
+) : ApiClient<CodacyReport, CodacyResponse> {
+    override fun submit(report: CodacyReport): CodacyResponse {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
         val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.lang}?partial=false"
@@ -61,10 +68,11 @@ open class CodacyClient(
         val content: HttpContent = JsonHttpContent(JacksonFactory(), jsonReport)
         val httpRequest = REQ_FACTORY.buildPostRequest(GenericUrl(codacyReportUrl), content)
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
+        httpRequest.headers.acceptEncoding = ContentType.APPLICATION_JSON.mimeType
         httpRequest.headers["project-token"] = token
         val httpResponse = httpRequest?.execute()
-        val readAllBytes = httpResponse?.content?.readAllBytes()
-        return readAllBytes.contentToString()
+        val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
+        return readJsonValue(readAllBytes)
     }
 
     companion object {

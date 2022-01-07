@@ -2,11 +2,11 @@ package org.jesperancinha.plugins.omni.reporter.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.api.client.http.*
 import com.google.api.client.http.javanet.NetHttpTransport
 import org.apache.http.entity.ContentType.APPLICATION_OCTET_STREAM
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
+import org.jesperancinha.plugins.omni.reporter.parsers.readJsonValue
 import org.jesperancinha.plugins.omni.reporter.parsers.writeSnakeCaseJsonValueAsString
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -117,8 +117,9 @@ open class CoverallsClient(
         content.addPart(part)
         val httpRequest = REQ_FACTORY.buildPostRequest(url, content)
         val httpResponse = httpRequest?.execute()
-        val readAllBytes = httpResponse?.content?.readAllBytes()
-        return jacksonObjectMapper().readValue(readAllBytes, CoverallsResponse::class.java)
+        val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
+        return readJsonValue(readAllBytes)
+
     }
 
     companion object {
