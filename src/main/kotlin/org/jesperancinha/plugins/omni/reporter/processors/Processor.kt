@@ -71,13 +71,21 @@ class CoverallsReportsProcessor(
         val coverallsClient =
             CoverallsClient(coverallsUrl ?: throw CoverallsUrlNotConfiguredException(), coverallsToken)
         try {
+
+            val coverallsReport = jacocoParser.coverallsReport
+
+            coverallsReport?.let {
+                if (it.sourceFiles.isEmpty()) return
+            }
+
             val response =
-                coverallsClient.submit(jacocoParser.coverallsReport ?: let {
+                coverallsClient.submit(coverallsReport ?: let {
                     if (failOnReportNotFound) throw CoverallsReportNotGeneratedException() else {
                         logger.warn("Coveralls report was not generated! This usually means that no jacoco.xml reports have been found.")
                         return
                     }
                 })
+
             logger.info("* Omni Reporting to Coveralls complete!")
             logger.info("- Response")
             logger.info(response?.url)
