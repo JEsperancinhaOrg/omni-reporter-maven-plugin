@@ -43,7 +43,7 @@ private fun List<Line?>.toCoverallsCoverage(lines: Int): Array<Int?> = let {
     }
 }
 
-class SourceCodeFile(projectBaseDir: File, packageName: String?, sourceFile: Sourcefile) :
+class SourceCodeFile(projectBaseDir: File, val packageName: String?, sourceFile: Sourcefile) :
     File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
 
 

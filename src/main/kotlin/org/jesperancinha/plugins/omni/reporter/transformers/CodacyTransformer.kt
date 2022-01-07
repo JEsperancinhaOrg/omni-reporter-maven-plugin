@@ -17,7 +17,7 @@ import java.io.InputStream
 
 val List<Line?>.toCodacyCoverage: MutableMap<String, Int>
     get() = if (isNotEmpty()) {
-        filterNotNull().associate { line -> line.nr.toString() to line.ci }.toMutableMap()
+        filterNotNull().associate { line -> line.nr.toString() to if (line.ci > 0) 1 else 0 }.toMutableMap()
     } else {
         mutableMapOf()
     }
@@ -84,14 +84,12 @@ class JacocoParserToCodacy(
             .filter { (sourceCodeFile) -> failOnUnknownPredicate(sourceCodeFile) }
             .map { (sourceCodeFile, sourceFile) ->
                 val coverage = sourceFile.lines.toCodacyCoverage
-                if (coverage.isEmpty() || (sourceFile.name == null ||
-                            !sourceFile.name.endsWith(language.ext))
-                ) {
+                if (coverage.isEmpty() || !sourceFile.name.endsWith(language.ext)) {
                     null
                 } else {
                     CodacyFileReport(
-                        filename = sourceCodeFile.toRelativeString(root),
-                        total = coverage.size,
+                        filename = "${sourceCodeFile.packageName}/${sourceFile.name}".replace("//", "/"),
+                        total = coverage.values.sum(),
                         coverage = coverage
                     )
                 }
@@ -127,7 +125,7 @@ class JacocoParserToCodacy(
 private infix fun CodacyFileReport?.mergeCodacySourceTo(source: CodacyFileReport): CodacyFileReport {
     this?.coverage?.entries?.forEach { (line, cov) ->
         val origCov = source.coverage[line] ?: 0
-        source.coverage[line] = cov + origCov
+        source.coverage[line] = cov or origCov
     }
     return source
 }

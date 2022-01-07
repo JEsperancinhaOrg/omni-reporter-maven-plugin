@@ -1,12 +1,9 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
+import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpContent
-import com.google.api.client.http.HttpRequestFactory
-import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
-import com.google.api.client.http.json.JsonHttpContent
-import com.google.api.client.json.jackson2.JacksonFactory
 import org.apache.http.entity.ContentType
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.Repository
@@ -18,7 +15,8 @@ import org.slf4j.LoggerFactory
 
 
 data class CodacyResponse(
-    val success: String
+    val success: String?,
+    val error: String?
 )
 
 data class CodacyFileReport(
@@ -65,10 +63,9 @@ open class CodacyClient(
         logger.info("Sending ${language.name.lowercase()} to codacy at $codacyReportUrl")
         val jsonReport = writeCamelCaseJsonValueAsString(report)
         logger.debug(jsonReport.replace(token, "<PROTECTED>"))
-        val content: HttpContent = JsonHttpContent(JacksonFactory(), jsonReport)
-        val httpRequest = REQ_FACTORY.buildPostRequest(GenericUrl(codacyReportUrl), content)
+        val content: HttpContent = ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, jsonReport.toByteArray())
+        val httpRequest = requestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
-        httpRequest.headers.acceptEncoding = ContentType.APPLICATION_JSON.mimeType
         httpRequest.headers["project-token"] = token
         val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
@@ -77,7 +74,7 @@ open class CodacyClient(
 
     companion object {
         private val logger = LoggerFactory.getLogger(CoverallsClient::class.java)
-        private var TRANSPORT: HttpTransport = NetHttpTransport()
-        private var REQ_FACTORY: HttpRequestFactory = TRANSPORT.createRequestFactory()
+        private var transport = NetHttpTransport()
+        private var requestFactory = transport.createRequestFactory()
     }
 }

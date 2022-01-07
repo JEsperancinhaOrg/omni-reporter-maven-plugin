@@ -63,7 +63,7 @@ data class Sourcefile (
     val lines: List<Line> = emptyList(),
     @JsonProperty("Counter")
     val counters: List<Counter> = emptyList(),
-    val name: String? = null
+    val name: String
 )
 
 @JsonRootName("Stamp")

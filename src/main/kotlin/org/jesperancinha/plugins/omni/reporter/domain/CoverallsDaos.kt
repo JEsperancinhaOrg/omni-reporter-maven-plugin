@@ -115,7 +115,7 @@ open class CoverallsClient(
         part.headers =
             HttpHeaders().set("Content-Disposition", "form-data; name=\"json_file\"; filename=\"$COVERALLS_FILE\"")
         content.addPart(part)
-        val httpRequest = REQ_FACTORY.buildPostRequest(url, content)
+        val httpRequest = httpRequestFactory.buildPostRequest(url, content)
         val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
         return readJsonValue(readAllBytes)
@@ -124,10 +124,10 @@ open class CoverallsClient(
 
     companion object {
         private const val COVERALLS_FILE = "coveralls.json"
-        private val logger = LoggerFactory.getLogger(CoverallsClient::class.java)
-        private var TRANSPORT: HttpTransport = NetHttpTransport()
-        private var REQ_FACTORY: HttpRequestFactory = TRANSPORT.createRequestFactory()
         private const val TEMP_DIR_VARIABLE = "java.io.tmpdir"
+        private val logger = LoggerFactory.getLogger(CoverallsClient::class.java)
+        private var httpTransport: HttpTransport = NetHttpTransport()
+        private var httpRequestFactory: HttpRequestFactory = httpTransport.createRequestFactory()
     }
 }
 
