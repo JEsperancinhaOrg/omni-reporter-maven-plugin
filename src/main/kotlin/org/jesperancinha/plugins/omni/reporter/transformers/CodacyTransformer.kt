@@ -33,7 +33,7 @@ class JacocoParserToCodacy(
     private val language: Language
 ) : OmniReporterParserImpl<InputStream, CodacyReport>(token, pipeline, root) {
 
-    internal var coverallsReport: CodacyReport? = null
+    internal var codacyReport: CodacyReport? = null
 
     private var codacySources = mutableMapOf<String, CodacyFileReport>()
 
@@ -107,16 +107,16 @@ class JacocoParserToCodacy(
                     })
                 }
                 nonExisting.forEach { codacySources[it.filename] = it }
-                if (coverallsReport == null) {
-                    coverallsReport = CodacyReport(
+                if (codacyReport == null) {
+                    codacyReport = CodacyReport(
                         total = fileReports.size,
                         fileReports = fileReports.toTypedArray()
                     )
                 } else {
-                    coverallsReport = coverallsReport?.copy(fileReports = codacySources.values.toTypedArray())
+                    codacyReport = codacyReport?.copy(fileReports = codacySources.values.toTypedArray())
                 }
 
-                coverallsReport ?: throw ProjectDirectoryNotFoundException()
+                codacyReport ?: throw ProjectDirectoryNotFoundException()
             }
 
     companion object {

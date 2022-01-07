@@ -159,8 +159,13 @@ class CodacyProcessor(
                     url = codacyUrl,
                     repo = repo
                 )
+
+                val codacyReport = jacocoParserToCodacy.codacyReport
+
+                codacyReport?.let { if (it.fileReports.isEmpty()) return }
+
                 val response =
-                    codacyClient.submit(jacocoParserToCodacy.coverallsReport ?: let {
+                    codacyClient.submit(codacyReport ?: let {
                         if (failOnReportNotFound) throw CoverallsReportNotGeneratedException() else {
                             logger.warn("Codacy report was not generated! This usually means that no jacoco.xml reports have been found.")
                             return
