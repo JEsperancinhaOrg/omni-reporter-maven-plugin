@@ -50,6 +50,6 @@ internal val String.toFileDigest: String
         .joinToString(separator = "") { byte -> "%02x".format(byte) }
         .uppercase()
 
-enum class Language {
-    JAVA, KOTLIN, SCALA
+enum class Language(val ext: String, val lang: String) {
+    JAVA("java","Java"), KOTLIN("kt","Kotlin"), SCALA("scala","Scala")
 }

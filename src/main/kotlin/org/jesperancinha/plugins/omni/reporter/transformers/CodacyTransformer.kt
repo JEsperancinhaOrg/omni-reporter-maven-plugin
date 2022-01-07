@@ -85,7 +85,7 @@ class JacocoParserToCodacy(
             .map { (sourceCodeFile, sourceFile) ->
                 val coverage = sourceFile.lines.toCodacyCoverage
                 if (coverage.isEmpty() && (sourceFile.name == null ||
-                            !sourceFile.name.endsWith(language.name.lowercase()))
+                            !sourceFile.name.endsWith(language.ext))
                 ) {
                     null
                 } else {
