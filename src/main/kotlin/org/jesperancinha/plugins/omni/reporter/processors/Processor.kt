@@ -172,7 +172,7 @@ class CodacyProcessor(
                         }
                     })
                 logger.info("* Omni Reporting to Codacy for language $language comlete!")
-                logger.debug(response)
+                logger.info(response)
             } catch (ex: Exception) {
                 logger.error("Failed sending Codacy report!", ex)
                 if (failOnReportSending) {
