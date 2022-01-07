@@ -55,6 +55,7 @@ open class CodacyClient(
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
         val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.name.lowercase()}?partial=0"
+        logger.info("Sending ${language.name.lowercase()} to codacy at $codacyReportUrl")
         val jsonReport = writeCamelCaseJsonValueAsString(report)
         logger.debug(jsonReport.replace(token, "<PROTECTED>"))
         val content: HttpContent = JsonHttpContent(JacksonFactory(), jsonReport)
