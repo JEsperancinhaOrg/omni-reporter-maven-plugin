@@ -84,12 +84,14 @@ class JacocoParserToCodacy(
             .filter { (sourceCodeFile) -> failOnUnknownPredicate(sourceCodeFile) }
             .map { (sourceCodeFile, sourceFile) ->
                 val coverage = sourceFile.lines.toCodacyCoverage
+                val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
+                val lines = sourceCodeText.split("\n").size
                 if (coverage.isEmpty() || !sourceFile.name.endsWith(language.ext)) {
                     null
                 } else {
                     CodacyFileReport(
                         filename = "${sourceCodeFile.packageName}/${sourceFile.name}".replace("//", "/"),
-                        total = coverage.values.sum(),
+                        total = lines,
                         coverage = coverage
                     )
                 }
@@ -107,11 +109,15 @@ class JacocoParserToCodacy(
                 nonExisting.forEach { codacySources[it.filename] = it }
                 if (codacyReport == null) {
                     codacyReport = CodacyReport(
-                        total = fileReports.size,
+                        total = fileReports.sumOf { it.coverage.values.sum() } / fileReports.sumOf { it.total } * 100,
                         fileReports = fileReports.toTypedArray()
                     )
                 } else {
-                    codacyReport = codacyReport?.copy(fileReports = codacySources.values.toTypedArray())
+                    val fileReportsNew = codacySources.values.toTypedArray()
+                    codacyReport =
+                        codacyReport?.copy(total = fileReportsNew.sumOf { it.coverage.values.sum() } / fileReportsNew.sumOf { it.total } * 100,
+                            fileReports = fileReportsNew
+                        )
                 }
 
                 codacyReport ?: throw ProjectDirectoryNotFoundException()

@@ -49,8 +49,20 @@ internal class CodacyCoverallsSourceFileTest {
             false,
             KOTLIN
         ).parseInput(inputJacocoStream, listOf(root)).let {
-//            val reportResult = it.copy(fileReports = it.fileReports.sortedBy { name -> name.filename }.toTypedArray().map { fileReport-> fileReport.copy(coverage = fileReport.coverage.entries.sortedBy { it.key }}.toTypedArray())
-//            val expectedReport = codacyReport.copy(fileReports = codacyReport.fileReports.sortedBy { name -> name.filename }.toTypedArray())
+            val reportResult = it.copy(
+                fileReports = it.fileReports.sortedBy { name -> name.filename }.toTypedArray()
+                    .map { fileReport ->
+                        fileReport.copy(coverage = fileReport.coverage.entries.sortedBy { entry -> entry.key }
+                            .associate { entry -> entry.key to entry.value }.toMutableMap())
+                    }.toTypedArray()
+            )
+            val expectedReport = codacyReport.copy(
+                fileReports = codacyReport.fileReports.sortedBy { name -> name.filename }.toTypedArray()
+                    .map { fileReport ->
+                        fileReport.copy(coverage = fileReport.coverage.entries.sortedBy { entry -> entry.key }
+                            .associate { entry -> entry.key to entry.value }.toMutableMap())
+                    }.toTypedArray()
+            )
 //            reportResult shouldBe expectedReport
         }
 
