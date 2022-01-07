@@ -4,8 +4,9 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
+import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
+import org.jesperancinha.plugins.omni.reporter.parsers.writeSnakeCaseJsonValueAsString
 import org.junit.jupiter.api.Test
 
 internal class DomainTest {
@@ -13,7 +14,7 @@ internal class DomainTest {
     fun `should parse basic JacocoReport`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
-        val readValue = readValue<Report>(inputStream)
+        val readValue = readXmlValue<Report>(inputStream)
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Reactive MVC"
         readValue.packages.forEach {
@@ -26,7 +27,7 @@ internal class DomainTest {
     fun `should parse basic JacocoReport 2`() {
         val inputStream = javaClass.getResourceAsStream("/jacoco2.xml")
         inputStream.shouldNotBeNull()
-        val readValue = readValue<Report>(inputStream)
+        val readValue = readXmlValue<Report>(inputStream)
         readValue.shouldNotBeNull()
         readValue.name shouldBe "Advanced Library Management Gate"
         readValue.packages.shouldNotBeNull()
@@ -56,7 +57,7 @@ internal class DomainTest {
     @Test
     fun `should generate snake case source object`() {
         val sourceFile = SourceFile("name", "sourceDigest")
-        val writeValueAsString = objectMapper.writeValueAsString(sourceFile)
+        val writeValueAsString = writeSnakeCaseJsonValueAsString(sourceFile)
         writeValueAsString.shouldBe("{\"name\":\"name\",\"source_digest\":\"sourceDigest\"}")
     }
 
@@ -70,7 +71,7 @@ internal class DomainTest {
                 "branch", listOf(Remote("remote", "url"))
             )
         )
-        val writeValueAsString = objectMapper.writeValueAsString(sourceFile)
+        val writeValueAsString = writeSnakeCaseJsonValueAsString(sourceFile)
         writeValueAsString.shouldBe("{\"repo_token\":\"repoToken\",\"service_name\":\"serviceName\",\"source_files\":[{\"name\":\"name\",\"source_digest\":\"sourceDigest\"}],\"git\":{\"head\":{\"id\":\"id\",\"author_name\":\"authorName\",\"author_email\":\"authorEmail\",\"committer_name\":\"committerName\",\"committer_email\":\"committerEmail\",\"message\":null},\"branch\":\"branch\",\"remotes\":[{\"name\":\"remote\",\"url\":\"url\"}]}}")
     }
 }

@@ -11,6 +11,33 @@ import scala.Some
 import scala.collection.mutable.ListBuffer
 import java.io.File
 
+data class CodacyFileReport(
+    val filename: String,
+    val total: Int,
+    val coverage: Map<String, Int> = emptyMap()
+)
+
+data class CodacyReport(
+    val total: Int,
+    val fileReports: Array<CodacyFileReport> = emptyArray()
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CodacyReport) return false
+
+        if (total != other.total) return false
+        if (!fileReports.contentEquals(other.fileReports)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = total
+        result = 31 * result + fileReports.contentHashCode()
+        return result
+    }
+
+}
 
 /**
  * Created by jofisaes on 30/12/2021

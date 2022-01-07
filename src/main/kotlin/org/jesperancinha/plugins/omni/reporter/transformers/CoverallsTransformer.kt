@@ -3,11 +3,11 @@ package org.jesperancinha.plugins.omni.reporter.transformers
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
 import org.jesperancinha.plugins.omni.reporter.domain.SourceFile
+import org.jesperancinha.plugins.omni.reporter.domain.isBranch
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
-import org.jesperancinha.plugins.omni.reporter.domain.readValue
-import org.jesperancinha.plugins.omni.reporter.parsers.isBranch
+import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
 import org.jesperancinha.plugins.omni.reporter.parsers.toFileDigest
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
@@ -75,7 +75,8 @@ class JacocoParserToCoveralls(
     /**
      * Comparison is based on the size. If there is a missmatch then the size is different.
      */
-    val failOnUnknownPredicateFilePack = { foundSources: List<Pair<SourceCodeFile, Sourcefile>>, sourceFiles: List<Sourcefile> ->
+    val failOnUnknownPredicateFilePack =
+        { foundSources: List<Pair<SourceCodeFile, Sourcefile>>, sourceFiles: List<Sourcefile> ->
             val jacocoSourcesFound = foundSources.map { (_, foundJacocoFile) -> foundJacocoFile }
             val sourceFilesNotFound = sourceFiles.filter { !jacocoSourcesFound.contains(it) }
             sourceFilesNotFound
@@ -92,7 +93,7 @@ class JacocoParserToCoveralls(
 
 
     override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
-        readValue<Report>(input).packages
+        readXmlValue<Report>(input).packages
             .asSequence()
             .map { it.name to it.sourcefiles }
             .flatMap { (packageName, sourceFiles) ->

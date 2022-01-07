@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.api.client.http.*
 import com.google.api.client.http.javanet.NetHttpTransport
-import org.apache.http.entity.ContentType
 import org.apache.http.entity.ContentType.APPLICATION_OCTET_STREAM
-import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
+import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
+import org.jesperancinha.plugins.omni.reporter.parsers.writeSnakeCaseJsonValueAsString
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -98,7 +98,7 @@ open class CoverallsClient(
     override fun submit(coverallsReport: CoverallsReport): CoverallsResponse? {
         val url = GenericUrl(url)
         val tmpdir = System.getProperty(TEMP_DIR_VARIABLE)
-        val writeValueAsString = objectMapper.writeValueAsString(coverallsReport)
+        val writeValueAsString = writeSnakeCaseJsonValueAsString(coverallsReport)
         val file = File(tmpdir, COVERALLS_FILE)
         file.deleteOnExit()
         if (file.exists()) {
@@ -106,7 +106,7 @@ open class CoverallsClient(
         }
         file.createNewFile()
         file.bufferedWriter().use {
-            it.write(objectMapper.writeValueAsString(coverallsReport))
+            it.write(writeSnakeCaseJsonValueAsString(coverallsReport))
         }
         logger.debug(writeValueAsString.replace(token, "<PROTECTED>"))
         logger.debug(file.absolutePath)
@@ -129,3 +129,6 @@ open class CoverallsClient(
         private const val TEMP_DIR_VARIABLE = "java.io.tmpdir"
     }
 }
+
+internal fun isBranch(it: Line) =
+    it.mb > 0 || it.cb > 0

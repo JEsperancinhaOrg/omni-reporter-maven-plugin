@@ -1,7 +1,7 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
 import io.kotest.matchers.nulls.shouldNotBeNull
-import org.jesperancinha.plugins.omni.reporter.domain.JsonMappingConfiguration.Companion.objectMapper
+import org.jesperancinha.plugins.omni.reporter.parsers.writeSnakeCaseJsonValueAsString
 import org.jesperancinha.plugins.omni.reporter.pipelines.LocalPipeline
 import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParserToCoveralls
 import org.jesperancinha.plugins.omni.reporter.utils.Utils.Companion.root
@@ -17,14 +17,15 @@ internal class CoverallsClientTest {
         val coverallsClient = CoverallsClient("https://coveralls.io/api/v1/jobs", "token")
         val inputStream = javaClass.getResourceAsStream("/jacoco.xml")
         inputStream.shouldNotBeNull()
-        val jacocoParser = JacocoParserToCoveralls("token", LocalPipeline(), root,
+        val jacocoParser = JacocoParserToCoveralls(
+            "token", LocalPipeline(), root,
             failOnUnknown = false,
             includeBranchCoverage = false,
             useCoverallsCount = false
         )
 
         val report = jacocoParser.parseInput(inputStream, listOf(root))
-        logger.info(objectMapper.writeValueAsString(report))
+        logger.info(writeSnakeCaseJsonValueAsString(report))
 
         coverallsClient.submit(report)
     }

@@ -1,11 +1,9 @@
 package org.jesperancinha.plugins.omni.reporter.transformers
 
-import com.codacy.api.CoverageReport
-import com.codacy.parsers.implementation.JacocoParser
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
-import org.jesperancinha.plugins.omni.reporter.domain.readValue
 import org.jesperancinha.plugins.omni.reporter.parsers.Language
 import org.jesperancinha.plugins.omni.reporter.parsers.Language.*
+import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import java.io.File
 
@@ -21,7 +19,7 @@ class JacocoParserToCodacy(
     var languages = emptyList<Language>()
 
     override fun parseInput(input: File, compiledSourcesDirs: List<File>): File = let {
-        val readValue = readValue<Report>(input.inputStream())
+        val readValue = readXmlValue<Report>(input.inputStream())
         languages = readValue.packages.flatMap {
             it.sourcefiles.map { sourcefile ->
                 when {
@@ -32,6 +30,6 @@ class JacocoParserToCodacy(
                 }
             }
         }.filterNotNull()
-      input
+        input
     }
 }
