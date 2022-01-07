@@ -2,7 +2,7 @@ package org.jesperancinha.plugins.omni.reporter.transformers
 
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
-import org.jesperancinha.plugins.omni.reporter.domain.SourceFile
+import org.jesperancinha.plugins.omni.reporter.domain.CoverallsSourceFile
 import org.jesperancinha.plugins.omni.reporter.domain.isBranch
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
@@ -30,7 +30,7 @@ private val List<Line>.toBranchCoverageArray: Array<Int?>
         coverageArray
     }
 
-private fun List<Line?>.toCoverageArray(lines: Int): Array<Int?> = let {
+private fun List<Line?>.toCoverallsCoverage(lines: Int): Array<Int?> = let {
     if (isNotEmpty()) {
         val calculatedLength = map { it?.nr ?: 0 }.maxOf { it }
         val coverageArray = Array<Int?>(max(lines, calculatedLength)) { null }
@@ -59,7 +59,7 @@ class JacocoParserToCoveralls(
 
     internal var coverallsReport: CoverallsReport? = null
 
-    private var coverallsSources = mutableMapOf<String, SourceFile>()
+    private var coverallsSources = mutableMapOf<String, CoverallsSourceFile>()
 
     val failOnUnknownPredicate =
         if (failOnUnknown) { file: File ->
@@ -111,12 +111,12 @@ class JacocoParserToCoveralls(
             .map { (sourceCodeFile, sourceFile) ->
                 val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
                 val lines = sourceCodeText.split("\n").size
-                val coverage = sourceFile.lines.toCoverageArray(lines)
+                val coverage = sourceFile.lines.toCoverallsCoverage(lines)
                 val branchCoverage = sourceFile.lines.toBranchCoverageArray
                 if (coverage.isEmpty()) {
                     null
                 } else {
-                    SourceFile(
+                    CoverallsSourceFile(
                         name = sourceCodeFile.toRelativeString(root),
                         coverage = coverage,
                         branches = if (includeBranchCoverage) branchCoverage else emptyArray(),
@@ -130,7 +130,7 @@ class JacocoParserToCoveralls(
                 val keys = coverallsSources.keys
                 val (existing, nonExisting) = sourceFiles.partition { source -> keys.contains(source.name) }
                 existing.forEach { source ->
-                    ((coverallsSources[source.name] mergeTo source).also {
+                    ((coverallsSources[source.name] mergeCoverallsSourceTo source).also {
                         coverallsSources[source.name] = it
                     })
                 }
@@ -157,7 +157,7 @@ class JacocoParserToCoveralls(
     }
 }
 
-private infix fun SourceFile?.mergeTo(source: SourceFile): SourceFile {
+private infix fun CoverallsSourceFile?.mergeCoverallsSourceTo(source: CoverallsSourceFile): CoverallsSourceFile {
     val nextSize = max(source.coverage.size, this?.coverage?.size ?: throw NullSourceFileException())
     val newCoverage = arrayOfNulls<Int>(nextSize)
     source.coverage.forEachIndexed { index, value -> newCoverage[index] = value }

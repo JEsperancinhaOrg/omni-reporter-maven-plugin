@@ -74,7 +74,7 @@ class CoverallsReportsProcessor(
             val response =
                 coverallsClient.submit(jacocoParser.coverallsReport ?: let {
                     if (failOnReportNotFound) throw CoverallsReportNotGeneratedException() else {
-                        logger.warn("Coveralls report was not generated! This usually means that no jacoco.xml reports have been generated.")
+                        logger.warn("Coveralls report was not generated! This usually means that no jacoco.xml reports have been found.")
                         return
                     }
                 })
@@ -113,53 +113,62 @@ class CodacyProcessor(
     private val currentPipeline: Pipeline,
     private val allProjects: List<MavenProject?>,
     private val projectBaseDir: File?,
+    private val failOnReportNotFound: Boolean,
     private val failOnReportSending: Boolean,
+    private val failOnUnknown: Boolean,
     ignoreTestBuildDirectory: Boolean
 ) : Processor(ignoreTestBuildDirectory) {
     override fun processReports() {
         logger.info("* Omni Reporting to Codacy started!")
 
-        val codacyJacocoReports = allProjects.toReportFiles(supportedPredicate)
-            .filter { (project, _) -> project.compileSourceRoots != null }
-            .flatMap { (project, reports) ->
-                reports.map { report ->
-                    val jacocoParserToCodacy = JacocoParserToCodacy(
-                        token = token,
-                        pipeline = currentPipeline,
-                        root = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
-                    )
-                    jacocoParserToCodacy.parseInput(report, project.compileSourceRoots.map { file ->
-                        File(file)
-                    }) to jacocoParserToCodacy.languages
+
+        Language.values().map { language ->
+            val jacocoParserToCodacy = JacocoParserToCodacy(
+                token = token,
+                pipeline = currentPipeline,
+                root = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
+                failOnUnknown = failOnUnknown,
+                language = language
+            )
+
+            allProjects.toReportFiles(supportedPredicate)
+                .filter { (project, _) -> project.compileSourceRoots != null }
+                .forEach { (project, reports) ->
+                    reports.forEach { report ->
+                        logger.info("Parsing file: $report")
+                        jacocoParserToCodacy.parseInput(
+                            report.inputStream(),
+                            project.compileSourceRoots.map { file -> File(file) })
+                    }
+
                 }
-            }
+            val repo = RepositoryBuilder().findGitDir(projectBaseDir).build()
 
-        val repo = RepositoryBuilder().findGitDir(projectBaseDir).build()
-
-        val reportsPerLanguage = Language.values().associateWith { currentLanguage ->
-            codacyJacocoReports
-                .filter { (_, languages) -> languages.contains(currentLanguage) }
-                .map { (report, _) -> report }
-        }
-            .filter { (_, reports) -> reports.isNotEmpty() }
-
-        try {
-            reportsPerLanguage.entries.forEach { (language, reports) ->
-                logger.info("... sending reporting info for ${language.name.lowercase()} language reporting.")
-                CodacyClient(
+            try {
+                val codacyClient = CodacyClient(
                     token = token,
                     language = language,
                     url = codacyUrl,
                     repo = repo
-                ).submit(reports)
+                )
+                val response =
+                    codacyClient.submit(jacocoParserToCodacy.coverallsReport ?: let {
+                        if (failOnReportNotFound) throw CoverallsReportNotGeneratedException() else {
+                            logger.warn("Codacy report was not generated! This usually means that no jacoco.xml reports have been found.")
+                            return
+                        }
+                    })
+                logger.info("* Omni Reporting to Codacy for language $language comlete!")
+                logger.info(response)
+            } catch (ex: Exception) {
+                logger.error("Failed sending Codacy report!", ex)
+                if (failOnReportSending) {
+                    throw ex
+                }
             }
-            logger.info("* Omni Reporting to Codacy complete!")
-        } catch (ex: Exception) {
-            logger.error("Failed sending Codacy report!", ex)
-            if (failOnReportSending) {
-                throw ex
-            }
+            logger.info("* Omni Reporting processing for Codacy complete!")
         }
+
     }
 
     companion object {

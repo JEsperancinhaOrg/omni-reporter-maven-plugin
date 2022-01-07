@@ -3,16 +3,12 @@ package org.jesperancinha.plugins.omni.reporter.domain
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
 import org.jesperancinha.plugins.omni.reporter.parsers.camelCaseJsonObjectMapper
-import org.jesperancinha.plugins.omni.reporter.parsers.readJsonValue
-import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
 import org.junit.jupiter.api.Test
 
-internal class CodacySourceFileTest {
+internal class CodacyCoverallsSourceFileTest {
 
     @Test
     fun `should parse Codacy file correctly`() {

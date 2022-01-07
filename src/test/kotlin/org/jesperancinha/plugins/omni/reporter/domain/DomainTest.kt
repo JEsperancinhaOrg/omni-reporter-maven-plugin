@@ -56,22 +56,22 @@ internal class DomainTest {
 
     @Test
     fun `should generate snake case source object`() {
-        val sourceFile = SourceFile("name", "sourceDigest")
-        val writeValueAsString = writeSnakeCaseJsonValueAsString(sourceFile)
+        val coverallsSourceFile = CoverallsSourceFile("name", "sourceDigest")
+        val writeValueAsString = writeSnakeCaseJsonValueAsString(coverallsSourceFile)
         writeValueAsString.shouldBe("{\"name\":\"name\",\"source_digest\":\"sourceDigest\"}")
     }
 
     @Test
     fun `should generate snake case coveralls object`() {
-        val sourceFile = CoverallsReport(
+        val coverallsSourceFile = CoverallsReport(
             "repoToken", "serviceName",
-            mutableListOf(SourceFile("name", "sourceDigest")),
+            mutableListOf(CoverallsSourceFile("name", "sourceDigest")),
             Git(
                 Head("id", "authorName", "authorEmail", "committerName", "committerEmail"),
                 "branch", listOf(Remote("remote", "url"))
             )
         )
-        val writeValueAsString = writeSnakeCaseJsonValueAsString(sourceFile)
+        val writeValueAsString = writeSnakeCaseJsonValueAsString(coverallsSourceFile)
         writeValueAsString.shouldBe("{\"repo_token\":\"repoToken\",\"service_name\":\"serviceName\",\"source_files\":[{\"name\":\"name\",\"source_digest\":\"sourceDigest\"}],\"git\":{\"head\":{\"id\":\"id\",\"author_name\":\"authorName\",\"author_email\":\"authorEmail\",\"committer_name\":\"committerName\",\"committer_email\":\"committerEmail\",\"message\":null},\"branch\":\"branch\",\"remotes\":[{\"name\":\"remote\",\"url\":\"url\"}]}}")
     }
 }

@@ -70,6 +70,7 @@ open class OmniReporterMojo(
 
         logLine()
         logger.info("Coveralls URL: $coverallsUrl")
+        logger.info("Copdacy URL: $codacyUrl")
         logger.info("Coveralls token: ${checkToken(coverallsToken)}")
         logger.info("Codecov token: ${checkToken(codecovToken)}")
         logger.info("Codacy token: ${checkToken(codacyToken)}")
@@ -110,8 +111,10 @@ open class OmniReporterMojo(
                 currentPipeline = currentPipeline,
                 allProjects = allProjects,
                 projectBaseDir = projectBaseDir,
+                failOnReportNotFound = failOnReportNotFound,
                 failOnReportSending = failOnReportSendingError,
-                ignoreTestBuildDirectory = ignoreTestBuildDirectory
+                failOnUnknown = failOnUnknown,
+                ignoreTestBuildDirectory = ignoreTestBuildDirectory,
             ).processReports()
         }
     }

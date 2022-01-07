@@ -1,20 +1,23 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
-import com.codacy.CodacyCoverageReporter
-import com.codacy.configuration.parser.BaseCommandConfig
-import com.codacy.configuration.parser.Report
+import com.google.api.client.http.*
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.http.json.JsonHttpContent
+import com.google.api.client.json.jackson2.JacksonFactory
+import org.apache.http.entity.ContentType
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevWalk
 import org.jesperancinha.plugins.omni.reporter.parsers.Language
-import scala.Some
-import scala.collection.mutable.ListBuffer
-import java.io.File
+import org.jesperancinha.plugins.omni.reporter.parsers.writeCamelCaseJsonValueAsString
+import org.slf4j.LoggerFactory
+import play.api.libs.json.*
+
 
 data class CodacyFileReport(
     val filename: String,
     val total: Int,
-    val coverage: Map<String, Int> = emptyMap()
+    val coverage: MutableMap<String, Int> = mutableMapOf()
 )
 
 data class CodacyReport(
@@ -47,35 +50,25 @@ open class CodacyClient(
     override val url: String? = null,
     val language: Language,
     val repo: Repository
-) : ApiClient<List<File>, Unit> {
-    override fun submit(report: List<File>) {
-
+) : ApiClient<CodacyReport, String> {
+    override fun submit(report: CodacyReport):String {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
-        val baseConfig =
-            BaseCommandConfig(
-                Some(token),
-                Some.empty(),
-                Some.empty(),
-                Some.empty(),
-                Some.apply(url),
-                Some.apply(commitId),
-                false,
-                false
-            )
+        val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.name.lowercase()}?partial=0"
+        val jsonReport = writeCamelCaseJsonValueAsString(report)
+        logger.debug(jsonReport.replace(token, "<PROTECTED>"))
+        val content: HttpContent = JsonHttpContent(JacksonFactory(), jsonReport)
+        val httpRequest = REQ_FACTORY.buildPostRequest(GenericUrl(codacyReportUrl), content)
+        httpRequest.headers.contentType = ContentType.APPLICATION_JSON.toString()
+        httpRequest.headers["project_token"] = token
+        val httpResponse = httpRequest?.execute()
+        val readAllBytes = httpResponse?.content?.readAllBytes()
+        return readAllBytes.contentToString()
+    }
 
-        var coverageReports = ListBuffer<File>()
-        report.forEach { coverageReports = coverageReports.`$plus$eq`(it) }
-
-        val commandConfig = Report(
-            baseConfig,
-            Some.apply(language.name.lowercase()),
-            0,
-            Some.apply(coverageReports.toList()),
-            0,
-            Some.empty(),
-        )
-
-        CodacyCoverageReporter.run(commandConfig)
+    companion object {
+        private val logger = LoggerFactory.getLogger(CoverallsClient::class.java)
+        private var TRANSPORT: HttpTransport = NetHttpTransport()
+        private var REQ_FACTORY: HttpRequestFactory = TRANSPORT.createRequestFactory()
     }
 }

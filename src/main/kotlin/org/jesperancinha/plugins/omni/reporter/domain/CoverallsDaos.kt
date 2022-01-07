@@ -18,7 +18,7 @@ data class CoverallsResponse(
     val url: String?,
 )
 
-data class SourceFile(
+data class CoverallsSourceFile(
     val name: String,
     val sourceDigest: String,
     @JsonInclude(Include.NON_EMPTY)
@@ -30,7 +30,7 @@ data class SourceFile(
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SourceFile) return false
+        if (other !is CoverallsSourceFile) return false
         if (name != other.name) return false
         if (sourceDigest != other.sourceDigest) return false
         if (!coverage.contentEquals(other.coverage)) return false
@@ -72,7 +72,7 @@ data class Remote(
 data class CoverallsReport(
     val repoToken: String,
     val serviceName: String,
-    val sourceFiles: MutableList<SourceFile> = mutableListOf(),
+    val sourceFiles: MutableList<CoverallsSourceFile> = mutableListOf(),
     @JsonInclude(Include.NON_NULL)
     val git: Git? = null,
     @JsonInclude(Include.NON_NULL)
@@ -115,8 +115,8 @@ open class CoverallsClient(
         part.headers =
             HttpHeaders().set("Content-Disposition", "form-data; name=\"json_file\"; filename=\"$COVERALLS_FILE\"")
         content.addPart(part)
-        val buildPostRequest = REQ_FACTORY.buildPostRequest(url, content)
-        val httpResponse = buildPostRequest?.execute()
+        val httpRequest = REQ_FACTORY.buildPostRequest(url, content)
+        val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes()
         return jacksonObjectMapper().readValue(readAllBytes, CoverallsResponse::class.java)
     }
