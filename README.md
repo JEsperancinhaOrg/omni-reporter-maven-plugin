@@ -30,11 +30,11 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 2. Online API's supported
 
-| Type                | Status | Notes | Available from Release | Environment Variables                   | Available from Release |
-|---------------------|--------|-------|------------------------|-----------------------------------------|------------------------|
-| Coveralls           | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
-| Codacy Java 11 only | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
-| CodeCov             | 🚧     |       | ?                      | CODECOV_TOKEN                           | ?                      |
+| Type      | Status | Notes | Available from Release | Environment Variables                   | Available from Release |
+|-----------|--------|-------|------------------------|-----------------------------------------|------------------------|
+| Coveralls | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
+| Codacy    | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
+| CodeCov   | 🚧     |       | ?                      | CODECOV_TOKEN                           | ?                      |
 
 #### 3. Pipelines Supported
 
@@ -63,8 +63,8 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | coverallsUrl             | Should Coveralls ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                         | 0.0.0                  |
 | codacyUrl                | Should Codacy ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                            | 0.0.7                  |
 | coverallsToken           | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead | 0.0.0                  |
-| codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                     | 0.0.0                  |
-| codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                             | 0.0.0                  |
+| codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                      | 0.0.0                  |
+| codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                            | 0.0.0                  |
 
 #### 5. How to run
 
