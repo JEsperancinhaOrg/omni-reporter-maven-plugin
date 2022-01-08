@@ -86,15 +86,18 @@ Java 11 and above only
 - `cb` = covered branches
 
 
-## Release notes - Upcoming version 0.0.8
+## Release notes - Upcoming version 0.0.9
 
 1. Branch Coverage
-2. Disable flags for Coveralls and Codacy to force them out even when environment variables are available
+
+#### Release 0.0.8 - 2022/01/08
+
+1. Disable flags for Coveralls and Codacy to force them out even when environment variables are available
    1. `disableCoveralls`
    2. `disableCodacy`
-3. Exception handling for Codacy formatting issue
-   1. `failOnXmlParsingError`, false by default
-4. Codacy update so solve Xerces module error. Manual implementation required
+2. Exception handling for Codacy formatting issue
+   3. `failOnXmlParsingError`, false by default
+3. Codacy update so solve Xerces module error. Manual implementation required
 
 #### Release 0.0.7 - 2022/01/06
 
