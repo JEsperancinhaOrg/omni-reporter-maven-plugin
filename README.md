@@ -30,11 +30,11 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 2. Online API's supported
 
-| Type      | Status | Notes | Available from Release | Environment Variables                   | Available from Release |
-|-----------|--------|-------|------------------------|-----------------------------------------|------------------------|
-| Coveralls | 🚧     |       | 0.0.0                  | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
-| Codacy    | 🚧     |       | ?                      | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
-| CodeCov   | 🚧     |       | ?                      | CODECOV_TOKEN                           | ?                      |
+| Type      | Status | Notes | Environment Variables                   | Available from Release |
+|-----------|--------|-------|-----------------------------------------|------------------------|
+| Coveralls | 🚧     |       | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
+| Codacy    | 🚧     |       | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
+| CodeCov   | 🚧     |       | CODECOV_TOKEN                           | ?                      |
 
 #### 3. Pipelines Supported
 
