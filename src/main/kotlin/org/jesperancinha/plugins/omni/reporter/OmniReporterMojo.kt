@@ -37,12 +37,12 @@ open class OmniReporterMojo(
     var failOnReportNotFound: Boolean = false,
     @Parameter(property = "failOnReportSendingError", defaultValue = "false")
     var failOnReportSendingError: Boolean = false,
-    @Parameter(property = "failOnXmlParseError", defaultValue = "false")
-    var disableCoveralls: Boolean = false,
+    @Parameter(property = "failOnXmlParsingError", defaultValue = "false")
+    var failOnXmlParsingError: Boolean = false,
     @Parameter(property = "disableCoveralls", defaultValue = "false")
-    var disableCodacy: Boolean = false,
+    var disableCoveralls: Boolean = false,
     @Parameter(property = "disableCodacy", defaultValue = "false")
-    var failOnXmlParseError: Boolean = false,
+    var disableCodacy: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "useCoverallsCount", defaultValue = "true")
@@ -86,7 +86,7 @@ open class OmniReporterMojo(
         logger.info("failOnUnknown: $failOnUnknown")
         logger.info("failOnReportNotFound: $failOnReportNotFound")
         logger.info("failOnReportSendingError: $failOnReportSendingError")
-        logger.info("failOnXmlParseError: $failOnXmlParseError")
+        logger.info("failOnXmlParsingError: $failOnXmlParsingError")
         logger.info("disableCoveralls: $disableCoveralls")
         logger.info("disableCodacy: $disableCodacy")
         logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
@@ -108,7 +108,7 @@ open class OmniReporterMojo(
                     failOnUnknown = failOnUnknown,
                     failOnReportNotFound = failOnReportNotFound,
                     failOnReportSending = failOnReportSendingError,
-                    failOnXmlParseError = failOnXmlParseError,
+                    failOnXmlParseError = failOnXmlParsingError,
                     branchCoverage = branchCoverage,
                     ignoreTestBuildDirectory = ignoreTestBuildDirectory,
                     useCoverallsCount = useCoverallsCount
@@ -125,7 +125,7 @@ open class OmniReporterMojo(
                     projectBaseDir = projectBaseDir,
                     failOnReportNotFound = failOnReportNotFound,
                     failOnReportSending = failOnReportSendingError,
-                    failOnXmlParseError = failOnXmlParseError,
+                    failOnXmlParseError = failOnXmlParsingError,
                     failOnUnknown = failOnUnknown,
                     ignoreTestBuildDirectory = ignoreTestBuildDirectory,
                 ).processReports()

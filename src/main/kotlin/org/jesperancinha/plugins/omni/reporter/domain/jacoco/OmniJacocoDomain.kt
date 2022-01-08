@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import org.jesperancinha.plugins.omni.reporter.JacocoXmlParsingErrorException
+import org.jesperancinha.plugins.omni.reporter.domain.jacoco.OmniJacocoDomain.Companion.logger
 import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.InputStream
 
 /**
@@ -80,8 +83,26 @@ data class Report(
     val name: String? = null
 )
 
+class OmniJacocoDomain {
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(OmniJacocoDomain::class.java)
+    }
+}
+
 fun InputStream.readJacocoPackages(failOnXmlParseError: Boolean) =
-    readXmlValue<Report>(this).packages.apply { if (failOnXmlParseError && isEmpty()) throw JacocoXmlParsingErrorException() }
+    readXmlValue<Report>(this).packages.apply {
+        if (isEmpty()) {
+            logger.warn("Failed to process Jacoco file!")
+            if (failOnXmlParseError)
+                throw JacocoXmlParsingErrorException()
+        }
+    }
 
 fun InputStream.readReport(failOnXmlParseError: Boolean) =
-    readXmlValue<Report>(this).apply { if (failOnXmlParseError && packages.isEmpty()) throw JacocoXmlParsingErrorException() }
+    readXmlValue<Report>(this).apply {
+        if (packages.isEmpty()) {
+            logger.warn("Failed to process Jacoco file!")
+            if (failOnXmlParseError)
+                throw JacocoXmlParsingErrorException()
+        }
+    }
