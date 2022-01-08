@@ -115,6 +115,7 @@ open class CoverallsClient(
         part.headers =
             HttpHeaders().set("Content-Disposition", "form-data; name=\"json_file\"; filename=\"$COVERALLS_FILE\"")
         content.addPart(part)
+        logger.info("Sending reporting to Coveralls at $url")
         val httpRequest = httpRequestFactory.buildPostRequest(url, content)
         val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()

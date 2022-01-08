@@ -52,14 +52,15 @@ data class CodacyReport(
  */
 open class CodacyClient(
     override val token: String,
-    override val url: String? = null,
+    override val url: String,
     val language: Language,
-    val repo: Repository
+    val repo: Repository,
+    val partial: Boolean
 ) : ApiClient<CodacyReport, CodacyResponse> {
     override fun submit(report: CodacyReport): CodacyResponse {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
-        val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.lang}?partial=false"
+        val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.lang}?partial=${partial}"
         logger.info("Sending ${language.name.lowercase()} to codacy at $codacyReportUrl")
         val jsonReport = writeCamelCaseJsonValueAsString(report)
         logger.debug(jsonReport.replace(token, "<PROTECTED>"))

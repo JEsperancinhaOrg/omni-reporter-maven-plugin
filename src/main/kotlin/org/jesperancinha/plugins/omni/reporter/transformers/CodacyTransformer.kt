@@ -3,12 +3,8 @@ package org.jesperancinha.plugins.omni.reporter.transformers
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyFileReport
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyReport
-import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
-import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
-import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
-import org.jesperancinha.plugins.omni.reporter.domain.jacoco.readJacocoPackages
+import org.jesperancinha.plugins.omni.reporter.domain.jacoco.*
 import org.jesperancinha.plugins.omni.reporter.parsers.Language
-import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -19,8 +15,8 @@ import java.io.InputStream
 private val Sourcefile.calculateLinePercentage: Int
     get() = counters.first { it.type == "LINE" }.run { (covered * 100) / (covered + missed) }
 
-private val List<CodacyFileReport>.calculateTotalPercentage: Int
-    get() = sumOf { it.coverage.values.sum() } * 100 / sumOf { it.total }
+private val Report.calculateTotalPercentage: Int
+    get() = counters.first { it.type == "LINE" }.run { (covered * 100) / (covered + missed) }
 
 val List<Line?>.toCodacyCoverage: MutableMap<String, Int>
     get() = if (isNotEmpty()) {
@@ -73,8 +69,9 @@ class JacocoParserToCodacy(
             sourceFilesNotFound.isEmpty()
         }
 
-    override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): CodacyReport =
-        input.readJacocoPackages
+    override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): CodacyReport {
+        val report = input.readReport
+        return report.packages
             .asSequence()
             .map { it.name to it.sourcefiles }
             .flatMap { (packageName, sourceFiles) ->
@@ -91,8 +88,6 @@ class JacocoParserToCodacy(
             .filter { (sourceCodeFile) -> failOnUnknownPredicate(sourceCodeFile) }
             .map { (sourceCodeFile, sourceFile) ->
                 val coverage = sourceFile.lines.toCodacyCoverage
-                val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }
-                val lines = sourceCodeText.split("\n").size
                 if (coverage.isEmpty() || !sourceFile.name.endsWith(language.ext)) {
                     null
                 } else {
@@ -116,7 +111,7 @@ class JacocoParserToCodacy(
                 nonExisting.forEach { codacySources[it.filename] = it }
                 if (codacyReport == null) {
                     codacyReport = CodacyReport(
-                        total = fileReports.calculateTotalPercentage,
+                        total = report.calculateTotalPercentage,
                         fileReports = fileReports.toTypedArray()
                     )
                 } else {
@@ -124,13 +119,13 @@ class JacocoParserToCodacy(
                     val fileReportsNew = fileReportValues.toTypedArray()
                     codacyReport =
                         codacyReport?.copy(
-                            total = fileReportValues.calculateTotalPercentage,
                             fileReports = fileReportsNew
                         )
                 }
 
                 codacyReport ?: throw ProjectDirectoryNotFoundException()
             }
+    }
 
 
     companion object {

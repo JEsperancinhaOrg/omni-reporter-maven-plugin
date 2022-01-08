@@ -55,7 +55,7 @@ internal val String.toFileDigest: String
         .uppercase()
 
 enum class Language(val ext: String, val lang: String) {
-//    JAVA("java","Java"),
+    JAVA("java","Java"),
     KOTLIN("kt","Kotlin"),
-//    SCALA("scala","Scala")
+    SCALA("scala","Scala")
 }

@@ -81,3 +81,6 @@ data class Report(
 
 val InputStream.readJacocoPackages
     get() = readXmlValue<Report>(this).packages
+
+val InputStream.readReport
+    get() = readXmlValue<Report>(this)

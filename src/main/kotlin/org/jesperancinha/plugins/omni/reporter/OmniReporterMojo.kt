@@ -148,4 +148,8 @@ class ProjectDirectoryNotFoundException : RuntimeException()
 
 class CoverallsUrlNotConfiguredException : RuntimeException()
 
+class CodacyUrlNotConfiguredException : RuntimeException()
+
 class CoverallsReportNotGeneratedException : RuntimeException()
+
+class CodacyReportNotGeneratedException : RuntimeException()
