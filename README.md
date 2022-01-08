@@ -38,12 +38,12 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 3. Pipelines Supported
 
-| Type     | Status | Notes | Available from Release |
-|----------|--------|-------|------------------------|
-| Local    | 🚧     |       | 0.0.0                  |
-| Git Hub  | 🚧     |       | 0.0.1                  |
-| Git Lab  | 🚧     |       | 0.0.1                  |
-| CircleCI | 🚧     |       | ?                      |
+| Type     | Status | Notes | Available from Release | Example project                                                                                                                                                                                  |
+|----------|--------|-------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Local    | 🚧     |       | 0.0.0                  | N/A                                                                                                                                                                                              |
+| Git Hub  | 🚧     |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=City%20Library%20Management%20🏢&color=informational)](https://github.com/jesperancinha/advanced-library-management) |
+| Git Lab  | 🚧     |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Favourite%20Lyrics%20App&color=informational)](https://gitlab.com/jesperancinha/favourite-lyrics-app)                |
+| CircleCI | 🚧     |       | ?                      |                                                                                                                                                                                                  |
 
 #### 4. Configuration options
 
@@ -190,7 +190,7 @@ If you want to be more specific in your configuration and need an example here i
       <useCoverallsCount>false</useCoverallsCount>
       <extraSourceFolders>${project.build.directory}/generated-sources/plugin</extraSourceFolders>
       <coverallsUrl>https://coveralls.io/api/v1/jobs</coverallsUrl>
-      <codacyUrl>https://api.codacy.com/api/v3</codacyUrl>
+      <codacyUrl>https://api.codacy.com</codacyUrl>
       <coverallsToken>AAAAAAAAAAAAAAAAAAA</coverallsToken>
       <codacyToken>AAAAAAAAAAAAAAAAAAA</codacyToken>
       <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>
