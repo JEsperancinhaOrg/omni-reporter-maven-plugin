@@ -55,8 +55,9 @@ open class CodacyClient(
     override val url: String,
     val language: Language,
     val repo: Repository,
-    val partial: Boolean
+    val partial: Boolean = false
 ) : ApiClient<CodacyReport, CodacyResponse> {
+
     override fun submit(report: CodacyReport): CodacyResponse {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
@@ -66,6 +67,22 @@ open class CodacyClient(
         logger.debug(jsonReport.replace(token, "<PROTECTED>"))
         val content: HttpContent = ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, jsonReport.toByteArray())
         val httpRequest = requestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
+        httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
+        httpRequest.headers["project-token"] = token
+        val httpResponse = httpRequest?.execute()
+        val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
+        return readJsonValue(readAllBytes)
+    }
+
+    fun submitEndReport(): CodacyResponse {
+        val revision = repo.resolve(Constants.HEAD)
+        val commitId = RevWalk(repo).parseCommit(revision).id.name
+        val codacyReportUrl = "$url/2.0/commit/$commitId/coverageFinal"
+        logger.info("Sending Final ${language.name.lowercase()} report to codacy at $codacyReportUrl")
+        val httpRequest = requestFactory.buildPostRequest(
+            GenericUrl(codacyReportUrl),
+            ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, "".toByteArray())
+        )
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
         httpRequest.headers["project-token"] = token
         val httpResponse = httpRequest?.execute()

@@ -134,7 +134,6 @@ class CodacyProcessor(
         val repo = RepositoryBuilder().findGitDir(projectBaseDir).build()
 
         Language.values().forEach { language ->
-
             val reportsPerLanguage = allProjects.toReportFiles(supportedPredicate)
                 .filter { (project, _) -> project.compileSourceRoots != null }
                 .flatMap { (project, reports) ->
@@ -151,15 +150,30 @@ class CodacyProcessor(
                             report.inputStream(),
                             project.compileSourceRoots.map { file -> File(file) })
                     }
-
+                }
+                .filter {
+                    if (it.fileReports.isEmpty()) {
+                        if (failOnReportNotFound) throw CodacyReportNotGeneratedException() else {
+                            logger.warn("Codacy report was not generated! This usually means that no jacoco.xml reports have been found.")
+                        }
+                        false
+                    } else true
                 }
 
-            val last = reportsPerLanguage.last()
+            logger.info("- Found ${reportsPerLanguage.size} reports for language ${language.lang}")
             if (reportsPerLanguage.size > 1) {
-                val trail = reportsPerLanguage.dropLast(reportsPerLanguage.size - 2)
-                trail.forEach { codacyReport -> sendCodacyReport(language, repo, codacyReport, true) }
+                reportsPerLanguage.forEach { codacyReport -> sendCodacyReport(language, repo, codacyReport, true) }
+                val response = CodacyClient(
+                    token = token,
+                    language = language,
+                    url = codacyUrl ?: throw CodacyUrlNotConfiguredException(),
+                    repo = repo
+                ).submitEndReport()
+                logger.info("- Response")
+                logger.info(response.success)
+            } else if (reportsPerLanguage.size == 1) {
+                sendCodacyReport(language, repo, reportsPerLanguage[0], false)
             }
-            sendCodacyReport(language, repo, last, false)
 
             logger.info("* Omni Reporting processing for Codacy complete!")
         }
@@ -180,15 +194,6 @@ class CodacyProcessor(
                 repo = repo,
                 partial = partial
             )
-            codacyReport.let {
-                if (it.fileReports.isEmpty()) {
-                    if (failOnReportNotFound) throw CodacyReportNotGeneratedException() else {
-                        logger.warn("Codacy report was not generated! This usually means that no jacoco.xml reports have been found.")
-                        return
-                    }
-                }
-            }
-
             val response =
                 codacyClient.submit(codacyReport)
             logger.info("* Omni Reporting to Codacy for language $language complete!")
