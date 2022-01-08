@@ -428,7 +428,6 @@
                 <version>${omni-coveragereporter-maven-plugin.version}</version>
                 <configuration>
                     <extraSourceFolders>${project.basedir}/test,${project.basedir}/test2,${project.build.outputDirectory},${project.build.directory}/generated-sources/plugin</extraSourceFolders>
-<!--                    <coverallsUrl>http://localhost:8080</coverallsUrl>-->
                 </configuration>
             </plugin>
         </plugins>
