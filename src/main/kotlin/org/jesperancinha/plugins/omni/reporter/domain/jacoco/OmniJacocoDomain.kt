@@ -3,6 +3,8 @@ package org.jesperancinha.plugins.omni.reporter.domain.jacoco
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
+import java.io.InputStream
 
 /**
  * Created by jofisaes on 04/01/2022
@@ -20,8 +22,8 @@ data class Class(
 data class Counter(
     val value: String? = null,
     val type: String? = null,
-    val missed: String? = null,
-    val covered: String? = null
+    val missed: Int,
+    val covered: Int
 )
 
 data class Line(
@@ -58,7 +60,7 @@ data class Sessioninfo(
     val dump: String? = null
 )
 
-data class Sourcefile (
+data class Sourcefile(
     @JsonProperty("Line")
     val lines: List<Line> = emptyList(),
     @JsonProperty("Counter")
@@ -76,3 +78,6 @@ data class Report(
     val counters: List<Counter> = emptyList(),
     val name: String? = null
 )
+
+val InputStream.readJacocoPackages
+    get() = readXmlValue<Report>(this).packages

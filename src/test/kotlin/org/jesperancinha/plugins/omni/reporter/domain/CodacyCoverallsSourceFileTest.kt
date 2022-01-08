@@ -63,7 +63,7 @@ internal class CodacyCoverallsSourceFileTest {
                             .associate { entry -> entry.key to entry.value }.toMutableMap())
                     }.toTypedArray()
             )
-//            reportResult shouldBe expectedReport
+            reportResult shouldBe expectedReport
         }
 
     }

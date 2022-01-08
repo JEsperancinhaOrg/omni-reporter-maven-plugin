@@ -5,9 +5,8 @@ import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsSourceFile
 import org.jesperancinha.plugins.omni.reporter.domain.isBranch
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
-import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
-import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
+import org.jesperancinha.plugins.omni.reporter.domain.jacoco.readJacocoPackages
 import org.jesperancinha.plugins.omni.reporter.parsers.toFileDigest
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
@@ -93,7 +92,7 @@ class JacocoParserToCoveralls(
 
 
     override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
-        readXmlValue<Report>(input).packages
+        input.readJacocoPackages
             .asSequence()
             .map { it.name to it.sourcefiles }
             .flatMap { (packageName, sourceFiles) ->
