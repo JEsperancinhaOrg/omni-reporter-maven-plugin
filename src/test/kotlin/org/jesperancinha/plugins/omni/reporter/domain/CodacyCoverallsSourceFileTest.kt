@@ -46,8 +46,8 @@ internal class CodacyCoverallsSourceFileTest {
             "",
             GitHubPipeline(),
             root,
-            false,
-            KOTLIN
+            failOnUnknown = false,
+            language = KOTLIN
         ).parseInput(inputJacocoStream, listOf(root)).let {
             val reportResult = it.copy(
                 fileReports = it.fileReports.sortedBy { name -> name.filename }.toTypedArray()

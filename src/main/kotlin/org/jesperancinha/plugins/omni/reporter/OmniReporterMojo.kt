@@ -37,6 +37,12 @@ open class OmniReporterMojo(
     var failOnReportNotFound: Boolean = false,
     @Parameter(property = "failOnReportSendingError", defaultValue = "false")
     var failOnReportSendingError: Boolean = false,
+    @Parameter(property = "failOnXmlParseError", defaultValue = "false")
+    var disableCoveralls: Boolean = false,
+    @Parameter(property = "disableCoveralls", defaultValue = "false")
+    var disableCodacy: Boolean = false,
+    @Parameter(property = "disableCodacy", defaultValue = "false")
+    var failOnXmlParseError: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "useCoverallsCount", defaultValue = "true")
@@ -70,7 +76,7 @@ open class OmniReporterMojo(
 
         logLine()
         logger.info("Coveralls URL: $coverallsUrl")
-        logger.info("Copdacy URL: $codacyUrl")
+        logger.info("Codacy URL: $codacyUrl")
         logger.info("Coveralls token: ${checkToken(coverallsToken)}")
         logger.info("Codecov token: ${checkToken(codecovToken)}")
         logger.info("Codacy token: ${checkToken(codacyToken)}")
@@ -80,6 +86,9 @@ open class OmniReporterMojo(
         logger.info("failOnUnknown: $failOnUnknown")
         logger.info("failOnReportNotFound: $failOnReportNotFound")
         logger.info("failOnReportSendingError: $failOnReportSendingError")
+        logger.info("failOnXmlParseError: $failOnXmlParseError")
+        logger.info("disableCoveralls: $disableCoveralls")
+        logger.info("disableCodacy: $disableCodacy")
         logger.info("ignoreTestBuildDirectory: $ignoreTestBuildDirectory")
         logger.info("branchCoverage: $branchCoverage")
         logger.info("useCoverallsCount: $useCoverallsCount")
@@ -89,33 +98,37 @@ open class OmniReporterMojo(
         val currentPipeline = PipelineImpl.currentPipeline
 
         coverallsToken?.let { token ->
-            CoverallsReportsProcessor(
-                coverallsToken = token,
-                coverallsUrl = coverallsUrl,
-                currentPipeline = currentPipeline,
-                allProjects = allProjects,
-                projectBaseDir = projectBaseDir,
-                failOnUnknown = failOnUnknown,
-                failOnReportNotFound = failOnReportNotFound,
-                failOnReportSending = failOnReportSendingError,
-                branchCoverage = branchCoverage,
-                ignoreTestBuildDirectory = ignoreTestBuildDirectory,
-                useCoverallsCount = useCoverallsCount
-            ).processReports()
+            if (!disableCoveralls)
+                CoverallsReportsProcessor(
+                    coverallsToken = token,
+                    coverallsUrl = coverallsUrl,
+                    currentPipeline = currentPipeline,
+                    allProjects = allProjects,
+                    projectBaseDir = projectBaseDir,
+                    failOnUnknown = failOnUnknown,
+                    failOnReportNotFound = failOnReportNotFound,
+                    failOnReportSending = failOnReportSendingError,
+                    failOnXmlParseError = failOnXmlParseError,
+                    branchCoverage = branchCoverage,
+                    ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+                    useCoverallsCount = useCoverallsCount
+                ).processReports()
         }
 
         codacyToken?.let { token ->
-            CodacyProcessor(
-                token = token,
-                codacyUrl = codacyUrl,
-                currentPipeline = currentPipeline,
-                allProjects = allProjects,
-                projectBaseDir = projectBaseDir,
-                failOnReportNotFound = failOnReportNotFound,
-                failOnReportSending = failOnReportSendingError,
-                failOnUnknown = failOnUnknown,
-                ignoreTestBuildDirectory = ignoreTestBuildDirectory,
-            ).processReports()
+            if (!disableCodacy)
+                CodacyProcessor(
+                    token = token,
+                    codacyUrl = codacyUrl,
+                    currentPipeline = currentPipeline,
+                    allProjects = allProjects,
+                    projectBaseDir = projectBaseDir,
+                    failOnReportNotFound = failOnReportNotFound,
+                    failOnReportSending = failOnReportSendingError,
+                    failOnXmlParseError = failOnXmlParseError,
+                    failOnUnknown = failOnUnknown,
+                    ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+                ).processReports()
         }
     }
 
@@ -153,3 +166,7 @@ class CodacyUrlNotConfiguredException : RuntimeException()
 class CoverallsReportNotGeneratedException : RuntimeException()
 
 class CodacyReportNotGeneratedException : RuntimeException()
+
+class JacocoXmlParsingErrorException : RuntimeException()
+
+class NullSourceFileException : RuntimeException()

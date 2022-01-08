@@ -1,10 +1,15 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import org.jesperancinha.plugins.omni.reporter.JacocoXmlParsingErrorException
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
+import org.jesperancinha.plugins.omni.reporter.domain.jacoco.readJacocoPackages
+import org.jesperancinha.plugins.omni.reporter.domain.jacoco.readReport
 import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
 import org.jesperancinha.plugins.omni.reporter.parsers.writeSnakeCaseJsonValueAsString
 import org.junit.jupiter.api.Test
@@ -21,6 +26,39 @@ internal class DomainTest {
             it.name.shouldNotBeNull()
             it.sourcefiles.shouldNotBeNull()
         }
+    }
+
+    @Test
+    fun `should not fail if failOnXmlParseError is false when parsing report`() {
+        val inputStream = javaClass.getResourceAsStream("/jacoco-bad.xml")
+        inputStream.shouldNotBeNull()
+        val readValue = inputStream.readReport(false)
+        readValue.shouldNotBeNull()
+        readValue.packages.shouldNotBeNull()
+        readValue.packages.shouldBeEmpty()
+    }
+
+    @Test
+    fun `should not fail if failOnXmlParseError is false when parsing packages`() {
+        val inputStream = javaClass.getResourceAsStream("/jacoco-bad.xml")
+        inputStream.shouldNotBeNull()
+        val readValue = inputStream.readJacocoPackages(false)
+        readValue.shouldNotBeNull()
+        readValue.shouldBeEmpty()
+    }
+
+    @Test
+    fun `should fail if failOnXmlParseError is true when parsing report`() {
+        val inputStream = javaClass.getResourceAsStream("/jacoco-bad.xml")
+        inputStream.shouldNotBeNull()
+        shouldThrow<JacocoXmlParsingErrorException> { inputStream.readReport(true) }
+    }
+
+    @Test
+    fun `should fail if failOnXmlParseError is true when parsing packages`() {
+        val inputStream = javaClass.getResourceAsStream("/jacoco-bad.xml")
+        inputStream.shouldNotBeNull()
+        shouldThrow<JacocoXmlParsingErrorException> { inputStream.readJacocoPackages(true) }
     }
 
     @Test

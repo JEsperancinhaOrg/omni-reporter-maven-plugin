@@ -3,6 +3,7 @@ package org.jesperancinha.plugins.omni.reporter.domain.jacoco
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import org.jesperancinha.plugins.omni.reporter.JacocoXmlParsingErrorException
 import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
 import java.io.InputStream
 
@@ -79,8 +80,8 @@ data class Report(
     val name: String? = null
 )
 
-val InputStream.readJacocoPackages
-    get() = readXmlValue<Report>(this).packages
+fun InputStream.readJacocoPackages(failOnXmlParseError: Boolean) =
+    readXmlValue<Report>(this).packages.apply { if (failOnXmlParseError && isEmpty()) throw JacocoXmlParsingErrorException() }
 
-val InputStream.readReport
-    get() = readXmlValue<Report>(this)
+fun InputStream.readReport(failOnXmlParseError: Boolean) =
+    readXmlValue<Report>(this).apply { if (failOnXmlParseError && packages.isEmpty()) throw JacocoXmlParsingErrorException() }

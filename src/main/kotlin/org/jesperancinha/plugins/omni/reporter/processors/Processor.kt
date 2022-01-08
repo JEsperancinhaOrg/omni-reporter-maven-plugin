@@ -37,6 +37,7 @@ class CoverallsReportsProcessor(
     private val failOnUnknown: Boolean,
     private val failOnReportNotFound: Boolean,
     private val failOnReportSending: Boolean,
+    private val failOnXmlParseError: Boolean,
     private val branchCoverage: Boolean,
     private val useCoverallsCount: Boolean,
     ignoreTestBuildDirectory: Boolean
@@ -47,12 +48,13 @@ class CoverallsReportsProcessor(
 
         val jacocoParser =
             JacocoParserToCoveralls(
-                coverallsToken,
-                currentPipeline,
-                projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
+                token = coverallsToken,
+                pipeline = currentPipeline,
+                root = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
                 failOnUnknown = failOnUnknown,
                 includeBranchCoverage = branchCoverage,
-                useCoverallsCount = useCoverallsCount
+                useCoverallsCount = useCoverallsCount,
+                failOnXmlParseError = failOnXmlParseError
             )
 
         allProjects.toReportFiles(supportedPredicate)
@@ -123,6 +125,7 @@ class CodacyProcessor(
     private val failOnReportNotFound: Boolean,
     private val failOnReportSending: Boolean,
     private val failOnUnknown: Boolean,
+    private val failOnXmlParseError: Boolean,
     ignoreTestBuildDirectory: Boolean
 ) : Processor(ignoreTestBuildDirectory) {
     override fun processReports() {
@@ -142,6 +145,7 @@ class CodacyProcessor(
                             pipeline = currentPipeline,
                             root = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
                             failOnUnknown = failOnUnknown,
+                            failOnXmlParseError = failOnXmlParseError,
                             language = language
                         ).parseInput(
                             report.inputStream(),
@@ -172,7 +176,7 @@ class CodacyProcessor(
             val codacyClient = CodacyClient(
                 token = token,
                 language = language,
-                url = codacyUrl ?: throw CoverallsUrlNotConfiguredException(),
+                url = codacyUrl ?: throw CodacyUrlNotConfiguredException(),
                 repo = repo,
                 partial = partial
             )
