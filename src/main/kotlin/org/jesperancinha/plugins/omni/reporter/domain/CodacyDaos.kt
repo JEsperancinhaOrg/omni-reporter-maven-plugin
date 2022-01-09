@@ -98,11 +98,8 @@ open class CodacyClient(
         val content: HttpContent = ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, jsonReport.toByteArray())
         val httpRequest = httpRequestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
-        token?.apply {
-            httpRequest.headers["project-token"] = this
-        }
         apiToken?.apply {
-            httpRequest.headers["api-token"] = this
+            httpRequest.headers["api-token"] = this.codacyApiToken
         }
         val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
@@ -121,9 +118,6 @@ open class CodacyClient(
         val httpRequest = httpRequestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
         httpRequest.headers["project-token"] = token
-        apiToken?.apply {
-            httpRequest.headers["api-token"] = this.codacyApiToken
-        }
         val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
         return readJsonValue(readAllBytes)
@@ -145,9 +139,6 @@ open class CodacyClient(
             ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, "".toByteArray())
         )
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
-        token?.apply {
-            httpRequest.headers["project-token"] = this
-        }
         apiToken?.apply {
             httpRequest.headers["api-token"] = this.codacyApiToken
         }

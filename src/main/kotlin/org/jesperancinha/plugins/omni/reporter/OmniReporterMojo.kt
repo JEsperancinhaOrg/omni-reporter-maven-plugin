@@ -105,6 +105,7 @@ open class OmniReporterMojo(
         logger.info("Codecov token: ${checkToken(codecovToken)}")
         logger.info("Codacy token: ${checkToken(codacyToken)}")
         logger.info("Codacy API token: ${checkToken(codacyApiToken)}")
+        logger.info("Codacy API fully configured: ${this.isCodacyAPIConfigured}")
         logger.info("Source Encoding: $sourceEncoding")
         logger.info("Parent Directory: $projectBaseDir")
         logger.info("failOnNoEncoding: $failOnNoEncoding")

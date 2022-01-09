@@ -31,11 +31,12 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 2. Online API's supported
 
-| Type      | Status | Notes | Environment Variables                                                                                                                                                     | Available from Release |
-|-----------|--------|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
-| Coveralls | ✅     |       | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN                                                                                                                                   | 0.0.0                  |
-| Codacy    | ✅      |       | CODACY_PROJECT_TOKEN                                                                                                                                                      | 0.0.7                  |
-| CodeCov   | ✅      |       | CODECOV_TOKEN  or <u>all</u> of these: [CODACY_API_TOKEN, CODACY_ORGANIZATION_PROVIDER, CODACY_USERNAME, CODACY_PROJECT_NAME](https://docs.codacy.com/coverage-reporter/) | 0.0.9                  |
+| Type       | Status | Notes | Environment Variables                                                                                                                                                                                     | Available from Release |
+|------------|--------|-------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| Coveralls  | ✅     |       | `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN`                                                                                                                                                               | 0.0.0                  |
+| Codacy     | ✅      |       | `CODACY_PROJECT_TOKEN`                                                                                                                                                                                    | 0.0.7                  |
+| Codacy API | ✅      |       | All</u> of these: [`CODACY_API_TOKEN`, `CODACY_ORGANIZATION_PROVIDER`, `CODACY_USERNAME`, `CODACY_PROJECT_NAME`](https://docs.codacy.com/coverage-reporter/). It has Priority over `CODACY_PROJECT_TOKEN` | 0.0.9                  |
+| CodeCov    | ✅      |       | `CODECOV_TOKEN`                                                                                                                                                                                           | 0.0.9                  |
 
 #### 3. Pipelines Supported
 
@@ -48,25 +49,32 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 4. Configuration options
 
-| Property                 | Function                                                                                                                                                                                                                                                                                                                                        | Available from Release |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
-| failOnUnknown            | If an unknown file is found, it will ignore current file and proceed with reporting the rest. It is `false` by default                                                                                                                                                                                                                          | 0.0.0                  |
-| failOnNoEncoding         | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                           | ?                      |
-| failOnReportNotFound     | If a particular report is not generated, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                     | 0.0.7                  |
-| failOnReportSendingError | If a particular report has failed to be sent, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                | 0.0.7                  |
-| failOnXmlParsingError    | If the process fails to parse a Jacoco file, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                 | 0.0.8                  |
-| disableCoveralls         | By default it is set to `false`. If variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` are available, `Omni` reporter will try to send the report to Coveralls. However, you can also prevent this behaviour if you set this to true                                                                                                         | 0.0.8                  |
-| disableCodacy            | By default it is set to `false`. If variable `CODACY_PROJECT_TOKEN` is available, `Omni` reporter will try to send the report to Codacy. However, you can also prevent this behaviour if you set this to true                                                                                                                                   | 0.0.8                  |
-| disableCodecov           | By default it is set to `false`. If variable `CODECOV_TOKEN` is available, `Omni` reporter will try to send the report to Codecov. However, you can also prevent this behaviour if you set this to true                                                                                                                                         | 0.0.9                  |
-| ignoreTestBuildDirectory | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                              | 0.0.2                  |
-| branchCoverage           | By default it is set to `false`. If you want include branch coverage in your reporting please activate this flag.                                                                                                                                                                                                                               | ?                      |
-| useCoverallsCount        | By default it is set to `true`. If you want to let the pipeline determine the numbering for your Job Id and run, then set this to `false`. It will then search those values via environment variables.                                                                                                                                          | 0.0.3                  |
-| extraSourceFolders       | You may want to include extra `Source` folders for `Omni` to find. It is better to make sure that in your plugin, you can define and tell maven where are your extra source folders. This parameter is here available as a last resort , should you find a problem where the plugins just don't work the way you expect them to.                | 0.0.7                  |
-| coverallsUrl             | Should Coveralls ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                         | 0.0.0                  |
-| codacyUrl                | Should Codacy ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                            | 0.0.7                  |
-| coverallsToken           | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead | 0.0.0                  |
-| codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                      | 0.0.7                  |
-| codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                            | 0.0.9                  |
+| Property                        | Function                                                                                                                                                                                                                                                                                                                                            | Available from Release |
+|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| failOnUnknown                   | If an unknown file is found, it will ignore current file and proceed with reporting the rest. It is `false` by default                                                                                                                                                                                                                              | 0.0.0                  |
+| failOnNoEncoding                | If an explicit encoding is not found, the reporting process will continue. It will fail only should an invalid character be found. Active this if you want the plugin to fail if configuration is not found. It is `false` by default                                                                                                               | ?                      |
+| failOnReportNotFound            | If a particular report is not generated, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                         | 0.0.7                  |
+| failOnReportSendingError        | If a particular report has failed to be sent, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                    | 0.0.7                  |
+| failOnXmlParsingError           | If the process fails to parse a Jacoco file, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                     | 0.0.8                  |
+| disableCoveralls                | By default it is set to `false`. If variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` are available, `Omni` reporter will try to send the report to Coveralls. However, you can also prevent this behaviour if you set this to true                                                                                                             | 0.0.8                  |
+| disableCodacy                   | By default it is set to `false`. If variable `CODACY_PROJECT_TOKEN` is available, `Omni` reporter will try to send the report to Codacy. However, you can also prevent this behaviour if you set this to true                                                                                                                                       | 0.0.8                  |
+| disableCodecov                  | By default it is set to `false`. If variable `CODECOV_TOKEN` is available, `Omni` reporter will try to send the report to Codecov. However, you can also prevent this behaviour if you set this to true                                                                                                                                             | 0.0.9                  |
+| ignoreTestBuildDirectory        | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                                  | 0.0.2                  |
+| branchCoverage                  | By default it is set to `false`. If you want include branch coverage in your reporting please activate this flag.                                                                                                                                                                                                                                   | ?                      |
+| useCoverallsCount               | By default it is set to `true`. If you want to let the pipeline determine the numbering for your Job Id and run, then set this to `false`. It will then search those values via environment variables.                                                                                                                                              | 0.0.3                  |
+| extraSourceFolders              | You may want to include extra `Source` folders for `Omni` to find. It is better to make sure that in your plugin, you can define and tell maven where are your extra source folders. This parameter is here available as a last resort , should you find a problem where the plugins just don't work the way you expect them to.                    | 0.0.7                  |
+| coverallsUrl                    | Should Coveralls ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                             | 0.0.0                  |
+| codacyUrl                       | Should Codacy ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                                | 0.0.7                  |
+| codecovUrl                      | Should Codecov ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                               | 0.0.7                  |
+| coverallsToken                  | Sets the `coverallsToken` manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead     | 0.0.0                  |
+| codacyToken                     | Sets the `codacyToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                        | 0.0.7                  |
+| (*1) codacyApiToken             | Sets the `codacyApiToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_API_TOKEN` instead                         | 0.0.7                  |
+| (*1) codacyOrganizationProvider | Sets the `codacyOrganizationProvider` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_ORGANIZATION_PROVIDER` instead | 0.0.7                  |
+| (*1) codacyUserName             | Sets the `codacyUserName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_USERNAME` instead                          | 0.0.7                  |
+| (*1) codacyProjectName          | Sets the `codacyProjectName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_NAME` instead                   | 0.0.7                  |
+| codecovToken                    | Sets the `codecovToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                              | 0.0.9                  |
+
+> *N - These variables only work when fully configured in the N set.
 
 #### 5. How to run
 
@@ -88,7 +96,6 @@ Java 11 and above only
 - `mb` = missed branches
 - `cb` = covered branches
 
-
 ## Release notes - Upcoming version 0.0.10
 
 1. Branch Coverage for Coveralls
@@ -101,10 +108,10 @@ Java 11 and above only
 #### Release 0.0.8 - 2022/01/08
 
 1. Disable flags for Coveralls and Codacy to force them out even when environment variables are available
-   1. `disableCoveralls`
-   2. `disableCodacy`
+    1. `disableCoveralls`
+    2. `disableCodacy`
 2. Exception handling for Codacy formatting issue
-   3. `failOnXmlParsingError`, false by default
+    3. `failOnXmlParsingError`, false by default
 3. Codacy update so solve Xerces module error. Manual implementation required
 
 #### Release 0.0.7 - 2022/01/06
@@ -121,13 +128,12 @@ Java 11 and above only
 
 > It has been observed that GitLab checks out the repo on the desired commit, but looses reference to the branch at this point. This means that the only reference to the commit is the hash. If we change the branch name, it will use the hash-number regardless of what we configure for the Job ID.
 > Example
-> 
+>
 > Branch = main, Hash = AAAAAAAAAAAAA and service_number = null => JobId = #AAAAAAAAAAAAA, Branch Name = main
-> 
+>
 > Branch = AAAAAAAAAAAAA, Hash AAAAAAAAAAAAA and service_number = null -> JobId = #AAAAAAAAAAAAA, Branch Name = AAAAAAAAAAAAA
-> 
+>
 > Branch = AAAAAAAAAAAAA, Hash AAAAAAAAAAAAA and service_number = 99 -> JobId = 99, Branch Name = AAAAAAAAAAAAA
-
 
 #### Release 0.0.5 - 2022/01/05
 
@@ -184,30 +190,35 @@ Don't forget to have the variables available in your environment for the API's y
 If you want to be more specific in your configuration and need an example here is one of a fully configured plugin:
 
 ```xml
+
 <plugin>
-   <groupId>org.jesperancinha.plugins</groupId>
-   <artifactId>omni-coveragereporter-maven-plugin</artifactId>
-   <version>${omni-coveragereporter-maven-plugin.version}</version>
-   <configuration>
-      <failOnUnknown>false</failOnUnknown>
-      <failOnNoEncoding>false</failOnNoEncoding>
-      <failOnReportNotFound>false</failOnReportNotFound>
-      <failOnReportSendingError>false</failOnReportSendingError>
-      <failOnXmlParsingError>false</failOnXmlParsingError>
-      <disableCoveralls>false</disableCoveralls>
-      <disableCodacy>false</disableCodacy>
-      <disableCodecov>false</disableCodecov>
-      <ignoreTestBuildDirectory>true</ignoreTestBuildDirectory>
-      <branchCoverage>false</branchCoverage>
-      <useCoverallsCount>false</useCoverallsCount>
-      <extraSourceFolders>${project.build.directory}/generated-sources/plugin</extraSourceFolders>
-      <coverallsUrl>https://coveralls.io/api/v1/jobs</coverallsUrl>
-      <codacyUrl>https://api.codacy.com</codacyUrl>
-      <codecovUrl>https://codecov.io/upload</codecovUrl>
-      <coverallsToken>AAAAAAAAAAAAAAAAAAA</coverallsToken>
-      <codacyToken>AAAAAAAAAAAAAAAAAAA</codacyToken>
-      <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>
-   </configuration>
+    <groupId>org.jesperancinha.plugins</groupId>
+    <artifactId>omni-coveragereporter-maven-plugin</artifactId>
+    <version>${omni-coveragereporter-maven-plugin.version}</version>
+    <configuration>
+        <failOnUnknown>false</failOnUnknown>
+        <failOnNoEncoding>false</failOnNoEncoding>
+        <failOnReportNotFound>false</failOnReportNotFound>
+        <failOnReportSendingError>false</failOnReportSendingError>
+        <failOnXmlParsingError>false</failOnXmlParsingError>
+        <disableCoveralls>false</disableCoveralls>
+        <disableCodacy>false</disableCodacy>
+        <disableCodecov>false</disableCodecov>
+        <ignoreTestBuildDirectory>true</ignoreTestBuildDirectory>
+        <branchCoverage>false</branchCoverage>
+        <useCoverallsCount>false</useCoverallsCount>
+        <extraSourceFolders>${project.build.directory}/generated-sources/plugin</extraSourceFolders>
+        <coverallsUrl>https://coveralls.io/api/v1/jobs</coverallsUrl>
+        <codacyUrl>https://api.codacy.com</codacyUrl>
+        <codecovUrl>https://codecov.io/upload</codecovUrl>
+        <coverallsToken>AAAAAAAAAAAAAAAAAAA</coverallsToken>
+        <codacyToken>AAAAAAAAAAAAAAAAAAA</codacyToken>
+        <codacyApiToken>AAAAAAAAAAAAAAAAAAA</codacyApiToken>
+        <codacyOrganizationProvider>AAAAAAAAAAAAAAAAAAA</codacyOrganizationProvider>
+        <codacyUserName>AAAAAAAAAAAAAAAAAAA</codacyUserName>
+        <codacyProjectName>AAAAAAAAAAAAAAAAAAA</codacyProjectName>
+        <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>
+    </configuration>
 </plugin>
 ```
 
