@@ -49,7 +49,7 @@ data class Line(
 )
 
 data class Method(
-    @JsonProperty("Counter")
+    @JsonProperty("counter")
     val counters: List<Counter> = emptyList(),
     @JacksonXmlProperty(localName = "name", isAttribute = true)
     val name: String? = null,
@@ -80,10 +80,11 @@ data class Sessioninfo(
 )
 
 data class Sourcefile(
-    @JsonProperty("Line")
+    @JsonProperty("line")
     val lines: List<Line> = emptyList(),
-    @JsonProperty("Counter")
+    @JsonProperty("counter")
     val counters: List<Counter> = emptyList(),
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
     val name: String
 )
 
