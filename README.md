@@ -68,10 +68,10 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | codecovUrl                      | Should Codecov ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                               | 0.0.7                  |
 | coverallsToken                  | Sets the `coverallsToken` manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead     | 0.0.0                  |
 | codacyToken                     | Sets the `codacyToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                        | 0.0.7                  |
-| (*1) codacyApiToken             | Sets the `codacyApiToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_API_TOKEN` instead                         | 0.0.7                  |
-| (*1) codacyOrganizationProvider | Sets the `codacyOrganizationProvider` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_ORGANIZATION_PROVIDER` instead | 0.0.7                  |
-| (*1) codacyUserName             | Sets the `codacyUserName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_USERNAME` instead                          | 0.0.7                  |
-| (*1) codacyProjectName          | Sets the `codacyProjectName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_NAME` instead                   | 0.0.7                  |
+| (*1) codacyApiToken             | Sets the `codacyApiToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_API_TOKEN` instead                         | 0.0.9                  |
+| (*1) codacyOrganizationProvider | Sets the `codacyOrganizationProvider` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_ORGANIZATION_PROVIDER` instead | 0.0.9                  |
+| (*1) codacyUserName             | Sets the `codacyUserName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_USERNAME` instead                          | 0.0.9                  |
+| (*1) codacyProjectName          | Sets the `codacyProjectName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_NAME` instead                   | 0.0.9                  |
 | codecovToken                    | Sets the `codecovToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                              | 0.0.9                  |
 
 > *N - These variables only work when fully configured in the N set.
@@ -100,10 +100,10 @@ Java 11 and above only
 
 1. Branch Coverage for Coveralls
 
-## Release notes - Upcoming version 0.0.9
+#### Release 0.0.9 - 2022/01/09
 
-2. Codecov support for endpoint V4 version
-3. API token support for codacy
+1. Codecov support for endpoint V4 version
+2. API token support for codacy
 
 #### Release 0.0.8 - 2022/01/08
 
