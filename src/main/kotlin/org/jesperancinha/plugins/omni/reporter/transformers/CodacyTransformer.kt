@@ -1,6 +1,7 @@
 package org.jesperancinha.plugins.omni.reporter.transformers
 
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
+import org.jesperancinha.plugins.omni.reporter.domain.CodacyApiTokenConfig
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyFileReport
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyReport
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
@@ -9,7 +10,6 @@ import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.readReport
 import org.jesperancinha.plugins.omni.reporter.parsers.Language
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.InputStream
 
@@ -31,13 +31,16 @@ val List<Line?>.toCodacyCoverage: MutableMap<String, Int>
  * Created by jofisaes on 05/01/2022
  */
 class JacocoParserToCodacy(
-    token: String,
+    token: String? = null,
+    apiToken: CodacyApiTokenConfig? = null,
     pipeline: Pipeline,
     root: File,
     failOnUnknown: Boolean,
     private val failOnXmlParseError: Boolean = false,
     private val language: Language
-) : OmniReporterParserImpl<InputStream, CodacyReport>(token, pipeline, root) {
+) : OmniReporterParserImpl<InputStream, CodacyReport>(
+    token = token, apiToken = apiToken, pipeline = pipeline, root = root
+) {
 
     private var codacyReport: CodacyReport? = null
 

@@ -46,28 +46,84 @@ data class CodacyReport(
 
 }
 
+data class CodacyApiTokenConfig(
+    val codacyApiToken: String,
+    val codacyOrganizationProvider: String,
+    val codacyUsername: String,
+    val codacyProjectName: String
+) {
+    companion object {
+        fun isApiTokenConfigure(
+            codacyApiToken: String?,
+            codacyOrganizationProvider: String?,
+            codacyUsername: String?,
+            codacyProjectName: String?
+        ) = !(codacyApiToken.isNullOrBlank() ||
+                codacyOrganizationProvider.isNullOrBlank() ||
+                codacyUsername.isNullOrBlank() ||
+                codacyProjectName.isNullOrBlank())
+    }
+}
+
 /**
  * Created by jofisaes on 06/01/2022
  */
 open class CodacyClient(
-    override val token: String,
+    override val token: String?,
+    override val apiToken: CodacyApiTokenConfig?,
     override val url: String,
     val language: Language,
     val repo: Repository,
     val partial: Boolean = false
-) : ApiClient<CodacyReport, CodacyResponse> {
+) : ApiClientImpl<CodacyReport, CodacyResponse>() {
 
     override fun submit(report: CodacyReport): CodacyResponse {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
+        return apiToken?.let {
+            submitReportWithApiToken(report, commitId)
+        } ?: submitReportWithProjectRepoToken(report, commitId)
+
+    }
+
+    private fun submitReportWithApiToken(
+        report: CodacyReport,
+        commitId: String?,
+    ): CodacyResponse {
+        val codacyReportUrl =
+            "$url/2.0/${apiToken?.codacyOrganizationProvider}/${apiToken?.codacyUsername}/${apiToken?.codacyProjectName}/commit/$commitId/coverage/${language.lang}?partial=${partial}"
+        logger.info("Sending ${language.name.lowercase()} report to codacy at $codacyReportUrl")
+        val jsonReport = writeCamelCaseJsonValueAsString(report)
+        logger.debug(jsonReport.redact(token).redact(apiToken?.codacyApiToken))
+        val content: HttpContent = ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, jsonReport.toByteArray())
+        val httpRequest = httpRequestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
+        httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
+        token?.apply {
+            httpRequest.headers["project-token"] = this
+        }
+        apiToken?.apply {
+            httpRequest.headers["api-token"] = this
+        }
+        val httpResponse = httpRequest?.execute()
+        val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
+        return readJsonValue(readAllBytes)
+    }
+
+    private fun submitReportWithProjectRepoToken(
+        report: CodacyReport,
+        commitId: String?
+    ): CodacyResponse {
         val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.lang}?partial=${partial}"
         logger.info("Sending ${language.name.lowercase()} report to codacy at $codacyReportUrl")
         val jsonReport = writeCamelCaseJsonValueAsString(report)
-        logger.debug(jsonReport.redact(token))
+        logger.debug(jsonReport.redact(token).redact(apiToken?.codacyApiToken))
         val content: HttpContent = ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, jsonReport.toByteArray())
         val httpRequest = httpRequestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
         httpRequest.headers["project-token"] = token
+        apiToken?.apply {
+            httpRequest.headers["api-token"] = this.codacyApiToken
+        }
         val httpResponse = httpRequest?.execute()
         val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
         return readJsonValue(readAllBytes)
@@ -76,6 +132,31 @@ open class CodacyClient(
     fun submitEndReport(): CodacyResponse {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name
+        return apiToken?.let {
+            submitEndReportWithApiToken(commitId)
+        } ?: submitEndReportWithProjectRepoToken(commitId)
+    }
+
+    private fun submitEndReportWithApiToken(commitId: String?): CodacyResponse {
+        val codacyReportUrl = "$url/2.0/${apiToken?.codacyOrganizationProvider}/${apiToken?.codacyUsername}/${apiToken?.codacyProjectName}/commit/$commitId/coverageFinal"
+        logger.info("Sending Final ${language.name.lowercase()} report to codacy at $codacyReportUrl")
+        val httpRequest = httpRequestFactory.buildPostRequest(
+            GenericUrl(codacyReportUrl),
+            ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, "".toByteArray())
+        )
+        httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
+        token?.apply {
+            httpRequest.headers["project-token"] = this
+        }
+        apiToken?.apply {
+            httpRequest.headers["api-token"] = this.codacyApiToken
+        }
+        val httpResponse = httpRequest?.execute()
+        val readAllBytes = httpResponse?.content?.readAllBytes() ?: byteArrayOf()
+        return readJsonValue(readAllBytes)
+    }
+
+    private fun submitEndReportWithProjectRepoToken(commitId: String?): CodacyResponse {
         val codacyReportUrl = "$url/2.0/commit/$commitId/coverageFinal"
         logger.info("Sending Final ${language.name.lowercase()} report to codacy at $codacyReportUrl")
         val httpRequest = httpRequestFactory.buildPostRequest(

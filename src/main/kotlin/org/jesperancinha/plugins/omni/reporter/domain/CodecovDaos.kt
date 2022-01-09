@@ -50,7 +50,7 @@ class CodecovClient(
     private val pipeline: Pipeline,
     private val repo: Repository,
     private val version: CodecovEndpoint = V4
-) : ApiClient<String, String> {
+) : ApiClientImpl<String, String>() {
     override fun submit(report: String): String {
         val revision = repo.resolve(Constants.HEAD)
         val commitId = RevWalk(repo).parseCommit(revision).id.name

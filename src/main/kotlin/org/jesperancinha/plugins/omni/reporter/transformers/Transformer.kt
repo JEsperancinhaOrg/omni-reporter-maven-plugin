@@ -1,5 +1,6 @@
 package org.jesperancinha.plugins.omni.reporter.transformers
 
+import org.jesperancinha.plugins.omni.reporter.domain.CodacyApiTokenConfig
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.jesperancinha.plugins.omni.reporter.repository.GitRepository
@@ -34,7 +35,8 @@ interface OmniReportParser<INPUT, OUTPUT> {
 }
 
 abstract class OmniReporterParserImpl<INPUT, OUTPUT>(
-    internal val token: String,
+    internal val token: String?,
+    internal val apiToken: CodacyApiTokenConfig? = null,
     internal val pipeline: Pipeline,
     internal val root: File,
     internal val includeBranchCoverage: Boolean = false,

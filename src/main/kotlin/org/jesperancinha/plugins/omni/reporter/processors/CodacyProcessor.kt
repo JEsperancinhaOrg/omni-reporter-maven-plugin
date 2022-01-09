@@ -6,6 +6,7 @@ import org.eclipse.jgit.lib.RepositoryBuilder
 import org.jesperancinha.plugins.omni.reporter.CodacyReportNotGeneratedException
 import org.jesperancinha.plugins.omni.reporter.CodacyUrlNotConfiguredException
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
+import org.jesperancinha.plugins.omni.reporter.domain.CodacyApiTokenConfig
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyClient
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyReport
 import org.jesperancinha.plugins.omni.reporter.domain.redact
@@ -19,7 +20,8 @@ import java.io.File
  * Created by jofisaes on 07/01/2022
  */
 class CodacyProcessor(
-    private val token: String,
+    private val token: String?,
+    private val apiToken: CodacyApiTokenConfig?,
     private val codacyUrl: String?,
     private val currentPipeline: Pipeline,
     private val allProjects: List<MavenProject?>,
@@ -43,6 +45,7 @@ class CodacyProcessor(
                         logger.info("Parsing file: $report")
                         JacocoParserToCodacy(
                             token = token,
+                            apiToken= apiToken,
                             pipeline = currentPipeline,
                             root = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
                             failOnUnknown = failOnUnknown,
@@ -67,6 +70,7 @@ class CodacyProcessor(
                 reportsPerLanguage.forEach { codacyReport -> sendCodacyReport(language, repo, codacyReport, true) }
                 val response = CodacyClient(
                     token = token,
+                    apiToken= apiToken,
                     language = language,
                     url = codacyUrl ?: throw CodacyUrlNotConfiguredException(),
                     repo = repo
@@ -91,6 +95,7 @@ class CodacyProcessor(
         try {
             val codacyClient = CodacyClient(
                 token = token,
+                apiToken= apiToken,
                 language = language,
                 url = codacyUrl ?: throw CodacyUrlNotConfiguredException(),
                 repo = repo,

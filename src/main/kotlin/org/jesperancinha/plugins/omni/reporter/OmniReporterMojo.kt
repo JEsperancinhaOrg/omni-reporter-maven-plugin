@@ -4,12 +4,21 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
+import org.jesperancinha.plugins.omni.reporter.domain.CodacyApiTokenConfig
 import org.jesperancinha.plugins.omni.reporter.pipelines.PipelineImpl
 import org.jesperancinha.plugins.omni.reporter.processors.CodacyProcessor
 import org.jesperancinha.plugins.omni.reporter.processors.CodecovProcessor
 import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProcessor
 import org.slf4j.LoggerFactory
 import java.io.File
+
+private val OmniReporterMojo.isCodacyAPIConfigured: Boolean
+    get() = CodacyApiTokenConfig.isApiTokenConfigure(
+        codacyApiToken = codacyApiToken,
+        codacyOrganizationProvider = codacyOrganizationProvider,
+        codacyUsername = codacyUserName,
+        codacyProjectName = codacyProjectName
+    )
 
 private val MavenProject?.findAllSearchFolders: List<MavenProject>
     get() = ((this?.collectedProjects.let {
@@ -57,6 +66,14 @@ open class OmniReporterMojo(
     var codecovToken: String? = null,
     @Parameter(property = "codacyToken")
     var codacyToken: String? = null,
+    @Parameter(property = "codacyApiToken")
+    var codacyApiToken: String? = null,
+    @Parameter(property = "codacyOrganizationProvider")
+    var codacyOrganizationProvider: String? = null,
+    @Parameter(property = "codacyUserName")
+    var codacyUserName: String? = null,
+    @Parameter(property = "codacyProjectName")
+    var codacyProjectName: String? = null,
     @Parameter(defaultValue = "\${project}", readonly = true)
     var project: MavenProject? = null,
     @Parameter(property = "extraReportFolder")
@@ -72,6 +89,10 @@ open class OmniReporterMojo(
         val environment = System.getenv()
         coverallsToken = (coverallsToken ?: environment["COVERALLS_REPO_TOKEN"]) ?: environment["COVERALLS_TOKEN"]
         codacyToken = codacyToken ?: environment["CODACY_PROJECT_TOKEN"]
+        codacyApiToken = codacyApiToken ?: environment["CODACY_API_TOKEN"]
+        codacyOrganizationProvider = codacyOrganizationProvider ?: environment["CODACY_ORGANIZATION_PROVIDER"]
+        codacyUserName = codacyUserName ?: environment["CODACY_USERNAME"]
+        codacyProjectName = codacyProjectName ?: environment["CODACY_PROJECT_NAME"]
         codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
 
         val allProjects = project.findAllSearchFolders.injectExtraSourceFiles(extraSourceFolders)
@@ -83,6 +104,7 @@ open class OmniReporterMojo(
         logger.info("Coveralls token: ${checkToken(coverallsToken)}")
         logger.info("Codecov token: ${checkToken(codecovToken)}")
         logger.info("Codacy token: ${checkToken(codacyToken)}")
+        logger.info("Codacy API token: ${checkToken(codacyApiToken)}")
         logger.info("Source Encoding: $sourceEncoding")
         logger.info("Parent Directory: $projectBaseDir")
         logger.info("failOnNoEncoding: $failOnNoEncoding")
@@ -118,21 +140,31 @@ open class OmniReporterMojo(
                 ).processReports()
         }
 
-        codacyToken?.let { token ->
-            if (!disableCodacy)
-                CodacyProcessor(
-                    token = token,
-                    codacyUrl = codacyUrl,
-                    currentPipeline = currentPipeline,
-                    allProjects = allProjects,
-                    projectBaseDir = projectBaseDir,
-                    failOnReportNotFound = failOnReportNotFound,
-                    failOnReportSending = failOnReportSendingError,
-                    failOnXmlParseError = failOnXmlParsingError,
-                    failOnUnknown = failOnUnknown,
-                    ignoreTestBuildDirectory = ignoreTestBuildDirectory,
-                ).processReports()
+        if ((this.isCodacyAPIConfigured || codacyToken != null) && !disableCodacy) {
+            val codacyApiTokenConfig = codacyApiToken?.let {
+                CodacyApiTokenConfig(
+                    codacyApiToken = codacyApiToken ?: throw IncompleteCodacyApiTokenConfigurationException(),
+                    codacyOrganizationProvider = codacyOrganizationProvider
+                        ?: throw IncompleteCodacyApiTokenConfigurationException(),
+                    codacyUsername = codacyUserName ?: throw IncompleteCodacyApiTokenConfigurationException(),
+                    codacyProjectName = codacyProjectName ?: throw IncompleteCodacyApiTokenConfigurationException()
+                )
+            }
+            CodacyProcessor(
+                token = codacyToken,
+                apiToken = codacyApiTokenConfig,
+                codacyUrl = codacyUrl,
+                currentPipeline = currentPipeline,
+                allProjects = allProjects,
+                projectBaseDir = projectBaseDir,
+                failOnReportNotFound = failOnReportNotFound,
+                failOnReportSending = failOnReportSendingError,
+                failOnXmlParseError = failOnXmlParsingError,
+                failOnUnknown = failOnUnknown,
+                ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+            ).processReports()
         }
+
 
         codecovToken?.let { token ->
             if (!disableCodecov)
@@ -189,3 +221,7 @@ class CodacyReportNotGeneratedException(override val message: String? = null) : 
 class JacocoXmlParsingErrorException : RuntimeException()
 
 class NullSourceFileException : RuntimeException()
+
+class IncompleteCodacyApiTokenConfigurationException : RuntimeException()
+
+class CoverallsTokenNotFoundException : RuntimeException()

@@ -1,16 +1,15 @@
 package org.jesperancinha.plugins.omni.reporter.transformers
 
+import org.jesperancinha.plugins.omni.reporter.CoverallsTokenNotFoundException
 import org.jesperancinha.plugins.omni.reporter.NullSourceFileException
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsReport
 import org.jesperancinha.plugins.omni.reporter.domain.CoverallsSourceFile
 import org.jesperancinha.plugins.omni.reporter.domain.isBranch
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
-import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Sourcefile
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.readJacocoPackages
 import org.jesperancinha.plugins.omni.reporter.parsers.toFileDigest
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.InputStream
 import kotlin.math.max
@@ -51,7 +50,9 @@ class JacocoParserToCoveralls(
     includeBranchCoverage: Boolean,
     val useCoverallsCount: Boolean
 ) :
-    OmniReporterParserImpl<InputStream, CoverallsReport>(token, pipeline, root, includeBranchCoverage) {
+    OmniReporterParserImpl<InputStream, CoverallsReport>(
+        token = token, pipeline = pipeline, root = root, includeBranchCoverage = includeBranchCoverage
+    ) {
 
     internal var coverallsReport: CoverallsReport? = null
 
@@ -99,7 +100,7 @@ class JacocoParserToCoveralls(
                 nonExisting.forEach { coverallsSources[it.name] = it }
                 if (coverallsReport == null) {
                     coverallsReport = CoverallsReport(
-                        repoToken = token,
+                        repoToken = token ?: throw CoverallsTokenNotFoundException(),
                         serviceName = pipeline.serviceName,
                         serviceNumber = if (useCoverallsCount) null else pipeline.serviceNumber,
                         serviceJobId = if (useCoverallsCount) null else pipeline.serviceJobId,

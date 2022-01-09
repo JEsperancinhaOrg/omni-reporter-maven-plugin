@@ -96,7 +96,7 @@ data class CoverallsReport(
 open class CoverallsClient(
     override val url: String,
     override val token: String,
-) : ApiClient<CoverallsReport, CoverallsResponse?> {
+) : ApiClientImpl<CoverallsReport, CoverallsResponse?>() {
     override fun submit(report: CoverallsReport): CoverallsResponse? {
         val url = GenericUrl(url)
         val tmpdir = System.getProperty(TEMP_DIR_VARIABLE)

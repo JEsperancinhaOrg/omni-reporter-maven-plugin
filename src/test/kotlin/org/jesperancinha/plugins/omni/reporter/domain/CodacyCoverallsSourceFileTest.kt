@@ -44,8 +44,8 @@ internal class CodacyCoverallsSourceFileTest {
         val root = resource.toURI().toPath().toFile()
         JacocoParserToCodacy(
             "",
-            GitHubPipeline(),
-            root,
+            pipeline = GitHubPipeline(),
+            root = root,
             failOnUnknown = false,
             language = KOTLIN
         ).parseInput(inputJacocoStream, listOf(root)).let {

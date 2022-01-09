@@ -19,6 +19,8 @@ class AllParserToCodecov(
     pipeline: Pipeline,
     root: File,
     includeBranchCoverage: Boolean = false,
-) : OmniReporterParserImpl<InputStream, String>(token, pipeline, root, includeBranchCoverage) {
-    override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): String = input.bufferedReader().readText()
+) : OmniReporterParserImpl<InputStream, String>
+    (token = token, pipeline = pipeline, root = root, includeBranchCoverage = includeBranchCoverage) {
+    override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): String =
+        input.bufferedReader().readText()
 }

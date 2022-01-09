@@ -13,6 +13,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e99bdfc311eb48a899c13d3554b9b640)](https://www.codacy.com/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/dashboard?utm_source=github.com&utm_medium=referral&utm_content=JEsperancinhaOrg/omni-reporter-maven-plugin&utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/JEsperancinhaOrg/omni-reporter-maven-plugin/badge.svg?branch=main)](https://coveralls.io/github/JEsperancinhaOrg/omni-reporter-maven-plugin?branch=main)
+[![codecov](https://codecov.io/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/branch/main/graph/badge.svg?token=KKCLdubOii)](https://codecov.io/gh/JEsperancinhaOrg/omni-reporter-maven-plugin)
 
 [![GitHub language count](https://img.shields.io/github/languages/count/JEsperancinhaOrg/omni-reporter-maven-plugin.svg)](#)
 [![GitHub top language](https://img.shields.io/github/languages/top/JEsperancinhaOrg/omni-reporter-maven-plugin.svg)](#)
@@ -26,23 +27,23 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 | Type       | Status | Notes                                                                                                                                                                                                                                           | Available from Release |
 |------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
-| Jacoco XML | 🚧     | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  |
+| Jacoco XML | ✅      | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  |
 
 #### 2. Online API's supported
 
-| Type      | Status | Notes | Environment Variables                   | Available from Release |
-|-----------|--------|-------|-----------------------------------------|------------------------|
-| Coveralls | 🚧     |       | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN | 0.0.0                  |
-| Codacy    | 🚧     |       | CODACY_PROJECT_TOKEN                    | 0.0.7                  |
-| CodeCov   | 🚧     |       | CODECOV_TOKEN                           | ?                      |
+| Type      | Status | Notes | Environment Variables                                                                                                                                                     | Available from Release |
+|-----------|--------|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| Coveralls | ✅     |       | COVERALLS_REPO_TOKEN or COVERALLS_TOKEN                                                                                                                                   | 0.0.0                  |
+| Codacy    | ✅      |       | CODACY_PROJECT_TOKEN                                                                                                                                                      | 0.0.7                  |
+| CodeCov   | ✅      |       | CODECOV_TOKEN  or <u>all</u> of these: [CODACY_API_TOKEN, CODACY_ORGANIZATION_PROVIDER, CODACY_USERNAME, CODACY_PROJECT_NAME](https://docs.codacy.com/coverage-reporter/) | 0.0.9                  |
 
 #### 3. Pipelines Supported
 
 | Type     | Status | Notes | Available from Release | Example project                                                                                                                                                                                  |
 |----------|--------|-------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Local    | 🚧     |       | 0.0.0                  | N/A                                                                                                                                                                                              |
-| Git Hub  | 🚧     |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=City%20Library%20Management%20🏢&color=informational)](https://github.com/jesperancinha/advanced-library-management) |
-| Git Lab  | 🚧     |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Favourite%20Lyrics%20App&color=informational)](https://gitlab.com/jesperancinha/favourite-lyrics-app)                |
+| Local    | ✅      |       | 0.0.0                  | N/A                                                                                                                                                                                              |
+| Git Hub  | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=City%20Library%20Management%20🏢&color=informational)](https://github.com/jesperancinha/advanced-library-management) |
+| Git Lab  | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Favourite%20Lyrics%20App&color=informational)](https://gitlab.com/jesperancinha/favourite-lyrics-app)                |
 | CircleCI | 🚧     |       | ?                      |                                                                                                                                                                                                  |
 
 #### 4. Configuration options
@@ -88,9 +89,12 @@ Java 11 and above only
 - `cb` = covered branches
 
 
-## Release notes - Upcoming version 0.0.9
+## Release notes - Upcoming version 0.0.10
 
 1. Branch Coverage for Coveralls
+
+## Release notes - Upcoming version 0.0.9
+
 2. Codecov support for endpoint V4 version
 3. API token support for codacy
 

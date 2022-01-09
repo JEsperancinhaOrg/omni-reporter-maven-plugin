@@ -1,6 +1,5 @@
 package org.jesperancinha.plugins.omni.reporter.domain
 
-import com.google.api.client.http.HttpRequest
 import com.google.api.client.http.HttpRequestFactory
 import com.google.api.client.http.HttpResponse
 import com.google.api.client.http.HttpTransport
@@ -11,13 +10,19 @@ internal val httpTransport: HttpTransport = NetHttpTransport()
 internal val httpRequestFactory: HttpRequestFactory = httpTransport.createRequestFactory()
 
 internal interface ApiClient<REPORT, RESPONSE> {
-    val token: String
+    val token: String?
+    val apiToken: CodacyApiTokenConfig?
     val url: String?
     fun submit(report: REPORT): RESPONSE?
 
-    open fun responseText(httpResponse: HttpResponse): String? = null
+    fun responseText(httpResponse: HttpResponse): String? = null
+}
+
+
+abstract class ApiClientImpl<REPORT, RESPONSE> : ApiClient<REPORT, RESPONSE> {
+    override val apiToken: CodacyApiTokenConfig? = null
 }
 
 internal const val REDACTED = "REDACTED"
 
-fun String.redact(token: String): String = replace(token, REDACTED)
+fun String.redact(token: String?): String = token?.let { replace(token, REDACTED) } ?: this
