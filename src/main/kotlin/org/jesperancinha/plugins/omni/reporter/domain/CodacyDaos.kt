@@ -63,7 +63,7 @@ open class CodacyClient(
         val codacyReportUrl = "$url/2.0/coverage/$commitId/${language.lang}?partial=${partial}"
         logger.info("Sending ${language.name.lowercase()} report to codacy at $codacyReportUrl")
         val jsonReport = writeCamelCaseJsonValueAsString(report)
-        logger.debug(jsonReport.replace(token, "<PROTECTED>"))
+        logger.debug(jsonReport.redact(token))
         val content: HttpContent = ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, jsonReport.toByteArray())
         val httpRequest = httpRequestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType

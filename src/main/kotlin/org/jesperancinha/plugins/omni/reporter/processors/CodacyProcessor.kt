@@ -8,6 +8,7 @@ import org.jesperancinha.plugins.omni.reporter.CodacyUrlNotConfiguredException
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyClient
 import org.jesperancinha.plugins.omni.reporter.domain.CodacyReport
+import org.jesperancinha.plugins.omni.reporter.domain.redact
 import org.jesperancinha.plugins.omni.reporter.parsers.Language
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.jesperancinha.plugins.omni.reporter.transformers.JacocoParserToCodacy
@@ -101,9 +102,10 @@ class CodacyProcessor(
             logger.info("- Response")
             logger.info(response.success)
         } catch (ex: Exception) {
-            logger.error("Failed sending Codacy report!", ex)
+            val coverException = Exception(ex.message?.redact(token), ex.cause)
+            logger.error("Failed sending Codacy report!", coverException)
             if (failOnReportSending) {
-                throw ex
+                throw coverException
             }
         }
     }

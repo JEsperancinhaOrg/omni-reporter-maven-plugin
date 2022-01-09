@@ -2,8 +2,10 @@ package org.jesperancinha.plugins.omni.reporter.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
-import com.google.api.client.http.*
-import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.http.FileContent
+import com.google.api.client.http.GenericUrl
+import com.google.api.client.http.HttpHeaders
+import com.google.api.client.http.MultipartContent
 import org.apache.http.entity.ContentType.APPLICATION_OCTET_STREAM
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Line
 import org.jesperancinha.plugins.omni.reporter.parsers.readJsonValue
@@ -108,7 +110,7 @@ open class CoverallsClient(
         file.bufferedWriter().use {
             it.write(writeSnakeCaseJsonValueAsString(report))
         }
-        logger.debug(writeValueAsString.replace(token, "<PROTECTED>"))
+        logger.debug(writeValueAsString.redact(token))
         logger.debug(file.absolutePath)
         val content = MultipartContent()
         val part = MultipartContent.Part(FileContent(APPLICATION_OCTET_STREAM.toString(), file))

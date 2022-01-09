@@ -70,7 +70,8 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 #### 5. How to run
 
 ```shell
-mvn clean install omni-coveragereporter:report
+mvn clean install
+mvn omni-coveragereporter:report
 ```
 
 #### 6. Requirements

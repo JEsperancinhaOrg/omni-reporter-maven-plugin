@@ -6,6 +6,7 @@ import org.jesperancinha.plugins.omni.reporter.CodacyReportNotGeneratedException
 import org.jesperancinha.plugins.omni.reporter.CodecovUrlNotConfiguredException
 import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.CodecovClient
+import org.jesperancinha.plugins.omni.reporter.domain.redact
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.jesperancinha.plugins.omni.reporter.transformers.AllParserToCodecov
 import org.slf4j.Logger
@@ -71,9 +72,10 @@ class CodecovProcessor(
             logger.info("- Response")
             logger.info(response)
         } catch (ex: Exception) {
-            logger.error(reportNotSentErrorMessage(), ex)
+            val coverException = Exception(ex.message?.redact(token), ex.cause)
+            logger.error(reportNotSentErrorMessage(), coverException)
             if (failOnReportSending) {
-                throw ex
+                throw coverException
             }
         }
 
