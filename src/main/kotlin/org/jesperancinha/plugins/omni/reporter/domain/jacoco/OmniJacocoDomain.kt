@@ -2,6 +2,7 @@ package org.jesperancinha.plugins.omni.reporter.domain.jacoco
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import org.jesperancinha.plugins.omni.reporter.JacocoXmlParsingErrorException
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.OmniJacocoDomain.Companion.logger
@@ -15,52 +16,66 @@ import java.io.InputStream
  */
 
 data class Class(
-    @JsonProperty("Method")
+    @JsonProperty("method")
     val methods: List<Method> = emptyList(),
-    @JsonProperty("Counter")
+    @JsonProperty("counter")
     val counters: List<Counter> = emptyList(),
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
     val name: String? = null,
+    @JacksonXmlProperty(localName = "sourcefilename", isAttribute = true)
     val sourcefilename: String? = null
 )
 
 data class Counter(
-    val value: String? = null,
+    @JacksonXmlProperty(localName = "type", isAttribute = true)
     val type: String? = null,
+    @JacksonXmlProperty(localName = "missed", isAttribute = true)
     val missed: Int,
+    @JacksonXmlProperty(localName = "covered", isAttribute = true)
     val covered: Int
 )
 
 data class Line(
-    val value: String? = null,
+    @JacksonXmlProperty(localName = "nr", isAttribute = true)
     val nr: Int,
+    @JacksonXmlProperty(localName = "mi", isAttribute = true)
     val mi: Int = 0,
+    @JacksonXmlProperty(localName = "ci", isAttribute = true)
     val ci: Int,
+    @JacksonXmlProperty(localName = "mb", isAttribute = true)
     val mb: Int = 0,
+    @JacksonXmlProperty(localName = "cb", isAttribute = true)
     val cb: Int = 0
 )
 
 data class Method(
     @JsonProperty("Counter")
     val counters: List<Counter> = emptyList(),
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
     val name: String? = null,
+    @JacksonXmlProperty(localName = "desc", isAttribute = true)
     val desc: String? = null,
+    @JacksonXmlProperty(localName = "line", isAttribute = true)
     val line: String? = null
 )
 
 data class Package(
-    @JsonProperty("Class")
+    @JsonProperty("class")
     val clazzs: List<Class> = emptyList(),
-    @JsonProperty("Sourcefile")
+    @JsonProperty("sourcefile")
     val sourcefiles: List<Sourcefile> = emptyList(),
-    @JsonProperty("Counter")
+    @JsonProperty("counter")
     val counters: List<Counter> = emptyList(),
-    val name: String? = null
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
+    val name: String
 )
 
 data class Sessioninfo(
-    val value: String? = null,
+    @JacksonXmlProperty(localName = "id", isAttribute = true)
     val id: String? = null,
+    @JacksonXmlProperty(localName = "start", isAttribute = true)
     val start: String? = null,
+    @JacksonXmlProperty(localName = "dump", isAttribute = true)
     val dump: String? = null
 )
 
@@ -72,14 +87,15 @@ data class Sourcefile(
     val name: String
 )
 
-@JsonRootName("Stamp")
+@JsonRootName("report")
 @JacksonXmlRootElement
 data class Report(
     val sessioninfo: Sessioninfo? = null,
-    @JsonProperty("Package")
+    @JsonProperty("package")
     val packages: List<Package> = emptyList(),
-    @JsonProperty("Counter")
+    @JsonProperty("counter")
     val counters: List<Counter> = emptyList(),
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
     val name: String? = null
 )
 

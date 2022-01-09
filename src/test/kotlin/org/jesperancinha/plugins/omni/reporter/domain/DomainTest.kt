@@ -89,7 +89,6 @@ internal class DomainTest {
         line.mi shouldBe 0
         line.cb shouldBe 0
         line.mb shouldBe 0
-        line.value.shouldBeNull()
     }
 
     @Test
