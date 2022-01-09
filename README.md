@@ -225,6 +225,17 @@ I hope you enjoyed this repository. If you did, you can optionally please buy me
 
 [![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=jesperancinha&button_colour=046c46&font_colour=ffffff&font_family=Cookie&outline_colour=ffffff&coffee_colour=FFDD00 "title")](https://www.buymeacoffee.com/jesperancinha)
 
+
+## Coverage report Graphs
+
+<div align="center">
+<img width="30%" src="https://codecov.io/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/branch/main/graphs/sunburst.svg"/>
+<img width="30%" src="https://codecov.io/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/branch/main/graphs/tree.svg"/>
+</div>
+<div align="center">
+<img width="60%" src="https://codecov.io/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/branch/main/graphs/icicle.svg"/>
+</div>
+
 ## References
 
 - [Codacy Coverage Reporter](https://github.com/codacy/codacy-coverage-reporter)
