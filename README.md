@@ -88,7 +88,9 @@ Java 11 and above only
 
 ## Release notes - Upcoming version 0.0.9
 
-1. Branch Coverage
+1. Branch Coverage for Coveralls
+2. Codecov support
+3. API token support for codacy
 
 #### Release 0.0.8 - 2022/01/08
 
@@ -111,7 +113,7 @@ Java 11 and above only
 
 1. Rollback `CI_COMMIT_REF_NAME`. Unfortunately this messes up the way the JOB ID is calculated.
 
-> It has been observerd that GitLab checks out the repo on the desired commit, but looses reference to the branch at this point. This means that the only reference to the commit is the hash. If we change the branch name, it will use the hashnumber regards of what we configure for the Job ID.
+> It has been observed that GitLab checks out the repo on the desired commit, but looses reference to the branch at this point. This means that the only reference to the commit is the hash. If we change the branch name, it will use the hash-number regardless of what we configure for the Job ID.
 > Example
 > 
 > Branch = main, Hash = AAAAAAAAAAAAA and service_number = null => JobId = #AAAAAAAAAAAAA, Branch Name = main

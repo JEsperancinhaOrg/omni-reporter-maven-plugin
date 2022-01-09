@@ -7,6 +7,25 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileNotFoundException
 
+class SourceCodeFile(projectBaseDir: File, val packageName: String?, sourceFile: Sourcefile) :
+    File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
+
+fun Sequence<Pair<String?, List<Sourcefile>>>.filterExistingFiles(
+    compiledSourcesDirs: List<File>,
+    failOnUnknownPredicateFilePack: (List<Pair<SourceCodeFile, Sourcefile>>, List<Sourcefile>) -> Boolean
+): Sequence<Pair<SourceCodeFile, Sourcefile>> = flatMap { (packageName, sourceFiles) ->
+    val foundSources = sourceFiles.map {
+        compiledSourcesDirs.map { compiledSourcesDir ->
+            SourceCodeFile(compiledSourcesDir, packageName, it)
+        }.filter { it.exists() }.map { sourceCodeFile -> sourceCodeFile to it }
+    }.flatten()
+    if (foundSources.size != sourceFiles.size) {
+        failOnUnknownPredicateFilePack(foundSources, sourceFiles)
+    }
+    foundSources
+}
+
+
 /**
  * Created by jofisaes on 05/01/2022
  */

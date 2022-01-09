@@ -12,7 +12,6 @@ import org.jesperancinha.plugins.omni.reporter.parsers.toFileDigest
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.InputStream
 import kotlin.math.max
 
@@ -43,10 +42,6 @@ private fun List<Line?>.toCoverallsCoverage(lines: Int): Array<Int?> = let {
     }
 }
 
-class SourceCodeFile(projectBaseDir: File, val packageName: String?, sourceFile: Sourcefile) :
-    File(projectBaseDir, "${(packageName ?: "").replace("//", "/")}/${sourceFile.name}")
-
-
 class JacocoParserToCoveralls(
     token: String,
     pipeline: Pipeline,
@@ -73,17 +68,7 @@ class JacocoParserToCoveralls(
         input.readJacocoPackages(failOnXmlParseError)
             .asSequence()
             .map { it.name to it.sourcefiles }
-            .flatMap { (packageName, sourceFiles) ->
-                val foundSources = sourceFiles.map {
-                    compiledSourcesDirs.map { compiledSourcesDir ->
-                        SourceCodeFile(compiledSourcesDir, packageName, it)
-                    }.filter { it.exists() }.map { sourceCodeFile -> sourceCodeFile to it }
-                }.flatten()
-                if (foundSources.size != sourceFiles.size) {
-                    failOnUnknownPredicateFilePack(foundSources, sourceFiles)
-                }
-                foundSources
-            }
+            .filterExistingFiles(compiledSourcesDirs, failOnUnknownPredicateFilePack)
             .filter { (sourceCodeFile) -> failOnUnknownPredicate(sourceCodeFile) }
             .map { (sourceCodeFile, sourceFile) ->
                 val sourceCodeText = sourceCodeFile.bufferedReader().use { it.readText() }

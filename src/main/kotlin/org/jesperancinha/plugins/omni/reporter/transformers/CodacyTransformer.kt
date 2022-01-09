@@ -11,7 +11,6 @@ import org.jesperancinha.plugins.omni.reporter.parsers.Language
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.InputStream
 
 
@@ -49,24 +48,14 @@ class JacocoParserToCodacy(
     /**
      * Comparison is based on the size. If there is a missmatch then the size is different.
      */
-    val failOnUnknownPredicateFilePack = createFailOnUnknownPredicateFilePack(failOnUnknown)
+    private val failOnUnknownPredicateFilePack = createFailOnUnknownPredicateFilePack(failOnUnknown)
 
     override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): CodacyReport {
         val report = input.readReport(failOnXmlParseError)
         return report.packages
             .asSequence()
             .map { it.name to it.sourcefiles }
-            .flatMap { (packageName, sourceFiles) ->
-                val foundSources = sourceFiles.map {
-                    compiledSourcesDirs.map { compiledSourcesDir ->
-                        SourceCodeFile(compiledSourcesDir, packageName, it)
-                    }.filter { it.exists() }.map { sourceCodeFile -> sourceCodeFile to it }
-                }.flatten()
-                if (foundSources.size != sourceFiles.size) {
-                    failOnUnknownPredicateFilePack(foundSources, sourceFiles)
-                }
-                foundSources
-            }
+            .filterExistingFiles(compiledSourcesDirs, failOnUnknownPredicateFilePack)
             .filter { (sourceCodeFile) -> failOnUnknownPredicate(sourceCodeFile) }
             .map { (sourceCodeFile, sourceFile) ->
                 val coverage = sourceFile.lines.toCodacyCoverage
