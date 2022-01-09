@@ -6,6 +6,7 @@ import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.jesperancinha.plugins.omni.reporter.pipelines.PipelineImpl
 import org.jesperancinha.plugins.omni.reporter.processors.CodacyProcessor
+import org.jesperancinha.plugins.omni.reporter.processors.CodecovProcessor
 import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProcessor
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -16,15 +17,14 @@ private val MavenProject?.findAllSearchFolders: List<MavenProject>
         it
     } ?: mutableListOf()) + this).filterNotNull()
 
-internal val String.isSupported: Boolean
-    get() = equals("xml")
-
 @Mojo(name = "report", threadSafe = false, aggregator = true)
 open class OmniReporterMojo(
     @Parameter(property = "coverallsUrl", defaultValue = "https://coveralls.io/api/v1/jobs")
     protected var coverallsUrl: String? = null,
     @Parameter(property = "codacyUrl", defaultValue = "https://api.codacy.com")
     protected var codacyUrl: String? = null,
+    @Parameter(property = "codecovUrl", defaultValue = "https://codecov.io/upload")
+    protected var codecovUrl: String? = null,
     @Parameter(property = "sourceEncoding", defaultValue = "\${project.build.sourceEncoding}")
     var sourceEncoding: String? = null,
     @Parameter(property = "projectBaseDir", defaultValue = "\${project.basedir}")
@@ -43,6 +43,8 @@ open class OmniReporterMojo(
     var disableCoveralls: Boolean = false,
     @Parameter(property = "disableCodacy", defaultValue = "false")
     var disableCodacy: Boolean = false,
+    @Parameter(property = "disableCodecov", defaultValue = "false")
+    var disableCodecov: Boolean = false,
     @Parameter(property = "ignoreTestBuildDirectory", defaultValue = "true")
     var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "useCoverallsCount", defaultValue = "true")
@@ -69,14 +71,15 @@ open class OmniReporterMojo(
 
         val environment = System.getenv()
         coverallsToken = (coverallsToken ?: environment["COVERALLS_REPO_TOKEN"]) ?: environment["COVERALLS_TOKEN"]
-        codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
         codacyToken = codacyToken ?: environment["CODACY_PROJECT_TOKEN"]
+        codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
 
         val allProjects = project.findAllSearchFolders.injectExtraSourceFiles(extraSourceFolders)
 
         logLine()
         logger.info("Coveralls URL: $coverallsUrl")
         logger.info("Codacy URL: $codacyUrl")
+        logger.info("Codecov URL: $codecovUrl")
         logger.info("Coveralls token: ${checkToken(coverallsToken)}")
         logger.info("Codecov token: ${checkToken(codecovToken)}")
         logger.info("Codacy token: ${checkToken(codacyToken)}")
@@ -130,6 +133,20 @@ open class OmniReporterMojo(
                     ignoreTestBuildDirectory = ignoreTestBuildDirectory,
                 ).processReports()
         }
+
+        codecovToken?.let { token ->
+            if (!disableCodecov)
+                CodecovProcessor(
+                    token = token,
+                    codecovUrl = codecovUrl,
+                    currentPipeline = currentPipeline,
+                    allProjects = allProjects,
+                    projectBaseDir = projectBaseDir,
+                    failOnReportNotFound = failOnReportNotFound,
+                    failOnReportSending = failOnReportSendingError,
+                    ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+                ).processReports()
+        }
     }
 
     private fun logLine() = let {
@@ -163,9 +180,11 @@ class CoverallsUrlNotConfiguredException : RuntimeException()
 
 class CodacyUrlNotConfiguredException : RuntimeException()
 
-class CoverallsReportNotGeneratedException : RuntimeException()
+class CodecovUrlNotConfiguredException : RuntimeException()
 
-class CodacyReportNotGeneratedException : RuntimeException()
+class CoverallsReportNotGeneratedException(override val message: String? = null) : RuntimeException()
+
+class CodacyReportNotGeneratedException(override val message: String? = null) : RuntimeException()
 
 class JacocoXmlParsingErrorException : RuntimeException()
 

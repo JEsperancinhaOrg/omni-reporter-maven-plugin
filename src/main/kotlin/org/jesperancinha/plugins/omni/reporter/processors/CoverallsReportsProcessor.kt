@@ -66,8 +66,10 @@ class CoverallsReportsProcessor(
 
             val response =
                 coverallsClient.submit(coverallsReport ?: let {
-                    if (failOnReportNotFound) throw CoverallsReportNotGeneratedException() else {
-                        logger.warn("Coveralls report was not generated! This usually means that no jacoco.xml reports have been found.")
+                    if (failOnReportNotFound) {
+                        throw CoverallsReportNotGeneratedException(reportNotFoundErrorMessage())
+                    } else {
+                        logger.warn(reportNotFoundErrorMessage())
                         return
                     }
                 })
@@ -82,6 +84,11 @@ class CoverallsReportsProcessor(
                 throw ex
             }
         }
+    }
+
+    override fun reportNotFoundErrorMessage(): String {
+        return "Coveralls report was not generated! This usually means that no jacoco.xml reports have been found."
+
     }
 
     companion object {

@@ -1,8 +1,11 @@
 package org.jesperancinha.plugins.omni.reporter.processors
 
 import org.apache.maven.project.MavenProject
-import org.jesperancinha.plugins.omni.reporter.*
+import org.jesperancinha.plugins.omni.reporter.ProjectDirectoryNotFoundException
 import java.io.File
+
+private val String.isSupported: Boolean
+    get() = equals("xml")
 
 private val CODECOV_SUPPORTED_REPORTS = arrayOf(
     "jacoco" to "xml",
@@ -21,6 +24,10 @@ abstract class Processor(
     ignoreTestBuildDirectory: Boolean,
 ) {
     abstract fun processReports()
+
+    open fun reportNotFoundErrorMessage(): String? = null
+
+    open fun reportNotSentErrorMessage(): String? = null
 
     val supportedPredicate =
         if (ignoreTestBuildDirectory) { testDirectory: String, report: File ->
@@ -45,7 +52,8 @@ internal fun List<MavenProject?>.toAllCodecovSupportedFiles(supportedPredicate: 
             project to File(project.build?.directory ?: throw ProjectDirectoryNotFoundException()).walkTopDown()
                 .toList()
                 .filter { report ->
-                    report.isFile && report.name.startsWith("jacoco") && report.extension.isSupported
+                    report.isFile
+                            && CODECOV_SUPPORTED_REPORTS.any { (name, ext) -> report.name.startsWith(name) && report.extension == ext }
                             && supportedPredicate(project.build.testOutputDirectory, report)
                 }.distinct()
         }.distinct()

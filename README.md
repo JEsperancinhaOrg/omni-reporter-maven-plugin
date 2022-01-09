@@ -56,6 +56,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | failOnXmlParsingError    | If the process fails to parse a Jacoco file, we may not want our process to continue. For the most cases though we may just want a warning about this. It is `false` by default                                                                                                                                                                 | 0.0.8                  |
 | disableCoveralls         | By default it is set to `false`. If variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` are available, `Omni` reporter will try to send the report to Coveralls. However, you can also prevent this behaviour if you set this to true                                                                                                         | 0.0.8                  |
 | disableCodacy            | By default it is set to `false`. If variable `CODACY_PROJECT_TOKEN` is available, `Omni` reporter will try to send the report to Codacy. However, you can also prevent this behaviour if you set this to true                                                                                                                                   | 0.0.8                  |
+| disableCodecov           | By default it is set to `false`. If variable `CODECOV_TOKEN` is available, `Omni` reporter will try to send the report to Codecov. However, you can also prevent this behaviour if you set this to true                                                                                                                                         | 0.0.9                  |
 | ignoreTestBuildDirectory | By default it is set to `true`. There is normally no reason to include test reporting files. If you do, however, you can set this flag to `false`.                                                                                                                                                                                              | 0.0.2                  |
 | branchCoverage           | By default it is set to `false`. If you want include branch coverage in your reporting please activate this flag.                                                                                                                                                                                                                               | ?                      |
 | useCoverallsCount        | By default it is set to `true`. If you want to let the pipeline determine the numbering for your Job Id and run, then set this to `false`. It will then search those values via environment variables.                                                                                                                                          | 0.0.3                  |
@@ -63,8 +64,8 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | coverallsUrl             | Should Coveralls ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                         | 0.0.0                  |
 | codacyUrl                | Should Codacy ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                            | 0.0.7                  |
 | coverallsToken           | Sets the coveraslls token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variables `COVERALLS_REPO_TOKEN` or `COVERALLS_TOKEN` instead | 0.0.0                  |
-| codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                      | 0.0.0                  |
-| codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                            | 0.0.0                  |
+| codacyToken              | Sets the codacyToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_TOKEN` instead                      | 0.0.7                  |
+| codecovToken             | Sets the codecovToken token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                            | 0.0.9                  |
 
 #### 5. How to run
 
@@ -89,7 +90,7 @@ Java 11 and above only
 ## Release notes - Upcoming version 0.0.9
 
 1. Branch Coverage for Coveralls
-2. Codecov support
+2. Codecov support for endpoint V4 version
 3. API token support for codacy
 
 #### Release 0.0.8 - 2022/01/08
@@ -190,12 +191,14 @@ If you want to be more specific in your configuration and need an example here i
       <failOnXmlParsingError>false</failOnXmlParsingError>
       <disableCoveralls>false</disableCoveralls>
       <disableCodacy>false</disableCodacy>
+      <disableCodecov>false</disableCodecov>
       <ignoreTestBuildDirectory>true</ignoreTestBuildDirectory>
       <branchCoverage>false</branchCoverage>
       <useCoverallsCount>false</useCoverallsCount>
       <extraSourceFolders>${project.build.directory}/generated-sources/plugin</extraSourceFolders>
       <coverallsUrl>https://coveralls.io/api/v1/jobs</coverallsUrl>
       <codacyUrl>https://api.codacy.com</codacyUrl>
+      <codecovUrl>https://codecov.io/upload</codecovUrl>
       <coverallsToken>AAAAAAAAAAAAAAAAAAA</coverallsToken>
       <codacyToken>AAAAAAAAAAAAAAAAAAA</codacyToken>
       <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>

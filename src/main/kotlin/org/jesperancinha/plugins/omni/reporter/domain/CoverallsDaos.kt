@@ -95,10 +95,10 @@ open class CoverallsClient(
     override val url: String,
     override val token: String,
 ) : ApiClient<CoverallsReport, CoverallsResponse?> {
-    override fun submit(coverallsReport: CoverallsReport): CoverallsResponse? {
+    override fun submit(report: CoverallsReport): CoverallsResponse? {
         val url = GenericUrl(url)
         val tmpdir = System.getProperty(TEMP_DIR_VARIABLE)
-        val writeValueAsString = writeSnakeCaseJsonValueAsString(coverallsReport)
+        val writeValueAsString = writeSnakeCaseJsonValueAsString(report)
         val file = File(tmpdir, COVERALLS_FILE)
         file.deleteOnExit()
         if (file.exists()) {
@@ -106,7 +106,7 @@ open class CoverallsClient(
         }
         file.createNewFile()
         file.bufferedWriter().use {
-            it.write(writeSnakeCaseJsonValueAsString(coverallsReport))
+            it.write(writeSnakeCaseJsonValueAsString(report))
         }
         logger.debug(writeValueAsString.replace(token, "<PROTECTED>"))
         logger.debug(file.absolutePath)
@@ -127,8 +127,6 @@ open class CoverallsClient(
         private const val COVERALLS_FILE = "coveralls.json"
         private const val TEMP_DIR_VARIABLE = "java.io.tmpdir"
         private val logger = LoggerFactory.getLogger(CoverallsClient::class.java)
-        private var httpTransport: HttpTransport = NetHttpTransport()
-        private var httpRequestFactory: HttpRequestFactory = httpTransport.createRequestFactory()
     }
 }
 

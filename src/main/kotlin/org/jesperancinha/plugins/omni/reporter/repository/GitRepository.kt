@@ -29,7 +29,7 @@ class GitRepository(sourceDirectory: File, pipeline: Pipeline) {
         )
     }
 
-    private val branch = pipeline.branchName ?: repo.branch
+    private val branch = pipeline.branchRef ?: repo.branch
 
     private val remotes = repo.config.getSubsections("remote")
         .map { Remote(it, repo.config.getString("remote", it, "url")) }

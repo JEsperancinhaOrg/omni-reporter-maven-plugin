@@ -3,7 +3,6 @@ package org.jesperancinha.plugins.omni.reporter.domain
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpContent
-import com.google.api.client.http.javanet.NetHttpTransport
 import org.apache.http.entity.ContentType
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.Repository
@@ -48,7 +47,7 @@ data class CodacyReport(
 }
 
 /**
- * Created by jofisaes on 30/12/2021
+ * Created by jofisaes on 06/01/2022
  */
 open class CodacyClient(
     override val token: String,
@@ -66,7 +65,7 @@ open class CodacyClient(
         val jsonReport = writeCamelCaseJsonValueAsString(report)
         logger.debug(jsonReport.replace(token, "<PROTECTED>"))
         val content: HttpContent = ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, jsonReport.toByteArray())
-        val httpRequest = requestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
+        val httpRequest = httpRequestFactory.buildPostRequest(GenericUrl(codacyReportUrl), content)
         httpRequest.headers.contentType = ContentType.APPLICATION_JSON.mimeType
         httpRequest.headers["project-token"] = token
         val httpResponse = httpRequest?.execute()
@@ -79,7 +78,7 @@ open class CodacyClient(
         val commitId = RevWalk(repo).parseCommit(revision).id.name
         val codacyReportUrl = "$url/2.0/commit/$commitId/coverageFinal"
         logger.info("Sending Final ${language.name.lowercase()} report to codacy at $codacyReportUrl")
-        val httpRequest = requestFactory.buildPostRequest(
+        val httpRequest = httpRequestFactory.buildPostRequest(
             GenericUrl(codacyReportUrl),
             ByteArrayContent(ContentType.APPLICATION_JSON.mimeType, "".toByteArray())
         )
@@ -92,7 +91,5 @@ open class CodacyClient(
 
     companion object {
         private val logger = LoggerFactory.getLogger(CoverallsClient::class.java)
-        private var transport = NetHttpTransport()
-        private var requestFactory = transport.createRequestFactory()
     }
 }
