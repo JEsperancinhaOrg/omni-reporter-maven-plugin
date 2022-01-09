@@ -5,6 +5,7 @@ import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
 import org.jesperancinha.plugins.omni.reporter.parsers.xmlObjectMapper
 import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.InputStream
@@ -45,6 +46,6 @@ class AllParserToCodecov(
             .first()
 
     companion object {
-        val logger = LoggerFactory.getLogger(AllParserToCodecov::class.java)
+        val logger: Logger = LoggerFactory.getLogger(AllParserToCodecov::class.java)
     }
 }
