@@ -30,7 +30,7 @@ fun Sequence<Pair<String?, List<Sourcefile>>>.filterExistingFiles(
  * Created by jofisaes on 05/01/2022
  */
 interface OmniReportParser<INPUT, OUTPUT> {
-    fun parseInput(input: INPUT, compiledSourcesDirs: List<File>): OUTPUT
+    fun parseInput(input: INPUT, compiledSourcesDirs: List<File> = emptyList()): OUTPUT
 }
 
 abstract class OmniReporterParserImpl<INPUT, OUTPUT>(

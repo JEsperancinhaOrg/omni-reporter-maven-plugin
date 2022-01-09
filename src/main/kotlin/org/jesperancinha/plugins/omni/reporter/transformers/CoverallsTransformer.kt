@@ -62,7 +62,7 @@ class JacocoParserToCoveralls(
     /**
      * Comparison is based on the size. If there is a missmatch then the size is different.
      */
-    val failOnUnknownPredicateFilePack = createFailOnUnknownPredicateFilePack(failOnUnknown)
+    private val failOnUnknownPredicateFilePack = createFailOnUnknownPredicateFilePack(failOnUnknown)
 
     override fun parseInput(input: InputStream, compiledSourcesDirs: List<File>): CoverallsReport =
         input.readJacocoPackages(failOnXmlParseError)
@@ -113,10 +113,6 @@ class JacocoParserToCoveralls(
 
                 coverallsReport ?: throw ProjectDirectoryNotFoundException()
             }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(JacocoParserToCoveralls::class.java)
-    }
 }
 
 private infix fun CoverallsSourceFile?.mergeCoverallsSourceTo(source: CoverallsSourceFile): CoverallsSourceFile {

@@ -97,11 +97,6 @@ class JacocoParserToCodacy(
                 codacyReport ?: throw ProjectDirectoryNotFoundException()
             }
     }
-
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(JacocoParserToCoveralls::class.java)
-    }
 }
 
 private infix fun CodacyFileReport?.mergeCodacySourceTo(source: CodacyFileReport): CodacyFileReport {
