@@ -45,6 +45,8 @@ What I did is to allow you to decide on how you want this configuration to be. P
 
 [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=Concert%20Demos%20🎸%20&color=informational)](https://github.com/jesperancinha/concert-demos-root)
 
+[![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=From%20Paris%20to%20Berlin%20🛣&color=informational)](https://github.com/jesperancinha/from-paris-to-berlin-circuit-breaker)
+
 ---
  
 Back to [Readme.md](./README.md)
