@@ -219,6 +219,9 @@ You'll need Maven surefire plugin and the jacoco plugin. Here is an example:
 </plugins>
 ```
 
+## Troubleshooting
+
+Having issues running this plugin? Please check the [Troubleshooting.md](./Troubleshooting.md) document.
 ## Buy me a coffee
 
 I hope you enjoyed this repository. If you did, you can optionally please buy me a coffee, which supports me to constantly improve and make new free content regularly for everyone. Thank you so much!
