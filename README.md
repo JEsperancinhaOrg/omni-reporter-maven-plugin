@@ -124,7 +124,7 @@ Java 11 and above only
 21. Coveralls support (*1)
 23. Line Coverage
 
->* All of these requirements are part of Milestone 10, which comprises support for three reporting frameworks: Codecov, Codacy and Coveralls with focus on Jacoco Reports.
+>*1 All of these requirements are part of Milestone 10, which comprises support for three reporting frameworks: Codecov, Codacy and Coveralls with focus on Jacoco Reports.
 
 ## Release notes - Upcoming version 0.0.11
 
