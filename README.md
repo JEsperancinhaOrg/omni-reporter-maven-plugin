@@ -23,13 +23,13 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 ## Features
 
-#### 1. Reporting file supported
+#### 1.  Reporting file supported
 
 | Type       | Status | Notes                                                                                                                                                                                                                                           | Available from Release |
 |------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
 | Jacoco XML | ✅      | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  |
 
-#### 2. Online API's supported
+#### 2.  Online API's supported
 
 | Type       | Status | Notes | Environment Variables                                                                                                                                                                                     | Available from Release |
 |------------|--------|-------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
@@ -38,16 +38,17 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | Codacy API | ✅      |       | All</u> of these: [`CODACY_API_TOKEN`, `CODACY_ORGANIZATION_PROVIDER`, `CODACY_USERNAME`, `CODACY_PROJECT_NAME`](https://docs.codacy.com/coverage-reporter/). It has Priority over `CODACY_PROJECT_TOKEN` | 0.0.9                  |
 | CodeCov    | ✅      |       | `CODECOV_TOKEN`                                                                                                                                                                                           | 0.0.9                  |
 
-#### 3. Pipelines Supported
+#### 3.  Pipelines Supported
 
 | Type     | Status | Notes | Available from Release | Example project                                                                                                                                                                                  |
 |----------|--------|-------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Local    | ✅      |       | 0.0.0                  | N/A                                                                                                                                                                                              |
 | Git Hub  | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=City%20Library%20Management%20🏢&color=informational)](https://github.com/jesperancinha/advanced-library-management) |
 | Git Lab  | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Favourite%20Lyrics%20App&color=informational)](https://gitlab.com/jesperancinha/favourite-lyrics-app)                |
-| CircleCI | 🚧     |       | ?                      |                                                                                                                                                                                                  |
+| CircleCI | 🚧     |       | ?                      | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=image-sizer&color=informational)](https://github.com/jesperancinha/image-sizer)                                      |
 
-#### 4. Configuration options
+
+#### 4.  Configuration options
 
 | Property                        | Function                                                                                                                                                                                                                                                                                                                                            | Available from Release |
 |---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
@@ -76,14 +77,14 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 > *N - These variables only work when fully configured in the N set.
 
-#### 5. How to run
+#### 5.  How to run
 
 ```shell
 mvn clean install
 mvn omni-coveragereporter:report
 ```
 
-#### 6. Requirements
+#### 6.  Requirements
 
 Java 11 and above only
 
@@ -98,18 +99,18 @@ Java 11 and above only
 
 ## Functionality description
 
-1. Path Corrections for Codecov Jacoco reports
-2. Codecov support for endpoint V4 version (*1)
-3. API token support for codacy
-4. Disable flags for Coveralls and Codacy to force them out even when environment variables are available
-   1. `disableCoveralls`
-   2. `disableCodacy`
-5. Exception handling for Codacy formatting issue
-   3. `failOnXmlParsingError`, false by default
-6. Codacy update so solve Xerces module error. Manual implementation required
-7. Codacy support (*1)
-8. `failOnReportNotFound`
-9. `failOnUnknown` Bug fix
+1.  Path Corrections for Codecov Jacoco reports
+2.  Codecov support for endpoint V4 version (*1)
+3.  API token support for codacy
+4.  Disable flags for Coveralls and Codacy to force them out even when environment variables are available
+   1.  `disableCoveralls`
+   2.  `disableCodacy`
+5.  Exception handling for Codacy formatting issue
+   3.  `failOnXmlParsingError`, false by default
+6.  Codacy update so solve Xerces module error. Manual implementation required
+7.  Codacy support (*1)
+8.  `failOnReportNotFound`
+9.  `failOnUnknown` Bug fix
 10. Possibility to add external root sources - useful in cases where projects are using scala, java, kotlin and/or clojure at the same time. The plugin only recognizes one source directory. Parameter name is `extraSourceFolders`
 11. `failOnReportSendingError`
 12. `useCoverallsCount` to let Coveralls decide Job and run numbers.
@@ -128,14 +129,14 @@ Java 11 and above only
 
 ## Release notes - Upcoming version 0.0.11
 
-1. Branch Coverage for Coveralls
-2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
+1.  Branch Coverage for Coveralls
+2.  Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
 
 > For complete release notes logbook please check [ReleaseNotes.md](./ReleaseNotes.md)
 
 ## How to use
 
-#### 1. Omni reporter
+#### 1.  Omni reporter
 
 Just add the following dependency to your project to get coverage sent to coveralls
 
@@ -185,7 +186,7 @@ If you want to be more specific in your configuration and need an example here i
 </plugin>
 ```
 
-#### 2. Jacoco Reports
+#### 2.  Jacoco Reports
 
 You'll need Maven surefire plugin and the jacoco plugin. Here is an example:
 
@@ -241,18 +242,18 @@ I hope you enjoyed this repository. If you did, you can optionally please buy me
 
 ## References
 
-- [Codacy Coverage Reporter](https://github.com/codacy/codacy-coverage-reporter)
-- [Jackson Module](https://medium.com/@foxjstephen/how-to-actually-parse-xml-in-java-kotlin-221a9309e6e8)
-- [XCode Environment Variable Reference](https://developer.apple.com/documentation/xcode/environment-variable-reference)
-- [Cross-CI reference](https://github.com/streamich/cross-ci)
-- [Coveralls API reference](https://docs.coveralls.io/api-reference)
-- [Git Hub Environment Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
-- [Git Lab Environment Variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
-- [Check Run Reporter](https://github.com/marketplace/check-run-reporter)
-- [Codacy Maven Plugin](https://github.com/halkeye/codacy-maven-plugin)
-- [Coveralls Maven Plugin](https://github.com/trautonen/coveralls-maven-plugin)
-- [Example Java Maven for CodeCov](https://github.com/codecov/example-java-maven)
-- [CodeCov Maven Plugin](https://github.com/alexengrig/codecov-maven-plugin)
+-   [Codacy Coverage Reporter](https://github.com/codacy/codacy-coverage-reporter)
+-   [Jackson Module](https://medium.com/@foxjstephen/how-to-actually-parse-xml-in-java-kotlin-221a9309e6e8)
+-   [XCode Environment Variable Reference](https://developer.apple.com/documentation/xcode/environment-variable-reference)
+-   [Cross-CI reference](https://github.com/streamich/cross-ci)
+-   [Coveralls API reference](https://docs.coveralls.io/api-reference)
+-   [Git Hub Environment Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
+-   [Git Lab Environment Variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
+-   [Check Run Reporter](https://github.com/marketplace/check-run-reporter)
+-   [Codacy Maven Plugin](https://github.com/halkeye/codacy-maven-plugin)
+-   [Coveralls Maven Plugin](https://github.com/trautonen/coveralls-maven-plugin)
+-   [Example Java Maven for CodeCov](https://github.com/codecov/example-java-maven)
+-   [CodeCov Maven Plugin](https://github.com/alexengrig/codecov-maven-plugin)
 
 ## About me 👨🏽‍💻🚀🏳️‍🌈
 

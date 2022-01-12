@@ -47,6 +47,26 @@ What I did is to allow you to decide on how you want this configuration to be. P
 
 [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=From%20Paris%20to%20Berlin%20🛣&color=informational)](https://github.com/jesperancinha/from-paris-to-berlin-circuit-breaker)
 
+
+### Circle CI
+
+```xml
+<plugin>
+    <groupId>org.jesperancinha.plugins</groupId>
+    <artifactId>omni-coveragereporter-maven-plugin</artifactId>
+    <version>${omni-coveragereporter-maven-plugin.version}</version>
+</plugin>
+```
+
+Although there is still no dedicated support to Circle CI, `Omni` already works with it.
+It will mention `local-ci` because that is the default name for the CI pipeline.
+
+##### Example projects
+
+[![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=image-sizer&color=informational)](https://github.com/jesperancinha/image-sizer)
+
+
 ---
+
  
 Back to [Readme.md](./README.md)
