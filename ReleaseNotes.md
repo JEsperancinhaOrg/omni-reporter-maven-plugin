@@ -1,5 +1,9 @@
 # Omni Reporter Maven Plugin release notes
 
+#### Release 0.0.11 - 2022/01/13
+
+1. Ignore if package not found for Codecov with `failOnUnknown`
+
 #### Release 0.0.10 - 2022/01/09
 
 1. Path Corrections for Codecov Jacoco reports
