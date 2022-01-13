@@ -26,6 +26,7 @@ class CodecovProcessor(
     private val projectBaseDir: File?,
     private val failOnReportNotFound: Boolean,
     private val failOnReportSending: Boolean,
+    private val failOnUnknown: Boolean,
     ignoreTestBuildDirectory: Boolean
 ) : Processor(ignoreTestBuildDirectory) {
     override fun processReports() {
@@ -41,6 +42,7 @@ class CodecovProcessor(
                         token = token,
                         pipeline = currentPipeline,
                         root = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
+                        failOnUnknown = failOnUnknown
                     ).parseInput(
                         report.inputStream(),
                         project.compileSourceRoots.map { file -> File(file) })

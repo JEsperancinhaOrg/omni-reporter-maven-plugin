@@ -177,6 +177,7 @@ open class OmniReporterMojo(
                     projectBaseDir = projectBaseDir,
                     failOnReportNotFound = failOnReportNotFound,
                     failOnReportSending = failOnReportSendingError,
+                    failOnUnknown = failOnUnknown,
                     ignoreTestBuildDirectory = ignoreTestBuildDirectory,
                 ).processReports()
         }
@@ -218,6 +219,8 @@ class CodecovUrlNotConfiguredException : RuntimeException()
 class CoverallsReportNotGeneratedException(override val message: String? = null) : RuntimeException()
 
 class CodacyReportNotGeneratedException(override val message: String? = null) : RuntimeException()
+
+class CodecovPackageNotFoundException(override val message: String? = null) : RuntimeException()
 
 class JacocoXmlParsingErrorException : RuntimeException()
 

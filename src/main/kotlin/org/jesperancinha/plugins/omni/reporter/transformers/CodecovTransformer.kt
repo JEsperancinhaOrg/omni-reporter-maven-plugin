@@ -1,5 +1,6 @@
 package org.jesperancinha.plugins.omni.reporter.transformers
 
+import org.jesperancinha.plugins.omni.reporter.CodecovPackageNotFoundException
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Package
 import org.jesperancinha.plugins.omni.reporter.domain.jacoco.Report
 import org.jesperancinha.plugins.omni.reporter.parsers.readXmlValue
@@ -8,6 +9,7 @@ import org.jesperancinha.plugins.omni.reporter.pipelines.Pipeline
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStream
 
 /**
@@ -24,6 +26,7 @@ class AllParserToCodecov(
     token: String,
     pipeline: Pipeline,
     root: File,
+    val failOnUnknown: Boolean,
     includeBranchCoverage: Boolean = false,
 ) : OmniReporterParserImpl<InputStream, String>
     (token = token, pipeline = pipeline, root = root, includeBranchCoverage = includeBranchCoverage) {
@@ -33,17 +36,20 @@ class AllParserToCodecov(
             return input.bufferedReader().readText()
         }
         val copy = report.copy(
-            packages = report.packages.map { p: Package -> p.copy(name = findNewPackageName(p, compiledSourcesDirs)) },
+            packages = report.packages.mapNotNull { p: Package ->
+                val newName = findNewPackageName(p, compiledSourcesDirs)
+                newName?.let { p.copy(name = newName) } ?: if(failOnUnknown)  throw CodecovPackageNotFoundException(p.name) else null
+            }
         )
         return xmlObjectMapper.writeValueAsString(copy)
     }
 
-    private fun findNewPackageName(p: Package, compiledSourcesDirs: List<File>) =
+    internal fun findNewPackageName(p: Package, compiledSourcesDirs: List<File>) =
         compiledSourcesDirs
             .map { File(it, p.name) }
             .filter { file -> file.exists() }
             .map { file -> file.toRelativeString(root) }
-            .first()
+            .firstOrNull()
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(AllParserToCodecov::class.java)
