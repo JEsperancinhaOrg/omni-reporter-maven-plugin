@@ -28,6 +28,7 @@ internal class AllParserToCodecovTest {
             token = "token",
             pipeline = GitLabPipeline(),
             root = root,
+            failOnUnknown = false
         ).parseInput(
             resourceAsStream,
             listOf(resource.toURI().toPath().toFile())
@@ -50,6 +51,7 @@ internal class AllParserToCodecovTest {
             token = "token",
             pipeline = GitLabPipeline(),
             root = root,
+            failOnUnknown = false
         ).findNewPackageName(Package(name = "test"), listOf())
 
         packageName.shouldBeNull()
