@@ -12,6 +12,24 @@ import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProces
 import org.slf4j.LoggerFactory
 import java.io.File
 
+private class MavenOmniBuild(
+    override val testOutputDirectory: String,
+    override val directory: String
+) : OmniBuild
+
+private class MavenOmniProject(
+    override val compileSourceRoots: List<String>?,
+    override val build: OmniBuild?
+) : OmniProject
+
+private val List<MavenProject>.toOmniProjects: List<OmniProject?>
+    get() = map {
+        MavenOmniProject(
+            it.compileSourceRoots,
+            MavenOmniBuild(it.build.testOutputDirectory, it.build.directory)
+        )
+    }
+
 private val OmniReporterMojo.isCodacyAPIConfigured: Boolean
     get() = CodacyApiTokenConfig.isApiTokenConfigure(
         codacyApiToken = codacyApiToken,
@@ -129,7 +147,7 @@ open class OmniReporterMojo(
                     coverallsToken = token,
                     coverallsUrl = coverallsUrl,
                     currentPipeline = currentPipeline,
-                    allProjects = allProjects,
+                    allProjects = allProjects.toOmniProjects,
                     projectBaseDir = projectBaseDir,
                     failOnUnknown = failOnUnknown,
                     failOnReportNotFound = failOnReportNotFound,
@@ -156,7 +174,7 @@ open class OmniReporterMojo(
                 apiToken = codacyApiTokenConfig,
                 codacyUrl = codacyUrl,
                 currentPipeline = currentPipeline,
-                allProjects = allProjects,
+                allProjects = allProjects.toOmniProjects,
                 projectBaseDir = projectBaseDir,
                 failOnReportNotFound = failOnReportNotFound,
                 failOnReportSending = failOnReportSendingError,
@@ -173,7 +191,7 @@ open class OmniReporterMojo(
                     token = token,
                     codecovUrl = codecovUrl,
                     currentPipeline = currentPipeline,
-                    allProjects = allProjects,
+                    allProjects = allProjects.toOmniProjects,
                     projectBaseDir = projectBaseDir,
                     failOnReportNotFound = failOnReportNotFound,
                     failOnReportSending = failOnReportSendingError,
