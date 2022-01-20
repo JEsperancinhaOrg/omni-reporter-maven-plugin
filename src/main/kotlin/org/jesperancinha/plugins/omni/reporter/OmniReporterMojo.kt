@@ -206,26 +206,3 @@ private fun List<MavenProject>.injectExtraSourceFiles(extraSourceFolders: List<F
             .toMutableList())
         project
     }
-
-
-class ProjectDirectoryNotFoundException : RuntimeException()
-
-class CoverallsUrlNotConfiguredException : RuntimeException()
-
-class CodacyUrlNotConfiguredException : RuntimeException()
-
-class CodecovUrlNotConfiguredException : RuntimeException()
-
-class CoverallsReportNotGeneratedException(override val message: String? = null) : RuntimeException()
-
-class CodacyReportNotGeneratedException(override val message: String? = null) : RuntimeException()
-
-class CodecovPackageNotFoundException(override val message: String? = null) : RuntimeException()
-
-class JacocoXmlParsingErrorException : RuntimeException()
-
-class NullSourceFileException : RuntimeException()
-
-class IncompleteCodacyApiTokenConfigurationException : RuntimeException()
-
-class CoverallsTokenNotFoundException : RuntimeException()
