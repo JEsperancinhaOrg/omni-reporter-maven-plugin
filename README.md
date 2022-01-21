@@ -129,10 +129,10 @@ Java 11 and above only
 
 ## Release notes - Upcoming version 0.0.12
 
-1. Branch Coverage for Coveralls
-2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
-3. Split to use [common library](https://github.com/JEsperancinhaOrg/omni-reporter-commons)
-4. Handover to Library
+1.  Branch Coverage for Coveralls
+2.  Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
+3.  Split to use [common library](https://github.com/JEsperancinhaOrg/omni-reporter-commons)
+4.  Handover to Library
 
 > For complete release notes logbook please check [ReleaseNotes.md](./ReleaseNotes.md)
 
