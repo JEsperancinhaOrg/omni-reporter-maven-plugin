@@ -132,6 +132,7 @@ Java 11 and above only
 1. Branch Coverage for Coveralls
 2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
 3. Split to use [common library](https://github.com/JEsperancinhaOrg/omni-reporter-commons)
+4. Handover to Library
 
 > For complete release notes logbook please check [ReleaseNotes.md](./ReleaseNotes.md)
 
@@ -224,6 +225,7 @@ You'll need Maven surefire plugin and the jacoco plugin. Here is an example:
 ## Troubleshooting
 
 Having issues running this plugin? Please check the [Troubleshooting.md](./Troubleshooting.md) document.
+
 ## Buy me a coffee
 
 I hope you enjoyed this repository. If you did, you can optionally please buy me a coffee, which supports me to constantly improve and make new free content regularly for everyone. Thank you so much!
