@@ -1,5 +1,11 @@
 # Omni Reporter Maven Plugin release notes
 
+## Release 0.0.12 - 2022/01/22
+
+1. Split to use [common library](https://github.com/JEsperancinhaOrg/omni-reporter-commons)
+2. Handover to Library
+3. Security Update For Google Http Client
+
 #### Release 0.0.11 - 2022/01/13
 
 1. Ignore if package not found for Codecov with `failOnUnknown`
