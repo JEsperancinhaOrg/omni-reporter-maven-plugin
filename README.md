@@ -129,8 +129,8 @@ Java 11 and above only
 
 ## Release notes - Upcoming version 0.0.13
 
-1. Branch Coverage for Coveralls
-2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
+1.  Branch Coverage for Coveralls
+2.  Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
 
 > For complete release notes logbook please check [ReleaseNotes.md](./ReleaseNotes.md)
 
