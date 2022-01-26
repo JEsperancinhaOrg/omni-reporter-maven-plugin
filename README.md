@@ -127,10 +127,7 @@ Java 11 and above only
 
 >*1 All of these requirements are part of Milestone 10, which comprises support for three reporting frameworks: Codecov, Codacy and Coveralls with focus on Jacoco Reports.
 
-## Release notes - Upcoming version 0.0.13
-
-1.  Branch Coverage for Coveralls
-2.  Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
+## Release notes 
 
 > For complete release notes logbook please check [ReleaseNotes.md](./ReleaseNotes.md)
 

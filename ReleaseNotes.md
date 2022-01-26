@@ -1,5 +1,20 @@
 # Omni Reporter Maven Plugin release notes
 
+## Release 0.0.13 - Upcoming
+
+###### Features
+
+1. Support for [CoveragePy](https://coverage.readthedocs.io/)
+2. Support for [LCov](https://wiki.documentfoundation.org/Development/Lcov)
+3. Support for [Jacoco.exec](https://www.jacoco.org/jacoco/) files
+4. Support for [OpenClover](https://openclover.org/index)
+5. Support for Group Coverage with Branch Coverage (mostly Coveralls)
+6. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
+
+###### Bugs
+
+1. Root Path fix for internal elements
+
 ## Release 0.0.12 - 2022/01/22
 
 1. Split to use [common library](https://github.com/JEsperancinhaOrg/omni-reporter-commons)
