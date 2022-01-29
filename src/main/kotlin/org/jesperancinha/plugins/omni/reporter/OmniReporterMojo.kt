@@ -94,8 +94,10 @@ open class OmniReporterMojo(
     var codacyProjectName: String? = null,
     @Parameter(defaultValue = "\${project}", readonly = true)
     var project: MavenProject? = null,
-    @Parameter(property = "extraReportFolder")
-    val extraSourceFolders: List<File> = emptyList()
+    @Parameter(property = "extraSourceFolder")
+    val extraSourceFolders: List<File> = emptyList(),
+    @Parameter(property = "extraBuildFolder")
+    val extraBuildFolders: List<File> = emptyList()
 ) : AbstractMojo() {
 
     override fun execute() {
@@ -137,6 +139,7 @@ open class OmniReporterMojo(
         logger.info("branchCoverage: $branchCoverage")
         logger.info("useCoverallsCount: $useCoverallsCount")
         logger.info("extraSourceFolders: ${extraSourceFolders.joinToString(";")}")
+        logger.info("extraBuildFolders: ${extraBuildFolders.joinToString(";")}")
         logLine()
 
         val currentPipeline = PipelineImpl.currentPipeline
