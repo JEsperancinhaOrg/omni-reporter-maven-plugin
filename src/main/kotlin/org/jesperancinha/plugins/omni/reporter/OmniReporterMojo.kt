@@ -96,8 +96,8 @@ open class OmniReporterMojo(
     var project: MavenProject? = null,
     @Parameter(property = "extraSourceFolder")
     val extraSourceFolders: List<File> = emptyList(),
-    @Parameter(property = "extraBuildFolder")
-    val extraBuildFolders: List<File> = emptyList()
+    @Parameter(property = "extraReportFolders")
+    val extraReportFolders: List<File> = emptyList()
 ) : AbstractMojo() {
 
     override fun execute() {
@@ -139,10 +139,18 @@ open class OmniReporterMojo(
         logger.info("branchCoverage: $branchCoverage")
         logger.info("useCoverallsCount: $useCoverallsCount")
         logger.info("extraSourceFolders: ${extraSourceFolders.joinToString(";")}")
-        logger.info("extraBuildFolders: ${extraBuildFolders.joinToString(";")}")
+        logger.info("extraBuildFolders: ${extraReportFolders.joinToString(";")}")
         logLine()
 
         val currentPipeline = PipelineImpl.currentPipeline
+
+        val extraProjects = extraReportFolders.map {
+            MavenOmniProject(
+                extraSourceFolders.map { src -> src.absolutePath },
+                MavenOmniBuild(it.absolutePath, it.absolutePath)
+            )
+        }
+        val allOmniProjects = allProjects.toOmniProjects + extraProjects
 
         coverallsToken?.let { token ->
             if (!disableCoveralls)
@@ -150,7 +158,7 @@ open class OmniReporterMojo(
                     coverallsToken = token,
                     coverallsUrl = coverallsUrl,
                     currentPipeline = currentPipeline,
-                    allProjects = allProjects.toOmniProjects,
+                    allProjects = allOmniProjects,
                     projectBaseDir = projectBaseDir,
                     failOnUnknown = failOnUnknown,
                     failOnReportNotFound = failOnReportNotFound,
@@ -177,7 +185,7 @@ open class OmniReporterMojo(
                 apiToken = codacyApiTokenConfig,
                 codacyUrl = codacyUrl,
                 currentPipeline = currentPipeline,
-                allProjects = allProjects.toOmniProjects,
+                allProjects = allOmniProjects,
                 projectBaseDir = projectBaseDir,
                 failOnReportNotFound = failOnReportNotFound,
                 failOnReportSending = failOnReportSendingError,
@@ -194,7 +202,7 @@ open class OmniReporterMojo(
                     token = token,
                     codecovUrl = codecovUrl,
                     currentPipeline = currentPipeline,
-                    allProjects = allProjects.toOmniProjects,
+                    allProjects = allOmniProjects,
                     projectBaseDir = projectBaseDir,
                     failOnReportNotFound = failOnReportNotFound,
                     failOnReportSending = failOnReportSendingError,

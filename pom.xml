@@ -445,7 +445,16 @@
                 <artifactId>omni-coveragereporter-maven-plugin</artifactId>
                 <version>${omni-coveragereporter-maven-plugin.version}</version>
                 <configuration>
-                    <extraSourceFolders>${project.basedir}/test,${project.basedir}/test2,${project.build.outputDirectory},${project.build.directory}/generated-sources/plugin</extraSourceFolders>
+                    <extraSourceFolders>
+                        <param>${project.basedir}/test</param>
+                        <param>${project.basedir}/test2</param>
+                        <param>${project.build.outputDirectory}</param>
+                        <param>${project.build.directory}/generated-sources/plugin</param>
+                        <param>${project.basedir}/test3</param>
+                    </extraSourceFolders>
+                    <extraReportFolders>
+                        <param>${project.basedir}/test3</param>
+                    </extraReportFolders>
                 </configuration>
             </plugin>
         </plugins>
