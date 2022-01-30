@@ -203,7 +203,7 @@ open class OmniReporterMojo(
                     codecovUrl = codecovUrl,
                     currentPipeline = currentPipeline,
                     allProjects = allOmniProjects,
-                    projectBaseDir = projectBaseDir,
+                    projectBaseDir = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
                     failOnReportNotFound = failOnReportNotFound,
                     failOnReportSending = failOnReportSendingError,
                     failOnUnknown = failOnUnknown,
