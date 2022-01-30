@@ -25,9 +25,14 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 1.  Reporting file supported
 
-| Type       | Status | Notes                                                                                                                                                                                                                                           | Available from Release |
-|------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
-| Jacoco XML | ✅      | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  |
+| Type             | Status | Notes                                                                                                                                                                                                                                           | Available from Release | Example Project                                                                                                                                                                      |
+|------------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Jacoco XML       | ✅      | Jacoco reports seem to report on nonexistent classes in some cases. This seems to happen with Kotlin. This breaks down the functionality of some plugins. In this version we are allowed to ignore this, since it does not affect most reports. | 0.0.0                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Bridge%20Management%20Logistics&color=informational)](https://gitlab.com/jesperancinha/bridge-logistics) |
+| Clover XML       | ✅      |                                                                                                                                                                                                                                                 | 0.1.0                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Bridge%20Management%20Logistics&color=informational)](https://gitlab.com/jesperancinha/bridge-logistics) |
+| LCov Info        | ✅      |                                                                                                                                                                                                                                                 | 0.1.0                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Bridge%20Management%20Logistics&color=informational)](https://gitlab.com/jesperancinha/bridge-logistics) |
+| Coverage Py JSON | ✅      |                                                                                                                                                                                                                                                 | 0.1.0                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Bridge%20Management%20Logistics&color=informational)](https://gitlab.com/jesperancinha/bridge-logistics) |
+| Jacoco Exec      | ✅      |                                                                                                                                                                                                                                                 | 0.1.0                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Bridge%20Management%20Logistics&color=informational)](https://gitlab.com/jesperancinha/bridge-logistics) |
+| Coverage Codecov | ✅      | For unsupported formats, Omni makes the conversion to the generic [supported Codecov format](https://docs.codecov.com/docs/supported-report-formats) (only from known formats to Omni)                                                                                                                | 0.1.0                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Bridge%20Management%20Logistics&color=informational)](https://gitlab.com/jesperancinha/bridge-logistics) |
 
 #### 2.  Online API's supported
 
@@ -179,6 +184,20 @@ If you want to be more specific in your configuration and need an example here i
         <codacyUserName>AAAAAAAAAAAAAAAAAAA</codacyUserName>
         <codacyProjectName>AAAAAAAAAAAAAAAAAAA</codacyProjectName>
         <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>
+        <extraSourceFolders>
+            <param>${project.basedir}/source1</param>
+            <param>${project.basedir}/source2</param>
+            <param>${project.basedir}/source3</param>
+            <param>${project.basedir}</param>
+        </extraSourceFolders>
+        <extraReportFolders>
+            <param>${project.basedir}/folder1/coverage</param>
+            <param>${project.basedir}/folder2/target</param>
+            <param>${project.basedir}/folder3/build</param>
+            <param>${project.basedir}/folder4/dist</param>
+            <param>${project.basedir}/folder5/bin</param>
+            <param>${project.basedir}</param>
+        </extraReportFolders>
     </configuration>
 </plugin>
 ```
