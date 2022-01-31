@@ -78,6 +78,8 @@ open class OmniReporterMojo(
     var useCoverallsCount: Boolean = true,
     @Parameter(property = "branchCoverage")
     var branchCoverage: Boolean = false,
+    @Parameter(property = "fetchBranchNameFromEnv")
+    var fetchBranchNameFromEnv: Boolean = false,
     @Parameter(property = "coverallsToken")
     var coverallsToken: String? = null,
     @Parameter(property = "codecovToken")
@@ -142,7 +144,7 @@ open class OmniReporterMojo(
         logger.info("extraReportFolders: ${extraReportFolders.joinToString(";")}")
         logLine()
 
-        val currentPipeline = PipelineImpl.currentPipeline
+        val currentPipeline = PipelineImpl.currentPipeline(fetchBranchNameFromEnv)
 
         val extraProjects = extraReportFolders.map {
             MavenOmniProject(
