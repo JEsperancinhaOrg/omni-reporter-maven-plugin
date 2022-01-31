@@ -21,12 +21,15 @@ jobs:
           distribution: 'adopt'
           cache: maven
 
-      - name: Build and Test
+      - name: Build and Test Install to Maven M2
         run:  mvn clean install
 
+      - name: Build and Test
+        run:  mvn clean install jacoco:prepare-agent package jacoco:report
+
       - name: Coverage Reports
-        run: mvn clean jacoco:prepare-agent install package jacoco:report omni-coveragereporter:report
+        run: mvn omni-coveragereporter:report
         env:
            COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
