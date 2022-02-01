@@ -13,7 +13,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ad3103f6c4e1420889ab7205b430b219)](https://www.codacy.com/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JEsperancinhaOrg/omni-reporter-maven-plugin&amp;utm_campaign=Badge_Grade)
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/ad3103f6c4e1420889ab7205b430b219)](https://www.codacy.com/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/dashboard?utm_source=github.com&utm_medium=referral&utm_content=JEsperancinhaOrg/omni-reporter-maven-plugin&utm_campaign=Badge_Coverage)
-
 [![Coverage Status](https://coveralls.io/repos/github/JEsperancinhaOrg/omni-reporter-maven-plugin/badge.svg?branch=main)](https://coveralls.io/github/JEsperancinhaOrg/omni-reporter-maven-plugin?branch=main)
 [![codecov](https://codecov.io/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/branch/main/graph/badge.svg?token=KKCLdubOii)](https://codecov.io/gh/JEsperancinhaOrg/omni-reporter-maven-plugin)
 
