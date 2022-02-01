@@ -144,6 +144,7 @@ open class OmniReporterMojo(
         logger.info("useCoverallsCount: $useCoverallsCount")
         logger.info("extraSourceFolders: ${extraSourceFolders.joinToString(";")}")
         logger.info("extraReportFolders: ${extraReportFolders.joinToString(";")}")
+        logger.info("reportRejectList: ${reportRejectList.joinToString(";")}")
         logLine()
 
         val currentPipeline = PipelineImpl.currentPipeline(fetchBranchNameFromEnv)
