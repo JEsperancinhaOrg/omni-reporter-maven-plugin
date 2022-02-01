@@ -73,6 +73,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | fetchBranchNameFromEnv          | Some Coverage frameworks may present the commit hash instead of the branch name under different circumstances. It can vary if you run your tests under Docker or it can vary under certain variable combinations. This flag is set to fals by default. If set to true, it will get the branch name from the pipeline environment variables.                                              | 0.0.3                  |
 | extraSourceFolders              | You may want to include extra `Source` folders for `Omni` to find. It is better to make sure that in your plugin, you can define and tell maven where are your extra source folders. This parameter is here available as a last resort , should you find a problem where the plugins just don't work the way you expect them to.                                                         | 0.0.7                  |
 | extraReportFolders              | This is a list of extra report folders you can add for external reports unrelated to Maven. Sources wil be searched across the `extraSourceFolders`. The search algorithm is based on source file distances to the report. By default all report frameworks generate reports as close as possible to the source code. So keep in mind not to change that default configuration too much. | 0.0.7                  |
+| reportRejectList                | This is a string list of reporting filenames you possibly want to reject in some cases (i.e. two different report types of different brands for the same files for the same cases)                                                                                                                                                                                                       | 0.1.3                  |
 | coverallsUrl                    | Should Coveralls ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                                                                  | 0.0.0                  |
 | codacyUrl                       | Should Codacy ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                                                                     | 0.0.7                  |
 | codecovUrl                      | Should Codecov ever change the API endpoint, you can change that here                                                                                                                                                                                                                                                                                                                    | 0.0.7                  |
@@ -203,6 +204,9 @@ If you want to be more specific in your configuration and need an example here i
             <param>${project.basedir}/folder5/bin</param>
             <param>${project.basedir}</param>
         </extraReportFolders>
+        <reportRejectList>
+            <param>filename.extension</param>
+        </reportRejectList>
     </configuration>
 </plugin>
 ```
