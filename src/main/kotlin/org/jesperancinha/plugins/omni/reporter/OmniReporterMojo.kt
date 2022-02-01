@@ -99,7 +99,9 @@ open class OmniReporterMojo(
     @Parameter(property = "extraSourceFolder")
     val extraSourceFolders: List<File> = emptyList(),
     @Parameter(property = "extraReportFolders")
-    val extraReportFolders: List<File> = emptyList()
+    val extraReportFolders: List<File> = emptyList(),
+    @Parameter(property = "reportRejectList")
+    val reportRejectList: List<String> = emptyList()
 ) : AbstractMojo() {
 
     override fun execute() {
@@ -168,7 +170,8 @@ open class OmniReporterMojo(
                     failOnXmlParseError = failOnXmlParsingError,
                     branchCoverage = branchCoverage,
                     ignoreTestBuildDirectory = ignoreTestBuildDirectory,
-                    useCoverallsCount = useCoverallsCount
+                    useCoverallsCount = useCoverallsCount,
+                    reportRejectList = reportRejectList
                 ).processReports()
         }
 
@@ -194,6 +197,7 @@ open class OmniReporterMojo(
                 failOnXmlParseError = failOnXmlParsingError,
                 failOnUnknown = failOnUnknown,
                 ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+                reportRejectList = reportRejectList,
             ).processReports()
         }
 
@@ -210,6 +214,7 @@ open class OmniReporterMojo(
                     failOnReportSending = failOnReportSendingError,
                     failOnUnknown = failOnUnknown,
                     ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+                    reportRejectList = reportRejectList,
                 ).processReports()
         }
     }
