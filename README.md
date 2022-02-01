@@ -48,12 +48,14 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 
 #### 3.  Pipelines Supported
 
-| Type     | Status | Notes | Available from Release | Example project                                                                                                                                                                                  |
-|----------|--------|-------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Local    | ✅      |       | 0.0.0                  | N/A                                                                                                                                                                                              |
-| Git Hub  | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=City%20Library%20Management%20🏢&color=informational)](https://github.com/jesperancinha/advanced-library-management) |
-| Git Lab  | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Favourite%20Lyrics%20App&color=informational)](https://gitlab.com/jesperancinha/favourite-lyrics-app)                |
-| CircleCI | 🚧     |       | ?                      | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=image-sizer&color=informational)](https://github.com/jesperancinha/image-sizer)                                      |
+| Type      | Status | Notes | Available from Release | Example project                                                                                                                                                                                          |
+|-----------|--------|-------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Local     | ✅      |       | 0.0.0                  | N/A                                                                                                                                                                                                      |
+| Git Hub   | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=City%20Library%20Management%20🏢&color=informational)](https://github.com/jesperancinha/advanced-library-management)         |
+| Git Lab   | ✅      |       | 0.0.1                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitLab&message=Favourite%20Lyrics%20App&color=informational)](https://gitlab.com/jesperancinha/favourite-lyrics-app)                        |
+| CircleCI  | ✅      |       | 0.1.3                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=GitHub&message=image-sizer&color=informational)](https://github.com/jesperancinha/image-sizer)                                              |
+| BitBucket | ✅      |       | 0.1.3                  | [![Generic badge](https://img.shields.io/static/v1.svg?label=BitBucket&message=International%20Airports✈️&color=informational)](https://bitbucket.org/jesperancinha/international-airports-service-root) |
+
 
 
 #### 4.  Configuration options
