@@ -1,9 +1,13 @@
 # Omni Reporter Maven Plugin release notes
 
-#### Release 0.1.4 - Upcoming
+#### Release 0.1.5 - Upcoming
 
 1. Support for Group Coverage with Branch Coverage (mostly Coveralls)
 2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
+
+#### Release 0.1.4 - 2022/02/1
+
+1. Url Fix for BitBucket
 
 #### Release 0.1.3 - 2022/02/1
 
