@@ -219,7 +219,6 @@ If you want to be more specific in your configuration and need an example here i
 You'll need Maven surefire plugin and the jacoco plugin. Here is an example:
 
 ```xml
-
 <plugins>
     <plugin>
         <groupId>org.jacoco</groupId>
