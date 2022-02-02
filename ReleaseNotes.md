@@ -47,7 +47,13 @@
 
 1. Root Path fix for internal elements
 
-## Release 0.0.12 - 2022/01/22
+---
+
+Support Upgrade Leap
+
+--- 
+
+#### Release 0.0.12 - 2022/01/22
 
 1. Split to use [common library](https://github.com/JEsperancinhaOrg/omni-reporter-commons)
 2. Handover to Library
