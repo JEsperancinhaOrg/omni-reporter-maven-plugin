@@ -257,19 +257,12 @@ Having issues running this plugin? Please check the [Troubleshooting.md](./Troub
 
 In all Omni projects, there are test files scattered all over the place. This is needed to see how the application behaves in different test scenarios. To keep things organized, this is the list of the files that are here specifically for test purposes:
 
-- [test](./test)
-- [test2](./test2)
-- [test3](./test3)
-- [test4](./test4)
+-   [test](./test)
+-   [test2](./test2)
+-   [test3](./test3)
+-   [test4](./test4)
 
 ---
-
-## Buy me a coffee
-
-I hope you enjoyed this repository. If you did, you can optionally please buy me a coffee, which supports me to constantly improve and make new free content regularly for everyone. Thank you so much!
-
-[![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=jesperancinha&button_colour=046c46&font_colour=ffffff&font_family=Cookie&outline_colour=ffffff&coffee_colour=FFDD00 "title")](https://www.buymeacoffee.com/jesperancinha)
-
 
 ## Coverage report Graphs
 
@@ -295,6 +288,12 @@ I hope you enjoyed this repository. If you did, you can optionally please buy me
 -   [Coveralls Maven Plugin](https://github.com/trautonen/coveralls-maven-plugin)
 -   [Example Java Maven for CodeCov](https://github.com/codecov/example-java-maven)
 -   [CodeCov Maven Plugin](https://github.com/alexengrig/codecov-maven-plugin)
+
+## Buy me a coffee
+
+I hope you enjoyed this repository. If you did, you can optionally please buy me a coffee, which supports me in constantly improve and make new free content regularly for everyone. Thank you so much!
+
+[![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=jesperancinha&button_colour=046c46&font_colour=ffffff&font_family=Cookie&outline_colour=ffffff&coffee_colour=FFDD00 "title")](https://www.buymeacoffee.com/jesperancinha)
 
 ## About me 👨🏽‍💻🚀🏳️‍🌈
 
