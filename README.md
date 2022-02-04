@@ -251,6 +251,19 @@ You'll need Maven surefire plugin and the jacoco plugin. Here is an example:
 
 Having issues running this plugin? Please check the [Troubleshooting.md](./Troubleshooting.md) document.
 
+--- 
+
+## Test files
+
+In all Omni projects, there are test files scattered all over the place. This is needed to see how the application behaves in different test scenarios. To keep things organized, this is the list of the files that are here specifically for test purposes:
+
+- [test](./test)
+- [test2](./test2)
+- [test3](./test3)
+- [test4](./test4)
+
+---
+
 ## Buy me a coffee
 
 I hope you enjoyed this repository. If you did, you can optionally please buy me a coffee, which supports me to constantly improve and make new free content regularly for everyone. Thank you so much!
