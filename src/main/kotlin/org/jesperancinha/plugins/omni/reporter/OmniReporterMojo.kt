@@ -4,8 +4,6 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
-import org.jesperancinha.plugins.omni.reporter.domain.api.CodacyApiTokenConfig
-import org.jesperancinha.plugins.omni.reporter.pipelines.PipelineImpl
 import org.jesperancinha.plugins.omni.reporter.processors.CodacyProcessor
 import org.jesperancinha.plugins.omni.reporter.processors.CodecovProcessor
 import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProcessor
@@ -29,14 +27,6 @@ private val List<MavenProject>.toOmniProjects: List<OmniProject?>
             MavenOmniBuild(it.build.testOutputDirectory, it.build.directory)
         )
     }
-
-private val OmniReporterMojo.isCodacyAPIConfigured: Boolean
-    get() = CodacyApiTokenConfig.isApiTokenConfigure(
-        codacyApiToken = codacyApiToken,
-        codacyOrganizationProvider = codacyOrganizationProvider,
-        codacyUsername = codacyUserName,
-        codacyProjectName = codacyProjectName
-    )
 
 private val MavenProject?.findAllSearchFolders: List<MavenProject>
     get() = ((this?.collectedProjects.let {
@@ -76,7 +66,7 @@ open class OmniReporterMojo(
     var ignoreTestBuildDirectory: Boolean = true,
     @Parameter(property = "useCoverallsCount", defaultValue = "true")
     var useCoverallsCount: Boolean = true,
-    @Parameter(property = "branchCoverage")
+    @Parameter(property = "branchCoverage", defaultValue = "false")
     var branchCoverage: Boolean = false,
     @Parameter(property = "fetchBranchNameFromEnv")
     var fetchBranchNameFromEnv: Boolean = false,
@@ -90,8 +80,8 @@ open class OmniReporterMojo(
     var codacyApiToken: String? = null,
     @Parameter(property = "codacyOrganizationProvider")
     var codacyOrganizationProvider: String? = null,
-    @Parameter(property = "codacyUserName")
-    var codacyUserName: String? = null,
+    @Parameter(property = "codacyUsername")
+    var codacyUsername: String? = null,
     @Parameter(property = "codacyProjectName")
     var codacyProjectName: String? = null,
     @Parameter(defaultValue = "\${project}", readonly = true)
@@ -115,7 +105,7 @@ open class OmniReporterMojo(
         codacyToken = codacyToken ?: environment["CODACY_PROJECT_TOKEN"]
         codacyApiToken = codacyApiToken ?: environment["CODACY_API_TOKEN"]
         codacyOrganizationProvider = codacyOrganizationProvider ?: environment["CODACY_ORGANIZATION_PROVIDER"]
-        codacyUserName = codacyUserName ?: environment["CODACY_USERNAME"]
+        codacyUsername = codacyUsername ?: environment["CODACY_USERNAME"]
         codacyProjectName = codacyProjectName ?: environment["CODACY_PROJECT_NAME"]
         codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
 
@@ -129,7 +119,6 @@ open class OmniReporterMojo(
         logger.info("Codecov token: ${checkToken(codecovToken)}")
         logger.info("Codacy token: ${checkToken(codacyToken)}")
         logger.info("Codacy API token: ${checkToken(codacyApiToken)}")
-        logger.info("Codacy API fully configured: ${this.isCodacyAPIConfigured}")
         logger.info("Source Encoding: $sourceEncoding")
         logger.info("Parent Directory: $projectBaseDir")
         logger.info("failOnNoEncoding: $failOnNoEncoding")
@@ -147,8 +136,6 @@ open class OmniReporterMojo(
         logger.info("reportRejectList: ${reportRejectList.joinToString(";")}")
         logLine()
 
-        val currentPipeline = PipelineImpl.currentPipeline(fetchBranchNameFromEnv)
-
         val extraProjects = extraReportFolders.map {
             MavenOmniProject(
                 extraSourceFolders.map { src -> src.absolutePath },
@@ -157,67 +144,56 @@ open class OmniReporterMojo(
         }
         val allOmniProjects = allProjects.toOmniProjects + extraProjects
 
-        coverallsToken?.let { token ->
-            if (!disableCoveralls)
-                CoverallsReportsProcessor(
-                    coverallsToken = token,
-                    coverallsUrl = coverallsUrl,
-                    currentPipeline = currentPipeline,
-                    allProjects = allOmniProjects,
-                    projectBaseDir = projectBaseDir,
-                    failOnUnknown = failOnUnknown,
-                    failOnReportNotFound = failOnReportNotFound,
-                    failOnReportSending = failOnReportSendingError,
-                    failOnXmlParseError = failOnXmlParsingError,
-                    branchCoverage = branchCoverage,
-                    ignoreTestBuildDirectory = ignoreTestBuildDirectory,
-                    useCoverallsCount = useCoverallsCount,
-                    reportRejectList = reportRejectList
-                ).processReports()
-        }
+        CoverallsReportsProcessor(
+            coverallsToken = coverallsToken,
+            disableCoveralls = disableCoveralls,
+            coverallsUrl = coverallsUrl,
+            allProjects = allOmniProjects,
+            projectBaseDir = projectBaseDir,
+            failOnUnknown = failOnUnknown,
+            failOnReportNotFound = failOnReportNotFound,
+            failOnReportSending = failOnReportSendingError,
+            failOnXmlParseError = failOnXmlParsingError,
+            fetchBranchNameFromEnv = fetchBranchNameFromEnv,
+            branchCoverage = branchCoverage,
+            ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+            useCoverallsCount = useCoverallsCount,
+            reportRejectList = reportRejectList
+        ).processReports()
 
-        if ((this.isCodacyAPIConfigured || codacyToken != null) && !disableCodacy) {
-            val codacyApiTokenConfig = codacyApiToken?.let {
-                CodacyApiTokenConfig(
-                    codacyApiToken = codacyApiToken ?: throw IncompleteCodacyApiTokenConfigurationException(),
-                    codacyOrganizationProvider = codacyOrganizationProvider
-                        ?: throw IncompleteCodacyApiTokenConfigurationException(),
-                    codacyUsername = codacyUserName ?: throw IncompleteCodacyApiTokenConfigurationException(),
-                    codacyProjectName = codacyProjectName ?: throw IncompleteCodacyApiTokenConfigurationException()
-                )
-            }
-            CodacyProcessor(
-                token = codacyToken,
-                apiToken = codacyApiTokenConfig,
-                codacyUrl = codacyUrl,
-                currentPipeline = currentPipeline,
-                allProjects = allOmniProjects,
-                projectBaseDir = projectBaseDir,
-                failOnReportNotFound = failOnReportNotFound,
-                failOnReportSending = failOnReportSendingError,
-                failOnXmlParseError = failOnXmlParsingError,
-                failOnUnknown = failOnUnknown,
-                ignoreTestBuildDirectory = ignoreTestBuildDirectory,
-                reportRejectList = reportRejectList,
-            ).processReports()
-        }
+        CodacyProcessor(
+            codacyToken = codacyToken,
+            codacyApiToken = codacyApiToken,
+            codacyOrganizationProvider = codacyOrganizationProvider,
+            codacyUsername = codacyUsername,
+            codacyProjectName = codacyProjectName,
+            disableCodacy = disableCodacy,
+            codacyUrl = codacyUrl,
+            allProjects = allOmniProjects,
+            projectBaseDir = projectBaseDir,
+            failOnReportNotFound = failOnReportNotFound,
+            failOnReportSending = failOnReportSendingError,
+            failOnXmlParseError = failOnXmlParsingError,
+            failOnUnknown = failOnUnknown,
+            fetchBranchNameFromEnv = fetchBranchNameFromEnv,
+            ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+            reportRejectList = reportRejectList,
+        ).processReports()
 
+        CodecovProcessor(
+            codecovToken = codecovToken,
+            disableCodecov = disableCodecov,
+            codecovUrl = codecovUrl,
+            allProjects = allOmniProjects,
+            projectBaseDir = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
+            failOnReportNotFound = failOnReportNotFound,
+            failOnReportSending = failOnReportSendingError,
+            failOnUnknown = failOnUnknown,
+            fetchBranchNameFromEnv = fetchBranchNameFromEnv,
+            ignoreTestBuildDirectory = ignoreTestBuildDirectory,
+            reportRejectList = reportRejectList,
+        ).processReports()
 
-        codecovToken?.let { token ->
-            if (!disableCodecov)
-                CodecovProcessor(
-                    token = token,
-                    codecovUrl = codecovUrl,
-                    currentPipeline = currentPipeline,
-                    allProjects = allOmniProjects,
-                    projectBaseDir = projectBaseDir ?: throw ProjectDirectoryNotFoundException(),
-                    failOnReportNotFound = failOnReportNotFound,
-                    failOnReportSending = failOnReportSendingError,
-                    failOnUnknown = failOnUnknown,
-                    ignoreTestBuildDirectory = ignoreTestBuildDirectory,
-                    reportRejectList = reportRejectList,
-                ).processReports()
-        }
     }
 
     private fun logLine() = let {
