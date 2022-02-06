@@ -16,11 +16,11 @@ private class MavenOmniBuild(
 ) : OmniBuild
 
 private class MavenOmniProject(
-    override val compileSourceRoots: List<String>?,
+    override val compileSourceRoots: MutableList<String>?,
     override val build: OmniBuild?
 ) : OmniProject
 
-private val List<MavenProject>.toOmniProjects: List<OmniProject?>
+private val List<MavenProject>.toOmniProjects: List<OmniProject>
     get() = map {
         MavenOmniProject(
             it.compileSourceRoots,
@@ -109,7 +109,13 @@ open class OmniReporterMojo(
         codacyProjectName = codacyProjectName ?: environment["CODACY_PROJECT_NAME"]
         codecovToken = codecovToken ?: environment["CODECOV_TOKEN"]
 
-        val allProjects = project.findAllSearchFolders.injectExtraSourceFiles(extraSourceFolders)
+        val allProjects: List<OmniProject>? =
+            projectBaseDir?.let { root ->
+                project.findAllSearchFolders.toOmniProjects.injectExtraSourceFiles(
+                    extraSourceFolders,
+                    root
+                )
+            }
 
         logLine()
         logger.info("Coveralls URL: $coverallsUrl")
@@ -138,11 +144,11 @@ open class OmniReporterMojo(
 
         val extraProjects = extraReportFolders.map {
             MavenOmniProject(
-                extraSourceFolders.map { src -> src.absolutePath },
+                extraSourceFolders.map { src -> src.absolutePath }.toMutableList(),
                 MavenOmniBuild(it.absolutePath, it.absolutePath)
             )
         }
-        val allOmniProjects = allProjects.toOmniProjects + extraProjects
+        val allOmniProjects = allProjects?.plus(extraProjects) ?: emptyList()
 
         CoverallsReportsProcessor(
             coverallsToken = coverallsToken,
@@ -208,14 +214,3 @@ open class OmniReporterMojo(
         const val OMNI_CHARACTER_LINE_NUMBER = 150
     }
 }
-
-private fun List<MavenProject>.injectExtraSourceFiles(extraSourceFolders: List<File>): List<MavenProject> =
-    this.map { project ->
-        val extraSourcesFoldersFound =
-            extraSourceFolders.filter { sourceFolder ->
-                !project.basedir.toPath().relativize(sourceFolder.toPath()).toString().contains("..")
-            }
-        project.compileSourceRoots.addAll(extraSourcesFoldersFound.map { foundSourceFolder -> foundSourceFolder.absolutePath }
-            .toMutableList())
-        project
-    }
