@@ -10,27 +10,17 @@ import org.jesperancinha.plugins.omni.reporter.processors.CoverallsReportsProces
 import org.slf4j.LoggerFactory
 import java.io.File
 
-private class MavenOmniBuild(
-    override val testOutputDirectory: String,
-    override val directory: String
-) : OmniBuild
-
-private class MavenOmniProject(
-    override val compileSourceRoots: MutableList<String>?,
-    override val build: OmniBuild?
-) : OmniProject
-
 private val List<MavenProject>.toOmniProjects: List<OmniProject>
     get() = map {
-        MavenOmniProject(
+        OmniProjectGeneric(
             it.compileSourceRoots,
-            MavenOmniBuild(it.build.testOutputDirectory, it.build.directory)
+            OmniBuildGeneric(it.build.testOutputDirectory, it.build.directory)
         )
     }
 
-private val MavenProject?.findAllSearchFolders: List<MavenProject>
+private val MavenProject?.findAllSearchProjects: List<MavenProject>
     get() = ((this?.collectedProjects.let {
-        it?.addAll(it.flatMap { subProj -> subProj.findAllSearchFolders })
+        it?.addAll(it.flatMap { subProj -> subProj.findAllSearchProjects })
         it
     } ?: mutableListOf()) + this).filterNotNull()
 
@@ -111,7 +101,7 @@ open class OmniReporterMojo(
 
         val allProjects: List<OmniProject>? =
             projectBaseDir?.let { root ->
-                project.findAllSearchFolders.toOmniProjects.injectExtraSourceFiles(
+                project.findAllSearchProjects.toOmniProjects.injectExtraSourceFiles(
                     extraSourceFolders,
                     root
                 )
@@ -143,9 +133,9 @@ open class OmniReporterMojo(
         logLine()
 
         val extraProjects = extraReportFolders.map {
-            MavenOmniProject(
+            OmniProjectGeneric(
                 extraSourceFolders.map { src -> src.absolutePath }.toMutableList(),
-                MavenOmniBuild(it.absolutePath, it.absolutePath)
+                OmniBuildGeneric(it.absolutePath, it.absolutePath)
             )
         }
         val allOmniProjects = allProjects?.plus(extraProjects) ?: emptyList()
