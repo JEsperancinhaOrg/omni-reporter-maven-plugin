@@ -149,8 +149,6 @@ open class OmniReporterMojo(
             ignoreTestBuildDirectory = ignoreTestBuildDirectory,
             useCoverallsCount = useCoverallsCount,
             allProjects = allOmniProjects,
-            extraSourceFolders = extraSourceFolders,
-            extraReportFolders = extraReportFolders,
             reportRejectList = reportRejectList
         ).processReports()
 
@@ -170,8 +168,6 @@ open class OmniReporterMojo(
             fetchBranchNameFromEnv = fetchBranchNameFromEnv,
             ignoreTestBuildDirectory = ignoreTestBuildDirectory,
             allProjects = allOmniProjects,
-            extraSourceFolders = extraSourceFolders,
-            extraReportFolders = extraReportFolders,
             reportRejectList = reportRejectList
         ).processReports()
 
@@ -186,8 +182,6 @@ open class OmniReporterMojo(
             fetchBranchNameFromEnv = fetchBranchNameFromEnv,
             ignoreTestBuildDirectory = ignoreTestBuildDirectory,
             allProjects = allOmniProjects,
-            extraSourceFolders = extraSourceFolders,
-            extraReportFolders = extraReportFolders,
             reportRejectList = reportRejectList
         ).processReports()
 
