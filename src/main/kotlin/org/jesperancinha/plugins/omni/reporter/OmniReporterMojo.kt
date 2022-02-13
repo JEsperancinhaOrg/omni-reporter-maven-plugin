@@ -4,7 +4,6 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
-import org.slf4j.LoggerFactory
 import java.io.File
 
 private val List<MavenProject>.toOmniProjects: List<OmniProject>
