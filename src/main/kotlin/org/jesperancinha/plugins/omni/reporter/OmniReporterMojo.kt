@@ -4,6 +4,9 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
+import org.jesperancinha.plugins.omni.reporter.OmniReporterCommon.Companion.HTTPS_API_CODACY_COM
+import org.jesperancinha.plugins.omni.reporter.OmniReporterCommon.Companion.HTTPS_CODECOV_IO_UPLOAD
+import org.jesperancinha.plugins.omni.reporter.OmniReporterCommon.Companion.HTTPS_COVERALLS_IO_API_V_1_JOBS
 import java.io.File
 
 private val List<MavenProject>.toOmniProjects: List<OmniProject>
@@ -22,11 +25,11 @@ private val MavenProject?.findAllSearchProjects: List<MavenProject>
 
 @Mojo(name = "report", threadSafe = false, aggregator = true)
 open class OmniReporterMojo(
-    @Parameter(property = "coverallsUrl", defaultValue = "https://coveralls.io/api/v1/jobs")
+    @Parameter(property = "coverallsUrl", defaultValue = HTTPS_COVERALLS_IO_API_V_1_JOBS)
     protected var coverallsUrl: String? = null,
-    @Parameter(property = "codacyUrl", defaultValue = "https://api.codacy.com")
+    @Parameter(property = "codacyUrl", defaultValue = HTTPS_API_CODACY_COM)
     protected var codacyUrl: String? = null,
-    @Parameter(property = "codecovUrl", defaultValue = "https://codecov.io/upload")
+    @Parameter(property = "codecovUrl", defaultValue = HTTPS_CODECOV_IO_UPLOAD)
     protected var codecovUrl: String? = null,
     @Parameter(property = "sourceEncoding", defaultValue = "\${project.build.sourceEncoding}")
     var sourceEncoding: String? = null,
@@ -90,9 +93,9 @@ open class OmniReporterMojo(
         val extraProjects = extraReportFolders.toExtraProjects(extraSourceFolders)
         val allOmniProjects = allProjects?.plus(extraProjects) ?: emptyList()
         OmniReporterCommon(
-            coverallsUrl,
-            codacyUrl,
-            codecovUrl,
+            coverallsUrl ?: HTTPS_COVERALLS_IO_API_V_1_JOBS,
+            codacyUrl ?: HTTPS_API_CODACY_COM,
+            codecovUrl ?: HTTPS_CODECOV_IO_UPLOAD,
             sourceEncoding,
             projectBaseDir,
             failOnNoEncoding,
