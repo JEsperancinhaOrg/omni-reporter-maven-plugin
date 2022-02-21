@@ -16,6 +16,8 @@
 [![omni-reporter-maven-plugin](https://github.com/JEsperancinhaOrg/omni-reporter-maven-plugin/actions/workflows/omni-reporter-maven-plugin.yml/badge.svg)](https://github.com/JEsperancinhaOrg/omni-reporter-maven-plugin/actions/workflows/omni-reporter-maven-plugin.yml)
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/cdb0d01e148246a6a505b8beb86c3c5d)](https://www.codacy.com/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JEsperancinhaOrg/omni-reporter-maven-plugin&amp;utm_campaign=Badge_Grade)
+[![codebeat badge](https://codebeat.co/badges/9457e027-2170-442e-8a7c-384db578b582)](https://codebeat.co/projects/github-com-jesperancinhaorg-omni-reporter-maven-plugin-main)
+[![BCH compliance](https://bettercodehub.com/edge/badge/JEsperancinhaOrg/omni-reporter-maven-plugin?branch=main)](https://bettercodehub.com/results/JEsperancinhaOrg/omni-reporter-maven-plugin)
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/cdb0d01e148246a6a505b8beb86c3c5d)](https://www.codacy.com/gh/JEsperancinhaOrg/omni-reporter-maven-plugin/dashboard?utm_source=github.com&utm_medium=referral&utm_content=JEsperancinhaOrg/omni-reporter-maven-plugin&utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/JEsperancinhaOrg/omni-reporter-maven-plugin/badge.svg?branch=main)](https://coveralls.io/github/JEsperancinhaOrg/omni-reporter-maven-plugin?branch=main)
