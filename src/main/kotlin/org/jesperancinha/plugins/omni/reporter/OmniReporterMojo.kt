@@ -83,15 +83,13 @@ open class OmniReporterMojo(
     val reportRejectList: List<String> = emptyList()
 ) : AbstractMojo() {
     override fun execute() {
-        val allProjects: List<OmniProject>? =
+        val allProjects: List<OmniProject> =
             projectBaseDir?.let { root ->
                 project.findAllSearchProjects.toOmniProjects.injectExtraSourceFiles(
                     extraSourceFolders,
                     root
                 )
-            }
-        val extraProjects = extraReportFolders.toExtraProjects(extraSourceFolders)
-        val allOmniProjects = allProjects?.plus(extraProjects) ?: emptyList()
+            } ?: emptyList()
         OmniReporterCommon(
             coverallsUrl ?: HTTPS_COVERALLS_IO_API_V_1_JOBS,
             codacyUrl ?: HTTPS_API_CODACY_COM,
@@ -120,6 +118,6 @@ open class OmniReporterMojo(
             extraSourceFolders,
             extraReportFolders,
             reportRejectList
-        ).execute(allOmniProjects)
+        ).execute(allProjects)
     }
 }
