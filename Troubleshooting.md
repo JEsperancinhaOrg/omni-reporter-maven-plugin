@@ -10,7 +10,9 @@ If I exceptionally send `null` records regarding the service id's, then everythi
 What I did is to allow you to decide on how you want this configuration to be. Please see below the minimalistic most used ways to use `Omni` in different pipelines.
 
 #### 2. Why I'm not getting any reports. I see my jars in target and I see all jacoco files being correctly generated
-The only time I've seen this happen is for a good reason. It mostly comes from the fact that there are multiple jars in the target folder. This could be from a multitude of reasons but mostly that you have your original jar in the same folder as the runnable jar. This can happen with Spring or any other plugin like shade. A good work around and also a way to make your target folder look nicer is to just change the output directory of the runnable jar you want to generate.
+The only time I've seen this happen is for a good reason. 
+
+It mostly comes from the fact that there are multiple jars in the target folder. This could be from a multitude of reasons but mostly that you have your original jar in the same folder as the runnable jar. This can happen with Spring or any other plugin like shade. A good work around and also a way to make your target folder look nicer is to just change the output directory of the runnable jar you want to generate.
 
 ##### Shade plugin
 
@@ -58,7 +60,29 @@ Check full example on: [![Generic badge](https://img.shields.io/static/v1.svg?la
 
 For further undestanding of this issue, I'm going to try to expllain in a nutshell the intricacies of this issue. Jacoco generates report files in `CSV`, `XML` and `exec` formats. The `exec` seems to be a favourite format, but it is encoded in a way jacoco understands and Omni will try to unpack that. However `exec` does not contain some class information and it needs the original jar in order to translate `exec` to a readable format. If the `jar` is the wrong one, then the generated report will render no files. To find which jar is the correct one is actually somewhat difficult because each framework and packaging systems have different locations for the target folders. I contemplate that for `Gradle` and `Maven`, but it is difficult to do that when having multiple jars because of the processing cost. In general it is just better to isolate the original jar in the source target folder. In this case what I mean by target is the root folder of your generated binaries or release files. This folder is mostly called `target`, but it can also be called `build`, `bin`, `lib` and this purely depends on your packaging system.
 
-What coming versions will have is a way to define which jar is the original one. You won't have to isolate the original jar anymore but it will cost you in organization. 2022/03/02.
+What coming versions will have is a way to define which jar is the original one. You won't have to isolate the original jar anymore but it will cost you in organization.
+
+However, there are is still another case where this happens:
+
+```xml
+<build>
+    <finalName>${project.name}</finalName>
+    ...
+</build>
+```
+
+The Omni plugin is prepared to search for source folders as described by the maven `pom.xml` configuration. If you are running a `kotlin` project, then you might have difficulties with the above configuration as the Omni plugin might not be able to pick up that `kotlin` is the source folder (assuming you are using default configurations). The way to fix this is to tell the plugin which is the source directory:
+
+```xml
+<build>
+    <finalName>${project.name}</finalName>
+    <sourceDirectory>src/main/kotlin</sourceDirectory>
+    ...
+</build>
+```
+
+Since Omni also allows you to configure extra source folders, you can also try adding it to your Omni plugin configuration although I would only use that option in case the first failed. All extra source and report folders apply for every single project and that may not always be what we want. 2022/03/02.
+
 ## Pipelines
 
 ### GitLab
