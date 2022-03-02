@@ -14,6 +14,15 @@ The only time I've seen this happen is for a good reason. It mostly comes from t
 
 ##### Shade plugin
 
+- Build
+```xml
+<build>
+    <finalName>runnable/${project.name}</finalName>
+    ...
+</build>
+```
+
+- Plugin
 ```xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -38,7 +47,7 @@ The only time I've seen this happen is for a good reason. It mostly comes from t
                 <goal>shade</goal>
             </goals>
             <configuration>
-                <outputDirectory>runnable</outputDirectory>
+                <outputDirectory>${project.build.directory}</outputDirectory>
             </configuration>
         </execution>
     </executions>
