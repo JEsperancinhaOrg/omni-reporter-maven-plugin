@@ -62,6 +62,8 @@ For further undestanding of this issue, I'm going to try to expllain in a nutshe
 
 What coming versions will have is a way to define which jar is the original one. You won't have to isolate the original jar anymore but it will cost you in organization.
 
+Also consider the jars you have. If both the runnable jar and the original jar contain the necessary classes, you will mostly not need to make any changes. So the above is only valid for corner cases where the jars need to be isolated.
+
 However, there are is still another case where this happens:
 
 ```xml
