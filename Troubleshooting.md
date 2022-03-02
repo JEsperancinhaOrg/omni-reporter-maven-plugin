@@ -2,14 +2,14 @@
 
 ## FAQ
 
-#### 1. Why am I getting a strange Hash Id in the Job Id column in Coveralls API framework instead of a numeric one.
+#### 1. Why am I getting a strange HashId in the Job Id column in Coveralls API framework instead of a numeric one.
 Coveralls is an amazing API and I try to make this plugin to keep up with standards accross many platforms.
 However, I ran into an issue with the GitLab pipelines and how they work. I noticed that using [Eclipse JGit](https://www.eclipse.org/jgit/), I would not get the branch name. Instead, I would just get the hash of the commit. GitLab was the only case I found where I could not get the correct branch name in a standard way.
 I also noticed that this apparently influences the way the Job ID is calculated. 
 If I exceptionally send `null` records regarding the service id's, then everything seems to work fine for all pipelines except for GitLab. Either I'm missing something or there could be some other underlying issue. What I can't do is break the standards specific to GitLab and Coveralls at the same time.
 What I did is to allow you to decide on how you want this configuration to be. Please see below the minimalistic most used ways to use `Omni` in different pipelines.
 
-#### 2. Why I'm not getting any reports. I see my jars in target and I see all jacoco files being correctly generated
+#### 2. Why I'm not getting any reports? I see my jars in target and I see all jacoco files being correctly generated
 The only time I've seen this happen is for a good reason. 
 
 It mostly comes from the fact that there are multiple jars in the target folder. This could be from a multitude of reasons but mostly that you have your original jar in the same folder as the runnable jar. This can happen with Spring or any other plugin like shade. A good work around and also a way to make your target folder look nicer is to just change the output directory of the runnable jar you want to generate.
