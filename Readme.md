@@ -271,6 +271,37 @@ In all Omni projects, there are test files scattered all over the place. This is
 
 ---
 
+## Repository `~/.m2/settings.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'
+          xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    <profiles>
+        <profile>
+            <id>ossrh</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.passphrase>{{password}}</gpg.passphrase>
+            </properties>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>ossrh</activeProfile>
+    </activeProfiles>
+    <servers>
+        <server>
+            <id>ossrh</id>
+            <username>{{username}}</username>
+            <password>{{password}}</password>
+        </server>
+    </servers>
+</settings>
+```
+
 ## Coverage report Graphs
 
 <div align="center">
