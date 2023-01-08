@@ -7,7 +7,7 @@
 3. Overseer option: `overseer`. If this option is on, the plugin will look for external reports and sources automatically following the [Overseer.md](./Overseer.md) document rules
 4. GoLang Coverage Support (`.out` files)
 
-#### Release 0.3.1 - Upcoming
+#### Release 0.3.1 - 2023/01/08
 
 1. Fix for 
 
