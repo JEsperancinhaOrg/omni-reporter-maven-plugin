@@ -1,3 +1,6 @@
+SHELL := /bin/bash
+TARGET_MODULE ?=ALL-UNNAMED
+
 b: build
 build:
 	mvn clean install
