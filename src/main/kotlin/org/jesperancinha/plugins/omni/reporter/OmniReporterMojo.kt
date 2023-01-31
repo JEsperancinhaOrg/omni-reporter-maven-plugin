@@ -80,7 +80,10 @@ open class OmniReporterMojo(
     @Parameter(property = "extraReportFolders")
     val extraReportFolders: List<File> = emptyList(),
     @Parameter(property = "reportRejectList")
-    val reportRejectList: List<String> = emptyList()
+    val reportRejectList: List<String> = emptyList(),
+    @Parameter(property = "parallelization")
+    val parallelization: Int = 4
+
 ) : AbstractMojo() {
     override fun execute() {
         val allProjects: List<OmniProject> =
@@ -115,6 +118,7 @@ open class OmniReporterMojo(
             codacyOrganizationProvider,
             codacyUsername,
             codacyProjectName,
+            parallelization,
             extraSourceFolders,
             extraReportFolders,
             reportRejectList

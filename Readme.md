@@ -94,6 +94,7 @@ A plugin intended to keep the pace of technology and be able to use the Coverall
 | (*1) codacyUserName             | Sets the `codacyUserName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_USERNAME` instead                                                               | 0.0.9                  |
 | (*1) codacyProjectName          | Sets the `codacyProjectName` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODACY_PROJECT_NAME` instead                                                        | 0.0.9                  |
 | codecovToken                    | Sets the `codecovToken` token manually. Use this for local tests only or if you have a globally variable not declared in versioned files. Using tokens explicitly in the maven pom.xml file is unsafe. Do NOT place your tokens in the clear. For production purposes use environment variable `CODECOV_TOKEN` instead                                                                   | 0.0.9                  |
+| parallelization                 | Parallelization - Indicates how big is the pool of threads available to process individual report files. Default value is `4`                                                                                                                                                                                                                                                            | 0.4.0                  |
 
 > *N - These variables only work when fully configured in the N set.
 
@@ -200,6 +201,7 @@ If you want to be more specific in your configuration and need an example here i
         <codacyProjectName>AAAAAAAAAAAAAAAAAAA</codacyProjectName>
         <codecovToken>AAAAAAAAAAAAAAAAAAA</codecovToken>
         <fetchBranchNameFromEnv>true</fetchBranchNameFromEnv>
+        <parallelization>4</parallelization>
         <extraSourceFolders>
             <param>${project.basedir}/source1</param>
             <param>${project.basedir}/source2</param>
