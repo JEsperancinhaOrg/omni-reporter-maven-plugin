@@ -1,11 +1,19 @@
 # Omni Reporter Maven Plugin release notes
 
-#### Release 0.3.3 - Upcoming
+#### Release 0.4.2 - Upcoming
 
 1. Support for Group Coverage with Branch Coverage (mostly Coveralls)
 2. Source encoding gets automatically chosen unless we configure flag `failOnNoEncoding` to `true`
 3. Overseer option: `overseer`. If this option is on, the plugin will look for external reports and sources automatically following the [Overseer.md](./Overseer.md) document rules
 4. GoLang Coverage Support (`.out` files)
+
+#### Release 0.4.1 - Upcoming
+
+1. Parallelization support for multiple sub-report frameworks like Codacy
+
+#### Release 0.4.0 - 2023/01/31
+
+1. Parallelization support
 
 #### Release 0.3.2 - 2023/01/11
 
