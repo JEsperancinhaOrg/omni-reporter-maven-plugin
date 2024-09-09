@@ -87,7 +87,7 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <coverage-parser_2.12.version>4.4.2</coverage-parser_2.12.version>
         <codacy-coverage-reporter.version>7.1.0</codacy-coverage-reporter.version>
-        <logback-classic.version>1.5.7</logback-classic.version>
+        <logback-classic.version>1.5.8</logback-classic.version>
         <omni-coveragereporter-maven-plugin.version>0.4.4</omni-coveragereporter-maven-plugin.version>
         <omni-coveragereporter-commons.version>0.4.4</omni-coveragereporter-commons.version>
     </properties>
